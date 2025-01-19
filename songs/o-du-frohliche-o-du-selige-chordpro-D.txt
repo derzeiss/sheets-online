@@ -1,0 +1,36 @@
+{title: O du fröhliche o du selige}
+{artist: Musik: Johann Gottfried Herder}
+{artist: Text: Heinrich Holzschuher, Johannes Daniel Falk}
+{key: D}
+{time: 4/4}
+{ccli_license: 522063}
+{ccli: 4340270}
+{copyright: Words: Public Domain | Music: Public Domain}
+{footer: Nutzung ausschließlich im Rahmen der SongSelect®-Nutzungsbedingungen. Alle Rechte vorbehalten. www.ccli.com}
+
+{comment: Vers 1}
+[D]O    [G]du    [D]fröhliche,    o    [G]du    [D]selige 
+[D]Gna - [A/C#]den - [E/B]brin -  [A]gen - [D]de    [A/E]Weih  -  [E]nachts - [A]zeit 
+[A]Welt ging [B7]ver - [Em]lo - [A7]ren 
+[D]Christ ist [A7]ge - [D]boren 
+[D]Freu - [G]e,    [D]    [Bm]freu - [G]e   [D/F#]dich  [Em/G]o   [D/A]Chris  -  [A7]ten  -  [D]heit 
+
+{comment: Vers 2}
+[D]O    [G]du    [D]fröhliche,    o    [G]du    [D]selige 
+[D]Gna - [A/C#]den - [E/B]brin -  [A]gen - [D]de    [A/E]Weih  -  [E]nachts - [A]zeit 
+[A]Christ ist [B7]er - [Em]schie - [A7]nen 
+[D]Uns zu [A7]ver - [D]sühnen 
+[D]Freu - [G]e,    [D]    [Bm]freu - [G]e   [D/F#]dich  [Em/G]o   [D/A]Chris  -  [A7]ten  -  [D]heit 
+
+{comment: Vers 3}
+[D]O    [G]du    [D]fröhliche,    o    [G]du    [D]selige 
+[D]Gna - [A/C#]den - [E/B]brin -  [A]gen - [D]de    [A/E]Weih  -  [E]nachts - [A]zeit 
+[A]Himmli - [B7]sche  [Em]Hee - [A7]re 
+[D]Jauchzen [A7]dir  [D]Ehre 
+[D]Freu - [G]e,    [D]    [Bm]freu - [G]e   [D/F#]dich  [Em/G]o   [D/A]Chris  -  [A7]ten  -  [D]heit 
+
+
+CCLI-Liednummer  4340270
+© Words: Public Domain | Music: Public Domain
+Nutzung ausschließlich im Rahmen der SongSelect®-Nutzungsbedingungen. Alle Rechte vorbehalten. www.ccli.com
+CCLI-Lizenznummer  522063

@@ -1,0 +1,41 @@
+{title: Herbei o ihr Gläubigen}
+{artist: Latin text und Musik: John Francis Wade}
+{artist: Deutsch: Friedrich Heinrich Ranke}
+{key: G}
+{time: 2/4}
+{tempo: 60}
+{ccli_license: 522063}
+{ccli: 4345691}
+{copyright: Words: Public Domain | Music: Public Domain}
+{footer: Nutzung ausschließlich im Rahmen der SongSelect®-Nutzungsbedingungen. Alle Rechte vorbehalten. www.ccli.com}
+
+{comment: Vers 1}
+Her - [G]bei o ihr [D]Gläub’gen [G]fröhlich tri - [C]um - [G/D]phie - [D]ret 
+O [Em]kom - [D]met [A/C#]o [D]kommet [G]nach [D/A]Beth   [A7]- le - [D]hem 
+[G]Sehet das [D7/F#]Kind - [G]lein  [D]uns  [B/D#]zum  [Em]Heil  [A/C#]ge - [D]boren 
+
+{comment: Chorus}
+O [G]lasset uns anbeten,  O [G]lasset uns anbe - [D]ten 
+[G]O   [D7/A]las - [G/B]set  [Am/C]uns  [A7/C#]an - [D]be - [Em]ten 
+[C]Den [G/D]Kö - [D]    [G]nig 
+
+{comment: Vers 2}
+Du [G]König der [D]Ehren [G]Herrscher der [C]Heer - [G/D]scha - [D]ren 
+Ver - [Em]schmähst [D]nicht [A/C#]zu [D]ruhn in [G]Ma - [D/A]ri   [A7]- en [D]Schoß 
+[G]Gott wahrer [D7/F#]Gott  [G]von  [D]E - [B/D#]wig - [Em]keit   [A/C#]ge - [D]boren 
+
+{comment: Vers 3}
+Kommt [G]singet dem [D]Herren [G]singt ihm En - [C]gel - [G/D]chö - [D]re 
+Froh - [Em]lo - [D]cket [A/C#]froh - [D]locket [G]ihr   [D/A]Se   [A7]- li - [D]gen 
+[G]Ehre sei [D7/F#]Gott [G]im   [D]Him - [B/D#]mel  [Em]und   [A/C#]auf  [D]Erden 
+
+
+{comment: Vers 4}
+Ja [G]dir der du [D]heute [G]Mensch für uns [C]ge - [G/D]bo - [D]ren 
+Herr [Em]Je - [D]su   [A/C#]sei  [D]Ehre [G]und  [D/A]Preis   [A7] und [D]Ruhm 
+[G]Dir fleischge - [D7/F#]word - [G]nes  [D]Wort [B/D#]des  [Em]ew - [A/C#]gen   [D]Vaters 
+
+CCLI-Liednummer  4345691
+© Words: Public Domain | Music: Public Domain
+Nutzung ausschließlich im Rahmen der SongSelect®-Nutzungsbedingungen. Alle Rechte vorbehalten. www.ccli.com
+CCLI-Lizenznummer  522063

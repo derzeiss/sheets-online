@@ -4,3 +4,10 @@
 # React Router
 /.react-router/
 /build/
+
+
+# prisma
+prisma/dev.db
+prisma/dev.db-journal
+
+unused_*

@@ -2,11 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-html,
+/* html,
 body {
-  @apply bg-white dark:bg-gray-950;
-
   @media (prefers-color-scheme: dark) {
     color-scheme: dark;
+  }
+} */
+
+@layer utilities {
+  .clickable {
+    @apply cursor-pointer transition-colors hover:bg-neutral-100 active:bg-neutral-200 active:transition-none;
   }
 }

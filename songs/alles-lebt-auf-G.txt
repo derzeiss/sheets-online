@@ -1,0 +1,26 @@
+{title: Alles lebt auf}
+{artist: CG Essen}
+{key: G}
+{time: 6/8}
+
+{comment: Verse 1}
+Wie die [G]Nacht vergeht, wenn der Tag anbricht,
+so steigt [C]Hoffnung auf, wenn der Vater spricht.
+Jeder [Em]Zweifel weicht, jede Angst zerbricht
+Liebe [C]hüllt mich [D]ein.
+
+{comment: Verse 2}
+Wie das [G]Gras sich neigt, wenn der Wind es streift,
+so beugt [C]sich mein Herz, wenn Gnade mich ergreift,
+Dann sing [Em] ich das Lied, das nur dir gebührt,
+und mein [C]Mund be[D]kennt
+
+{comment: Chorus}
+Halle -[C]luja, [D] ruft die [Em]ganze Schöpfung [G]
+Du bist [C]heilig [D] und ge[Em]recht ist was du [G]tust
+
+{comment: Bridge}
+Alles lebt [C]auf, wenn du [D]sprichst
+Nur ein [G]Wort und es ge[Em]schieht
+Alles ge[C]horcht, wenn du be[D]fiehlst
+Anfang und [G]Ende ist in [Em]dir. 
