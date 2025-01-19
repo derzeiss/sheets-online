@@ -18,6 +18,7 @@ model Song {
   tempo String?
   time String?
   ccli String?
+  prosong String
   setlists SongsOnSetlist[]
 }
 

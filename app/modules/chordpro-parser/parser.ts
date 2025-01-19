@@ -13,7 +13,7 @@ export const parseSong = (song: string): Jsong => {
     if (line.startsWith('{') && line.endsWith('}')) {
       const lineTrimmed = line.substring(1, line.length - 1);
       const [name, _val, tooLong] = lineTrimmed.split(':');
-      const val = tooLong ? lineTrimmed.substring(name.length + 1).trim() : _val.trim();
+      const val = tooLong ? lineTrimmed.substring(name.length + 1)?.trim() : _val?.trim();
 
       if (META_DIRECTIVES.includes(name)) {
         if (meta[name] && ADDITIVE_DIRECTIVES.includes(name)) {
