@@ -7,7 +7,7 @@ export const loader = async () => {
   return songs;
 };
 
-export default function Songs({ loaderData: songs }: Route.ComponentProps) {
+export default function SongsRoute({ loaderData: songs }: Route.ComponentProps) {
   return (
     <main className="container my-10">
       <h1 className="text-5xl">Songs</h1>

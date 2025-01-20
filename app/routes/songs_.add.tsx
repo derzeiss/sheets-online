@@ -27,7 +27,7 @@ export async function action({ request }: Route.ActionArgs) {
   return redirect('/songs');
 }
 
-export default function SongsAdd() {
+export default function SongsAddRoute() {
   const submit = useSubmit();
   const [prosong, setProsong] = useState(songBlueprint);
 
