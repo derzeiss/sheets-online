@@ -9,6 +9,7 @@
     "typecheck": "react-router typegen && tsc"
   },
   "dependencies": {
+    "@flydotio/litestream": "^1.0.1",
     "@prisma/client": "^6.2.1",
     "@react-router/fs-routes": "^7.1.3",
     "@react-router/node": "^7.1.3",
@@ -19,6 +20,7 @@
     "react-router": "^7.1.3"
   },
   "devDependencies": {
+    "@flydotio/dockerfile": "^0.7.2",
     "@react-router/dev": "^7.1.3",
     "@types/node": "^20",
     "@types/react": "^19.0.1",
@@ -31,5 +33,8 @@
     "typescript": "^5.7.2",
     "vite": "^5.4.11",
     "vite-tsconfig-paths": "^5.1.4"
+  },
+  "dockerfile": {
+    "litestream": true
   }
 }
