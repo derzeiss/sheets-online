@@ -21,7 +21,7 @@ export default function Songs({ loaderData: songs }: Route.ComponentProps) {
 
       <ul className="mt-4">
         {songs.map((song) => (
-          <SongListItem song={song} />
+          <SongListItem key={song.id} song={song} />
         ))}
       </ul>
     </main>

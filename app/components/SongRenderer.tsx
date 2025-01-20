@@ -20,7 +20,7 @@ export const SongRenderer: FC<Props> = ({ prosong }) => {
 
   const [songKeyTransposed, setSongKeyTransposed] = useState<Note>('C');
   const prosongTransposed = useMemo(() => {
-    if (songKey === songKeyTransposed) return prosongDebounced;
+    // transpose even if (songKey === songKeyTransposed) to transform Nashville numbers!
     return transposeSong(prosongDebounced, songKey, songKeyTransposed);
   }, [prosongDebounced, songKeyTransposed]);
 
@@ -62,6 +62,7 @@ export const SongRenderer: FC<Props> = ({ prosong }) => {
               {n}
             </option>
           ))}
+          <option value="Nashville">Nashville</option>
         </select>
         <span className="ml-4">Original key: {songKey}</span>
       </div>

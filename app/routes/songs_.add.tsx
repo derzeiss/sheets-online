@@ -23,8 +23,7 @@ export async function action({ request }: Route.ActionArgs) {
   const formData = await request.formData();
   const values = Object.fromEntries(formData);
 
-  const song = await prisma.song.create({ data: values as Song });
-  console.log('song', song);
+  await prisma.song.create({ data: values as Song });
   return redirect('/songs');
 }
 
