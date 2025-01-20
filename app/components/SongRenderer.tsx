@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useState, type ChangeEvent, type FC } from 'react';
-import { NOTES_SHARP } from '~/modules/chordpro-parser/constants';
+import { useMemo, type FC } from 'react';
 import { parseSong } from '~/modules/chordpro-parser/parser';
 import { transposeSong } from '~/modules/chordpro-parser/transposer';
 import { lineIsComment, lineIsWithChords } from '~/modules/chordpro-parser/typeguards';
@@ -10,29 +9,19 @@ import { useDebounce } from '~/utils/useDebounce';
 
 interface Props {
   prosong: string;
+  targetKey: Note;
 }
 
-export const SongRenderer: FC<Props> = ({ prosong }) => {
+export const SongRenderer: FC<Props> = ({ prosong, targetKey }) => {
   const prosongDebounced = useDebounce(prosong);
 
   const jsong = parseSong(prosongDebounced);
   const songKey = jsong?.meta.key || 'C';
 
-  const [songKeyTransposed, setSongKeyTransposed] = useState<Note>('C');
   const prosongTransposed = useMemo(() => {
     // transpose even if (songKey === songKeyTransposed) to transform Nashville numbers!
-    return transposeSong(prosongDebounced, songKey, songKeyTransposed);
-  }, [prosongDebounced, songKeyTransposed]);
-
-  const [transposeTouched, setTransposeTouched] = useState(false);
-  useEffect(() => {
-    if (!transposeTouched && jsong.meta.key) setSongKeyTransposed(jsong.meta.key);
-  }, [jsong.meta.key]);
-
-  const handleTransposeChange = (ev: ChangeEvent<HTMLSelectElement>) => {
-    setSongKeyTransposed(ev.target.value as Note);
-    setTransposeTouched(true);
-  };
+    return transposeSong(prosongDebounced, songKey, targetKey);
+  }, [prosongDebounced, targetKey]);
 
   const jsongTransposed = useMemo(() => parseSong(prosongTransposed), [prosongTransposed]);
 
@@ -48,75 +37,53 @@ export const SongRenderer: FC<Props> = ({ prosong }) => {
       .join(' | ');
   }, [jsong.meta.key, jsong.meta.tempo, jsong.meta.time]);
 
+  if (!jsong || !jsongTransposed)
+    return <div className="italic text-neutral-600">Enter a song to start</div>;
+
   return (
-    <div>
-      <div className="mb-2 text-sm">
-        Key:
-        <select
-          className="rounded bg-neutral-100 px-2 py-1"
-          value={songKeyTransposed}
-          onChange={handleTransposeChange}
-        >
-          {NOTES_SHARP.map((n) => (
-            <option key={n} value={n}>
-              {n}
-            </option>
-          ))}
-          <option value="Nashville">Nashville</option>
-        </select>
-        <span className="ml-4">Original key: {songKey}</span>
+    <>
+      <div className="mb-6">
+        <h2 className="mb-1 text-3xl font-semibold">{jsong.meta.title}</h2>
+        {jsong.meta.artist && <small className="block">{jsong.meta.artist}</small>}
+        {metaSubhead && (
+          <small className="block">
+            <strong>{metaSubhead}</strong>
+          </small>
+        )}
       </div>
-
-      {jsong && jsongTransposed ? (
-        <>
-          <div className="mb-6">
-            <h2 className="mb-1 text-3xl font-semibold">{jsong.meta.title}</h2>
-            {jsong.meta.artist && <small className="block">{jsong.meta.artist}</small>}
-            {metaSubhead && (
-              <small className="block">
-                <strong>{metaSubhead}</strong>
-              </small>
-            )}
-          </div>
-          <div className="text-lg leading-[1.3]">
-            {jsongTransposed.lines.map((line: SongLine) => {
-              if (lineIsComment(line)) {
-                return (
-                  <strong key={line.id} className="block uppercase tracking-wide">
-                    {line.content}
-                  </strong>
-                );
-              }
-              if (line.type === 'whitespace') {
-                return <div key={line.id}>&nbsp;</div>;
-              }
-              if (lineIsWithChords(line)) {
-                return (
-                  <div key={line.id} className="ml-4 mt-2 flex flex-wrap gap-1">
-                    {line.content.map((block: Block) => (
-                      <div key={block.id} className="mr-[.2rem]">
-                        <div>
-                          <strong>{block.chord}&nbsp;</strong>
-                        </div>
-                        <div>{block.text}</div>
-                      </div>
-                    ))}
+      <div className="text-lg leading-[1.3]">
+        {jsongTransposed.lines.map((line: SongLine) => {
+          if (lineIsComment(line)) {
+            return (
+              <strong key={line.id} className="block uppercase tracking-wide">
+                {line.content}
+              </strong>
+            );
+          }
+          if (line.type === 'whitespace') {
+            return <div key={line.id}>&nbsp;</div>;
+          }
+          if (lineIsWithChords(line)) {
+            return (
+              <div key={line.id} className="ml-4 mt-2 flex flex-wrap gap-1">
+                {line.content.map((block: Block) => (
+                  <div key={block.id} className="mr-[.2rem]">
+                    <div>
+                      <strong>{block.chord}&nbsp;</strong>
+                    </div>
+                    <div>{block.text}</div>
                   </div>
-                );
-              }
-              return (
-                <div key={line.id} className="ml-4">
-                  {line.content as string}
-                </div>
-              );
-            })}
-          </div>
-        </>
-      ) : (
-        <div className="italic text-neutral-600">Enter a song to start</div>
-      )}
-
-      <pre className="overflow-auto">{JSON.stringify(jsong, null, 2)}</pre>
-    </div>
+                ))}
+              </div>
+            );
+          }
+          return (
+            <div key={line.id} className="ml-4">
+              {line.content as string}
+            </div>
+          );
+        })}
+      </div>
+    </>
   );
 };

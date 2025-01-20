@@ -7,7 +7,7 @@ interface Props {
 
 export const SongListItem: FC<Props> = ({ song }) => {
   return (
-    <li className="border-t-300 flex justify-between border-t py-1">
+    <li className="border-t-300 flex justify-between border-t px-2 py-1">
       <div>
         <h2>{song.title}</h2>
         <div className="text-sm text-neutral-600">{song.artist}</div>

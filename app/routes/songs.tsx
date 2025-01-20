@@ -1,3 +1,5 @@
+import { Link } from 'react-router';
+import { ButtonLink } from '~/components/ButtonLink';
 import { SongListItem } from '~/components/SongListItem';
 import { prisma } from '~/modules/prisma';
 import type { Route } from './+types/songs';
@@ -10,18 +12,15 @@ export const loader = async () => {
 export default function SongsRoute({ loaderData: songs }: Route.ComponentProps) {
   return (
     <main className="container my-10">
-      <h1 className="text-5xl">Songs</h1>
+      <h1 className="mb-4 text-5xl">Songs</h1>
 
-      <a
-        href="/songs/add"
-        className="clickable mt-4 inline-block rounded border border-neutral-200 px-4 py-2"
-      >
-        + Add song
-      </a>
+      <ButtonLink to="/songs/new/edit">+ Add Song</ButtonLink>
 
-      <ul className="mt-4">
+      <ul className="mt-4 max-w-xl">
         {songs.map((song) => (
-          <SongListItem key={song.id} song={song} />
+          <Link key={song.id} to={`/songs/${song.id}`} className="clickable block">
+            <SongListItem song={song} />
+          </Link>
         ))}
       </ul>
     </main>
