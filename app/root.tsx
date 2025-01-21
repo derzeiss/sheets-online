@@ -43,12 +43,12 @@ export default function App() {
     <>
       <Outlet />
       <nav className="fixed bottom-0 left-0 flex w-full border-t border-t-neutral-300 bg-white">
-        <NavLink className="clickable block w-full px-4 py-3 text-center text-sm" to="/sets">
+        <NavLink to="/setlists" className="clickable block w-full px-4 py-3 text-center text-sm">
           Sets
         </NavLink>
         <NavLink
-          className="clickable block w-full border-l border-l-neutral-300 px-4 py-3 text-center text-sm"
           to="/songs"
+          className="clickable block w-full border-l border-l-neutral-300 px-4 py-3 text-center text-sm"
         >
           Songs
         </NavLink>

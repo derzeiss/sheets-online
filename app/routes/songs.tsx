@@ -6,17 +6,19 @@ import type { Route } from './+types/songs';
 
 export const loader = async () => {
   const songs = await prisma.song.findMany();
-  return songs;
+  return { songs };
 };
 
-export default function SongsRoute({ loaderData: songs }: Route.ComponentProps) {
+export default function SongsRoute({ loaderData }: Route.ComponentProps) {
+  const { songs } = loaderData;
+
   return (
-    <main className="container my-10">
+    <main className="container my-10 max-w-3xl">
       <h1 className="mb-4 text-5xl">Songs</h1>
 
       <ButtonLink to="/songs/new/edit">+ Add Song</ButtonLink>
 
-      <ul className="mt-4 max-w-xl">
+      <ul className="mt-4">
         {songs.map((song) => (
           <Link key={song.id} to={`/songs/${song.id}`} className="clickable block">
             <SongListItem song={song} />

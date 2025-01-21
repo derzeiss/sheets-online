@@ -30,3 +30,24 @@ export const NOTES_SHARP: Note[] = [
   'B',
 ];
 export const NOTES_FLAT: Note[] = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+export const NOTES_ALL: Note[] = [
+  'C',
+  'C#',
+  'Db',
+  'D',
+  'D#',
+  'Eb',
+  'E',
+  'F',
+  'F#',
+  'Gb',
+  'G',
+  'G#',
+  'Ab',
+  'A',
+  'A#',
+  'Bb',
+  'B',
+  'Nashville',
+];

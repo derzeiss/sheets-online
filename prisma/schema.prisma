@@ -25,14 +25,18 @@ model Song {
 model Setlist {
   id String @id @default(uuid())
   name String
+  songAmount Int
   songs SongsOnSetlist[]
 }
 
 model SongsOnSetlist {
+  id String @id @default(uuid())
+  
   song Song @relation(fields: [songId], references: [id])
   songId String
   setlist Setlist @relation(fields: [setlistId], references: [id])
   setlistId String
 
-  @@id([songId, setlistId])
+  key String?
+  order Int
 }
