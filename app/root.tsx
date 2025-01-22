@@ -41,18 +41,15 @@ export function meta({}: Route.MetaArgs) {
 export default function App() {
   return (
     <>
-      <Outlet />
-      <nav className="fixed bottom-0 left-0 flex w-full border-t border-t-neutral-300 bg-white">
-        <NavLink to="/setlists" className="clickable block w-full px-4 py-3 text-center text-sm">
+      <nav className="flex w-full justify-center">
+        <NavLink to="/setlists" className="clickable block px-4 py-3 text-center text-sm">
           Sets
         </NavLink>
-        <NavLink
-          to="/songs"
-          className="clickable block w-full border-l border-l-neutral-300 px-4 py-3 text-center text-sm"
-        >
+        <NavLink to="/songs" className="clickable block px-4 py-3 text-center text-sm">
           Songs
         </NavLink>
       </nav>
+      <Outlet />
     </>
   );
 }
