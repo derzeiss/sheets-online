@@ -12,7 +12,6 @@ FROM node:20-alpine AS build-env
 COPY . /app/
 COPY --from=development-dependencies-env /app/node_modules /app/node_modules
 WORKDIR /app
-ENV DATABASE_URL="file:/data/prod.db"
 RUN npm run build
 
 
@@ -29,4 +28,5 @@ VOLUME "/data"
 WORKDIR /app
 EXPOSE 3000
 RUN npx prisma generate
+RUN npx prisma migrate deploy
 CMD ["npm", "run", "start"]

@@ -19,8 +19,6 @@ export async function upsertSetlist(id: string, values: FormValues) {
       songs: { create: songsWithoutSetlistId },
     };
 
-    console.log('QQ', JSON.stringify(queryData, null, 2));
-
     await prisma.setlist.create({ data: queryData });
     return redirect('/setlists');
   }
