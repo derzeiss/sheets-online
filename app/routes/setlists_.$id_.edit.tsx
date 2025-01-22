@@ -1,15 +1,15 @@
 import type { Setlist, Song, SongsOnSetlist } from '@prisma/client';
 import { useState, type FormEvent } from 'react';
-import { data, Form, redirect, useSubmit } from 'react-router';
+import { data, Form, useSubmit } from 'react-router';
 import { Button } from '~/components/Button';
 import { ButtonLink } from '~/components/ButtonLink';
 import { ConfirmButton } from '~/components/ConfirmButton';
 import { SongListItem } from '~/components/SongListItem';
+import { deleteSetlist } from '~/dal/deleteSetlist';
+import { upsertSetlist } from '~/dal/upsertSetlist';
 import { NOTES_SHARP } from '~/modules/chordpro-parser/constants';
 import { isNote } from '~/modules/chordpro-parser/typeguards';
 import { prisma } from '~/modules/prisma';
-import { setlistsSchema } from '~/schemas';
-import type { FormValues } from '~/types/FormValues';
 import type { Route } from './+types/setlists_.$id_.edit';
 
 const blankSetlist: Setlist = {
@@ -44,40 +44,6 @@ export async function action({ request }: Route.ActionArgs) {
     case 'delete':
       return await deleteSetlist(values.id);
   }
-}
-
-async function upsertSetlist(id: string, values: FormValues) {
-  values.songs = JSON.parse(values.songs as string);
-  const setlist = setlistsSchema.parse(values);
-
-  if (values.id === 'new') {
-    const songsWithoutSetlistId = setlist.songs.map((s) => ({
-      order: s.order,
-      key: s.key,
-      songId: s.songId,
-    }));
-
-    const queryData = {
-      ...setlist,
-      songs: { create: songsWithoutSetlistId },
-    };
-
-    console.log('QQ', JSON.stringify(queryData, null, 2));
-
-    await prisma.setlist.create({ data: queryData });
-    return redirect('/setlists');
-  }
-  // else {
-  //   await prisma.setlist.update({ where: { id }, data: setlist });
-  //   return redirect(`/setlists/${values.id}`);
-  // }
-}
-
-async function deleteSetlist(id: string) {
-  const deleteSongsOn = prisma.songsOnSetlist.deleteMany({ where: { setlistId: id } });
-  const deleteSetlist = prisma.setlist.delete({ where: { id } });
-  await prisma.$transaction([deleteSongsOn, deleteSetlist]);
-  return redirect('/setlists');
 }
 
 interface SongsOnSetlistClient extends SongsOnSetlist {

@@ -10,9 +10,10 @@ import { useDebounce } from '~/utils/useDebounce';
 interface Props {
   prosong: string;
   targetKey: Note;
+  showTargetKey?: boolean;
 }
 
-export const SongRenderer: FC<Props> = ({ prosong, targetKey }) => {
+export const SongRenderer: FC<Props> = ({ prosong, targetKey, showTargetKey }) => {
   const prosongDebounced = useDebounce(prosong);
 
   const jsong = parseSong(prosongDebounced);
@@ -20,7 +21,8 @@ export const SongRenderer: FC<Props> = ({ prosong, targetKey }) => {
 
   const prosongTransposed = useMemo(() => {
     // transpose even if (songKey === songKeyTransposed) to transform Nashville numbers!
-    return transposeSong(prosongDebounced, songKey, targetKey);
+    // TODO: return transposeSong(prosongDebounced, songKey, targetKey);
+    return transposeSong(prosongDebounced, songKey, 'Nashville');
   }, [prosongDebounced, targetKey]);
 
   const jsongTransposed = useMemo(() => parseSong(prosongTransposed), [prosongTransposed]);
@@ -43,7 +45,9 @@ export const SongRenderer: FC<Props> = ({ prosong, targetKey }) => {
   return (
     <>
       <div className="mb-6">
-        <h2 className="mb-1 text-3xl font-semibold">{jsong.meta.title}</h2>
+        <h2 className="mb-1 text-3xl font-semibold">
+          {jsong.meta.title} {showTargetKey && `[${targetKey}]`}
+        </h2>
         {jsong.meta.artist && <small className="block">{jsong.meta.artist}</small>}
         {metaSubhead && (
           <small className="block">
