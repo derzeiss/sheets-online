@@ -1,0 +1,26 @@
+{title: Jesus Jesus heilig und gesalbt}
+{artist: Albert Frey & John Barnett}
+{key: Eb}
+{time: 4/4}
+{tempo: 130}
+{ccli_license: }
+{ccli: }
+
+{comment: Verse}
+[1]Je      [3m]-       [4]sus,    [1]Je      [5]-      [4]sus,
+[1]heilig u[5]nd gesal[4]bt bist [2m]Du,
+[1/3]Je       [5]-       [1]sus.
+[1]Je      [3m]-       [4]sus,    [1]Je      [5]-      [4]sus,
+[1]aufer[5]standen [4]und [2m]erhöht,
+[1/3]Je       [5]-       [1]sus.
+
+{comment: Chorus}
+Dein Name ist [4]süß wie Honig, [1]Herr,
+erfrischend wie [4]Wasser ist Dein [1]Geist.
+Dein Wort ist ein [4]Licht auf meinem [6m7]Weg.
+Jesus, ich [4]lieb' Dich,[2m] ich lieb [5]Dich.
+
+{comment: Bridge}
+Jeus ich [4]lieb dich, ich [1]lieb dich, ich [5]lieb dich
+[(x3)]
+Mehr als alles [4]and're, [1]Mehr als alles so[5]nst

@@ -1,3 +1,11 @@
+# sheets-online
+
+## Notes
+
+- DB migration currently doesn't work automatically, so to update your DB you need to run `npx prisma migrate deploy` inside the deployed container
+
+————————
+
 # Welcome to React Router!
 
 A modern, production-ready template for building full-stack React applications using React Router.

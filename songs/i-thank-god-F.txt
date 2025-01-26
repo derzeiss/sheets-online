@@ -1,0 +1,54 @@
+{title: I Thank God}
+{artist: Maverick City Music & UPPERROOM}
+{key: F}
+{time: 4/4}
+{tempo: 130}
+{ccli: }
+
+{comment: Verse 1}
+[1]Wandering into the night
+[1]Wanting a place to hide
+This weary [4]soul, [1]this bag of bones
+[1]And I tried with all my might
+[1]But I just can't win the fight
+I'm slowly [4]drifting, a v[1]agabond
+And [5]just when I ran [6m]out of road
+I [4]met a man I [1]didn't know
+And [5]He told me that [6m]I was not al[4]one
+ 
+{comment: Chorus}
+He [1]picked me up
+[2m7]Turned me around
+[1/3]Placed my feet on [4]solid ground
+I thank the [6m]Master
+I thank the [4]Savior
+
+Because He [1]healed my heart
+He [2m7]changed my name
+For[1/3]ever free, I'm [4]not the same
+I thank the [6m]Master
+I thank the [4]Savior
+I thank [1]God
+ 
+{comment: Verse 2}
+I [1]cannot dеny what I see
+Got [1]no choice but to believе
+My doubts are [4]burning
+Like ashes in the [1]wind
+So, [1]so long to my old friends
+[1]Burden and bitterness
+You can just keep it [4]moving
+Nah, you ain't welcome [1]here
+From [5]now till I walk the [6m]streets of gold
+I'll [4]sing of how you [1]saved my soul
+This [5]wayward son has [6m]found his way back [4]home
+
+{comment: Bridge 1}
+[1]Hell lost another one
+[1]I am free, I am free, I am free
+(x4)
+
+{comment: Bridge 2}
+[5]Hell lost another one
+[6m]I am free, [4]I am free, [1]I am free
+(x4)
