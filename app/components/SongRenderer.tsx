@@ -15,16 +15,13 @@ interface Props {
 
 export const SongRenderer: FC<Props> = ({ prosong, targetKey, showTargetKey }) => {
   const prosongDebounced = useDebounce(prosong);
+  const jsong = useMemo(() => parseSong(prosongDebounced), [prosongDebounced]);
 
-  const jsong = parseSong(prosongDebounced);
-  const songKey = jsong?.meta.key || 'C';
-
-  const prosongTransposed = useMemo(() => {
+  const prosongTransposed = useMemo(
     // transpose even if (songKey === songKeyTransposed) to transform Nashville numbers!
-    // TODO: return transposeSong(prosongDebounced, songKey, targetKey);
-    return transposeSong(prosongDebounced, songKey, 'Nashville');
-  }, [prosongDebounced, targetKey]);
-
+    () => transposeSong(prosongDebounced, jsong.meta.key, targetKey),
+    [prosongDebounced, targetKey],
+  );
   const jsongTransposed = useMemo(() => parseSong(prosongTransposed), [prosongTransposed]);
 
   const metaSubhead = useMemo(() => {
@@ -39,7 +36,7 @@ export const SongRenderer: FC<Props> = ({ prosong, targetKey, showTargetKey }) =
       .join(' | ');
   }, [jsong.meta.key, jsong.meta.tempo, jsong.meta.time]);
 
-  if (!jsong || !jsongTransposed)
+  if (!prosong || !jsong || !jsongTransposed)
     return <div className="italic text-neutral-600">Enter a song to start</div>;
 
   return (
@@ -55,7 +52,7 @@ export const SongRenderer: FC<Props> = ({ prosong, targetKey, showTargetKey }) =
           </small>
         )}
       </div>
-      <div className="text-lg leading-[1.3]">
+      <div className="whitespace-pre text-lg leading-[1.3] tracking-[.015em]">
         {jsongTransposed.lines.map((line: SongLine) => {
           if (lineIsComment(line)) {
             return (
@@ -69,9 +66,9 @@ export const SongRenderer: FC<Props> = ({ prosong, targetKey, showTargetKey }) =
           }
           if (lineIsWithChords(line)) {
             return (
-              <div key={line.id} className="ml-4 mt-2 flex flex-wrap gap-1">
+              <div key={line.id} className="ml-4 mt-2 flex flex-wrap">
                 {line.content.map((block: Block) => (
-                  <div key={block.id} className="mr-[.2rem]">
+                  <div key={block.id}>
                     <div>
                       <strong>{block.chord}&nbsp;</strong>
                     </div>
@@ -88,6 +85,7 @@ export const SongRenderer: FC<Props> = ({ prosong, targetKey, showTargetKey }) =
           );
         })}
       </div>
+      {/* <pre>{JSON.stringify(jsong, null, 2)}</pre> */}
     </>
   );
 };

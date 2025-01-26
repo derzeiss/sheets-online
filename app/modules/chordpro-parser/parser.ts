@@ -1,36 +1,35 @@
-import { ADDITIVE_DIRECTIVES, FORMAT_DIRECTIVES, META_DIRECTIVES } from './constants';
+import { ADDITIVE_DIRECTIVES, FORMAT_DIRECTIVES } from './constants';
 import type { Jsong } from './types/Jsong';
 
-export const parseSong = (song: string): Jsong => {
+export const parseSong = (prosong: string): Jsong => {
   let nextId = 1;
   const meta: Jsong['meta'] = { key: 'C' };
   const lines: Jsong['lines'] = [];
 
-  song.split('\n').map((line) => {
-    line = line.trim();
+  prosong.split('\n').map((line) => {
+    const lineTrim = line.trim();
 
     // is directive
-    if (line.startsWith('{') && line.endsWith('}')) {
-      const lineTrimmed = line.substring(1, line.length - 1);
+    if (lineTrim.startsWith('{') && lineTrim.endsWith('}')) {
+      const lineTrimmed = lineTrim.substring(1, lineTrim.length - 1);
       const [name, _val, tooLong] = lineTrimmed.split(':');
       const val = tooLong ? lineTrimmed.substring(name.length + 1)?.trim() : _val?.trim();
 
-      if (META_DIRECTIVES.includes(name)) {
+      if (FORMAT_DIRECTIVES.includes(name)) {
+        lines.push({ id: nextId++, type: 'comment', content: val });
+      } else {
         if (meta[name] && ADDITIVE_DIRECTIVES.includes(name)) {
           meta[name] = `${meta[name]}; ${val}`;
         } else {
           meta[name] = val;
         }
-      } else if (FORMAT_DIRECTIVES.includes(name)) {
-        lines.push({ id: nextId++, type: 'comment', content: val });
-      } else {
-        lines.push({ id: nextId++, type: 'lyrics-only', content: line });
       }
     } else {
       // whitespace
-      if (!line) {
+      if (!lineTrim) {
         if (lines.length) {
-          lines.push({ id: nextId++, type: 'whitespace', content: '' }); // don't push whitespace as first line
+          // don't push whitespace as first line
+          lines.push({ id: nextId++, type: 'whitespace', content: '' });
         }
       } else {
         // parse chords
@@ -48,7 +47,7 @@ export const parseSong = (song: string): Jsong => {
             return { id: nextId++, chord, text };
           });
 
-        if (blocks.length > 1) {
+        if (blocks.length > 1 || blocks[0].chord) {
           lines.push({ id: nextId++, type: 'with-chords', content: blocks });
         }
         // lyrics-only

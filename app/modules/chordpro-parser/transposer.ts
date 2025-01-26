@@ -1,5 +1,7 @@
-import { arrIndexContain } from '~/utils/arrIndexContain';
-import { NOTES_FLAT, NOTES_SHARP } from './constants';
+import { toArrayIndex } from '~/utils/toArrayIndex';
+import { KEYS_FLAT, NASHVILLE_FLAT, NASHVILLE_SHARP, NOTES_FLAT, NOTES_SHARP } from './constants';
+import { isNashville, isNote } from './typeguards';
+import type { Nashville } from './types/Nashville';
 import type { Note } from './types/Note';
 
 /**
@@ -9,47 +11,50 @@ import type { Note } from './types/Note';
  * Chords with bass notes are split into two ChordParts.
  * @example A#maj7/F# -> [[A#, maj7], [F#]]
  */
-type ChordPart = [Note, string];
+type ChordPart = [string, string];
 
-export const transposeSong = (song: string, originalKey: Note, targetKey: Note) => {
-  const delta = getKeyDelta(originalKey, targetKey);
+export const transposeSong = (prosong: string, keyFrom: Note, keyTo: Note) => {
+  const delta = getKeyDelta(keyFrom, keyTo);
+  if (delta === null) return prosong; // return original song if invalid original oder target key given
   let transposedSong = '';
 
   let i = 0;
   while (i !== -1) {
-    const iChordStart = song.indexOf('[', i);
+    const iChordStart = prosong.indexOf('[', i);
     if (iChordStart === -1) break;
-    const iChordEnd = song.indexOf(']', iChordStart);
+    const iChordEnd = prosong.indexOf(']', iChordStart);
     if (iChordEnd === -1) break;
 
-    const chord = song.substring(iChordStart + 1, iChordEnd);
-    transposedSong += song.substring(i, iChordStart);
+    const chord = prosong.substring(iChordStart + 1, iChordEnd);
+    transposedSong += prosong.substring(i, iChordStart);
     if (chord) {
-      try {
-        const transposedChord = transposeChord(chord, originalKey, targetKey, delta);
-        transposedSong += `[${transposedChord}]`;
-      } catch (err) {
-        if ((err as Error).message !== 'Invalid note given.') throw err; // TODO
-      }
+      const transposedChord = transposeChord(chord, keyFrom, keyTo, delta);
+      transposedSong += `[${transposedChord}]`;
     }
     i = iChordEnd + 1;
   }
-  transposedSong += song.substring(i);
+  transposedSong += prosong.substring(i);
 
   return transposedSong;
 };
 
-const transposeChord = (chord: string, originalKey: Note, targetKey: Note, delta: number) => {
+const transposeChord = (chord: string, keyFrom: Note, keyTo: Note, delta: number) => {
   const parts = extractNotesFromChord(chord);
   const partsTransposed = parts.map(([note, appendix]) => {
     let transposedNote;
 
-    const nashvilleStep = parseInt(chord);
-    if (!isNaN(nashvilleStep) && nashvilleStep >= 1 && nashvilleStep <= 7) {
-      transposedNote = transposeFromNashville(nashvilleStep, targetKey);
-    } else if (targetKey === 'Nashville') {
-      transposedNote = transposeToNashville(note, originalKey);
-    } else transposedNote = transposeNote(note, delta);
+    if (isNashville(note)) {
+      transposedNote = transposeFromNashville(note, keyTo);
+    } else if (isNote(note)) {
+      if (keyTo === 'Nashville') {
+        transposedNote = transposeToNashville(note, keyFrom);
+      } else {
+        transposedNote = transposeNote(note, keyTo, delta);
+      }
+    } else {
+      // non-note character -> don't transpose
+      return note + appendix;
+    }
 
     return transposedNote + appendix;
   });
@@ -63,69 +68,64 @@ const extractNoteFromChord = (chord: string): ChordPart => {
   if (chord[1] === '#' || chord[1] === 'b') {
     return [chord.substring(0, 2) as Note, chord.substring(2)];
   }
-  return [chord[0] as Note, chord.substring(1)];
-  // TODO check if extracted string really is a note?
+  return [chord[0] as Note, chord.substring(1)]; // TODO: check if extracted string really is a note?
 };
 
-const transposeNote = (note: Note, delta: number) => {
-  const notes = isFlatNote(note) ? NOTES_FLAT : NOTES_SHARP;
+const transposeNote = (note: Note, keyTo: Note, delta: number) => {
+  const notes = isFlatKey(keyTo) ? NOTES_FLAT : NOTES_SHARP;
   const i = getNoteIndex(note);
-  const iNew = arrIndexContain(notes, i + delta);
+  if (i === null) return note;
+  const iNew = toArrayIndex(notes, i + delta);
   return notes[iNew];
 };
 
-const transposeToNashville = (note: Note, originalKey: Note) => {
-  const notes = isFlatNote(note) ? NOTES_FLAT : NOTES_SHARP;
+const transposeToNashville = (note: Note, keyFrom: Note) => {
   const iNote = getNoteIndex(note);
-  const iKey = getNoteIndex(originalKey);
-  const iDelta = arrIndexContain(notes, iNote - iKey);
+  const iKey = getNoteIndex(keyFrom);
+  if (iNote === null || iKey === null) return note;
 
-  if (iDelta === 0) return '1';
-  if (iDelta === 1) return '1#';
-  if (iDelta === 2) return '2';
-  if (iDelta === 3) return '2#';
-  if (iDelta === 4) return '3';
-  if (iDelta === 5) return '4';
-  if (iDelta === 6) return '4#';
-  if (iDelta === 7) return '5';
-  if (iDelta === 8) return '5#';
-  if (iDelta === 9) return '6';
-  if (iDelta === 10) return '6#';
-  if (iDelta === 11) return '7';
-  if (iDelta === 12) return '7#';
+  const steps = isFlatNote(note) ? NASHVILLE_FLAT : NASHVILLE_SHARP;
+  const iDelta = toArrayIndex(steps, iNote - iKey);
+  return steps[iDelta];
 };
 
-const transposeFromNashville = (step: number, targetKey: Note) => {
-  if (targetKey === 'Nashville') return step;
-  if (step === 1) return targetKey;
+const transposeFromNashville = (step: Nashville, keyTo: Note) => {
+  if (keyTo === 'Nashville') return step;
+  if (step === '1') return keyTo;
 
-  const notes = isFlatNote(targetKey) ? NOTES_FLAT : NOTES_SHARP;
-  const iKey = getNoteIndex(targetKey);
+  const iKey = getNoteIndex(keyTo);
+  if (iKey === null) return step;
 
-  let halfNotesUpFromKey = 0;
-  if (step === 2) halfNotesUpFromKey = 2;
-  else if (step === 3) halfNotesUpFromKey = 4;
-  else if (step === 4) halfNotesUpFromKey = 5;
-  else if (step === 5) halfNotesUpFromKey = 7;
-  else if (step === 6) halfNotesUpFromKey = 9;
-  else if (step === 7) halfNotesUpFromKey = 11;
+  const steps = isFlatNote(step) ? NASHVILLE_FLAT : NASHVILLE_SHARP;
+  const notes = isFlatKey(keyTo) ? NOTES_FLAT : NOTES_SHARP;
+  const halfNotesUpFromKey = steps.indexOf(step);
 
-  return notes[arrIndexContain(notes, iKey + halfNotesUpFromKey)];
+  return notes[toArrayIndex(notes, iKey + halfNotesUpFromKey)];
 };
 
-const getKeyDelta = (originalKey: Note, targetKey: Note) => {
-  if (originalKey === 'Nashville' || targetKey === 'Nashville') return 0;
-  const iOriginalKey = getNoteIndex(originalKey);
-  const iTargetKey = getNoteIndex(targetKey);
-  return iTargetKey - iOriginalKey;
+/**
+ * Get key index delta. Returns null if one key is not a valid {@link Note}.
+ */
+const getKeyDelta = (keyFrom: Note, keyTo: Note) => {
+  if (keyFrom === 'Nashville' || keyTo === 'Nashville') return 0;
+  const iKeyFrom = getNoteIndex(keyFrom);
+  const iKeyTo = getNoteIndex(keyTo);
+  if (iKeyFrom === null || iKeyTo === null) return null;
+  return iKeyTo - iKeyFrom;
 };
 
+/**
+ * Get index of note in {@link NOTES_SHARP} or {@link NOTES_FLAT}.
+ * Returns null if {@link note} is not a valid {@link Note}.
+ */
 const getNoteIndex = (note: Note) => {
   let i = NOTES_SHARP.indexOf(note);
   if (i === -1) i = NOTES_FLAT.indexOf(note);
-  if (i === -1) throw new Error('Invalid note given.'); // TODO Error handling here or 1 lvl higher?
+  if (i === -1) return null;
   return i;
 };
 
 // const isSharpNote = (note: Note) => note.indexOf('#') !== -1;
-const isFlatNote = (note: Note) => note.indexOf('b') !== -1;
+const isFlatNote = (note: Note | Nashville) => note.indexOf('b') !== -1;
+
+const isFlatKey = (key: Note) => KEYS_FLAT.indexOf(key) !== -1;
