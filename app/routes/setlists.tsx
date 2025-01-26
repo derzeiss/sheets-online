@@ -12,7 +12,7 @@ export const loader = async () => {
 export default function SetsRoute({ loaderData }: Route.ComponentProps) {
   const { setlists } = loaderData;
   return (
-    <main className="container my-10 max-w-3xl">
+    <main className="content my-10 max-w-3xl">
       <h1 className="mb-4 text-5xl">Setlists</h1>
 
       <ButtonLink to="/setlists/new/edit">+ Add Setlist</ButtonLink>

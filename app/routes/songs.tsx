@@ -13,7 +13,7 @@ export default function SongsRoute({ loaderData }: Route.ComponentProps) {
   const { songs } = loaderData;
 
   return (
-    <main className="container my-10 max-w-3xl">
+    <main className="content my-10 max-w-3xl">
       <h1 className="mb-4 text-5xl">Songs</h1>
 
       <ButtonLink to="/songs/new/edit">+ Add Song</ButtonLink>

@@ -10,6 +10,13 @@ body {
 } */
 
 @layer components {
+  .content {
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: clamp(16px, 5vw, 64px);
+    padding-right: clamp(16px, 5vw, 64px);
+  }
+
   .btn {
     @apply clickable inline-block rounded bg-neutral-100 px-4 py-2 text-sm font-semibold;
   }

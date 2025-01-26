@@ -18,7 +18,7 @@ export default function SongRoute({ loaderData }: Route.ComponentProps) {
   const [targetKey, setTargetKey] = useState<Note>((song.key as Note) || 'C');
 
   return (
-    <main className="container my-10">
+    <main className="content my-10">
       <div className="mb-4 flex gap-2">
         <ButtonLink to="/songs">← Back</ButtonLink>
         <ButtonLink to="edit">Edit song</ButtonLink>

@@ -6,6 +6,7 @@ import { ConfirmButton } from '~/components/ConfirmButton';
 import { SongControls } from '~/components/SongControls';
 import { SongRenderer } from '~/components/SongRenderer';
 import { parseSong } from '~/modules/chordpro-parser/parser';
+import { isNote } from '~/modules/chordpro-parser/typeguards';
 import type { Note } from '~/modules/chordpro-parser/types/Note';
 import { prisma } from '~/modules/prisma';
 import { songSchema } from '~/schemas';
@@ -26,7 +27,7 @@ const songBlueprint = `{title: }
 {comment: Bridge}`;
 
 export async function loader({ params }: Route.LoaderArgs) {
-  if (params.id === 'new') return { song: { id: 'new', prosong: songBlueprint } };
+  if (params.id === 'new') return { song: { id: 'new', key: 'C', prosong: songBlueprint } };
 
   const song = await prisma.song.findFirst({ where: { id: params.id } });
   if (!song) throw data(`Song "${params.id}" not found.`, { status: 404 });
@@ -67,9 +68,8 @@ async function deleteSong(id: string) {
 export default function SongsEditRoute({ loaderData }: Route.ComponentProps) {
   const { song } = loaderData;
   const submit = useSubmit();
-  const [targetKey, setTargetKey] = useState<Note>('C');
+  const [targetKey, setTargetKey] = useState<Note>(isNote(song.key) ? song.key : 'C');
   const [prosong, setProsong] = useState(song.prosong);
-  const [isAboutToDelete, setIsAboutToDelete] = useState(false);
   const isCreation = song.id === 'new';
 
   const handleSubmit = (ev: FormEvent<HTMLFormElement>) => {
@@ -89,7 +89,7 @@ export default function SongsEditRoute({ loaderData }: Route.ComponentProps) {
   };
 
   return (
-    <main className="container my-10 grid grid-cols-2 gap-12">
+    <main className="content my-10 grid gap-12 lg:grid-cols-2">
       <div>
         <Form onSubmit={handleSubmit} method="post">
           <input type="hidden" name="id" value={song.id} />

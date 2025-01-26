@@ -26,7 +26,7 @@ export default function SongRoute({ loaderData }: Route.ComponentProps) {
   };
 
   return (
-    <main className="container my-10">
+    <main className="content my-10">
       <div
         className="fixed left-0 top-0 h-2 w-full origin-left bg-blue-300 transition-transform"
         style={{ transform: `scaleX(${((currIndex + 1) / setlist.songAmount) * 100}%)` }}
