@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for sheets-online on 2025-01-20T23:01:38+01:00
+# fly.toml app configuration file generated for sheets-online on 2025-01-22T19:05:23+01:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -8,8 +8,8 @@ primary_region = 'fra'
 
 [build]
 
-[processes]
-  app = 'node ./dbsetup.js npm run start'
+# [processes]
+#  app = 'npm run start'
 
 [[mounts]]
   source = 'data'

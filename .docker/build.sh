@@ -1,3 +1,1 @@
-docker build \
-  -t sheets-online:latest \
-  -f Dockerfile .
+docker build -t sheets-online:latest  .
