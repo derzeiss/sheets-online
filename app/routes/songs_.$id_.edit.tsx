@@ -1,3 +1,4 @@
+import type { Setlist } from '@prisma/client';
 import { useState, type FormEvent } from 'react';
 import { data, Form, redirect, useSubmit } from 'react-router';
 import { Button } from '~/components/Button';
@@ -30,8 +31,16 @@ export async function loader({ params }: Route.LoaderArgs) {
   if (params.id === 'new') return { song: { id: 'new', key: 'C', prosong: songBlueprint } };
 
   const song = await prisma.song.findFirst({ where: { id: params.id } });
+
   if (!song) throw data(`Song "${params.id}" not found.`, { status: 404 });
-  return { song };
+
+  // TODO: This is only needed for a UX hint when deleting. Maybe do the query when we delete?
+  const setlistsWithSong = await prisma.setlist.findMany({
+    include: { songs: { where: { songId: params.id } } },
+  });
+  const setlistCount = setlistsWithSong.length;
+
+  return { song, setlistCount };
 }
 
 export async function action({ request }: Route.ActionArgs) {
@@ -61,12 +70,37 @@ async function upsertSong(id: string, values: FormValues) {
 }
 
 async function deleteSong(id: string) {
-  await prisma.song.delete({ where: { id } });
+  const song = await prisma.song.findFirst({
+    where: { id },
+    include: { setlists: { include: { setlist: true } } },
+  });
+
+  if (!song) throw data(`Song "${id}" not found.`, { status: 404 });
+
+  let setlists = song.setlists.map((s) => s.setlist);
+  const countPerSetlist: Record<string, number> = {};
+  setlists.forEach((s) => {
+    if (!countPerSetlist[s.id]) countPerSetlist[s.id] = 0;
+    countPerSetlist[s.id]++;
+  });
+  setlists = setlists.reduce<Setlist[]>((newSetlists, s) => {
+    if (countPerSetlist[s.id]) {
+      s.songAmount = s.songAmount - countPerSetlist[s.id];
+      delete countPerSetlist[s.id];
+      newSetlists.push(s);
+    }
+    return newSetlists;
+  }, []);
+  await prisma.$transaction([
+    prisma.songsOnSetlist.deleteMany({ where: { songId: id } }),
+    prisma.song.delete({ where: { id } }),
+    ...setlists.map((s) => prisma.setlist.update({ where: { id: s.id }, data: s })),
+  ]);
   return redirect('/songs');
 }
 
 export default function SongsEditRoute({ loaderData }: Route.ComponentProps) {
-  const { song } = loaderData;
+  const { song, setlistCount } = loaderData;
   const submit = useSubmit();
   const [targetKey, setTargetKey] = useState<Note>(isNote(song.key) ? song.key : 'C');
   const [prosong, setProsong] = useState(song.prosong);
@@ -111,7 +145,11 @@ export default function SongsEditRoute({ loaderData }: Route.ComponentProps) {
         <Form method="post" className="mt-4">
           <input type="hidden" name="id" value={song.id} />
           <input type="hidden" name="_action" value="delete" />
-          <ConfirmButton className="bg-red-200" type="submit">
+          <ConfirmButton
+            className="bg-red-200"
+            type="submit"
+            childrenConfirm={`You sure? ${setlistCount && setlistCount > 0 ? `Song will also be deleted from ${setlistCount} setlist(s).` : ''} `}
+          >
             Delete song
           </ConfirmButton>
         </Form>
