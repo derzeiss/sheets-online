@@ -1,7 +1,6 @@
-import { useState } from 'react';
 import { data } from 'react-router';
-import { Button } from '~/components/Button';
 import { ButtonLink } from '~/components/ButtonLink';
+import { ScrollIndicator } from '~/components/ScrollIndicator';
 import { SongRenderer } from '~/components/SongRenderer';
 import { isNote } from '~/modules/chordpro-parser/typeguards';
 import { prisma } from '~/modules/prisma';
@@ -19,40 +18,25 @@ export async function loader({ params }: Route.LoaderArgs) {
 
 export default function SongRoute({ loaderData }: Route.ComponentProps) {
   const { setlist } = loaderData;
-  const [currIndex, setCurrIndex] = useState(0);
-
-  const handleIndexChange = (delta: number) => {
-    setCurrIndex((setlist.songAmount + currIndex + delta) % setlist.songAmount);
-  };
 
   return (
     <main className="content my-10">
-      <div
-        className="fixed left-0 top-0 h-2 w-full origin-left bg-blue-300 transition-transform"
-        style={{ transform: `scaleX(${((currIndex + 1) / setlist.songAmount) * 100}%)` }}
-      />
-      <div className="overflow-hidden">
-        <div
-          className="flex transition-transform"
-          style={{ transform: `translateX(-${currIndex * 100}%)` }}
-        >
-          {setlist.songs.map((songOn) => (
-            <div key={songOn.id} className="min-w-full">
-              <SongRenderer
-                showTargetKey
-                targetKey={isNote(songOn.key) ? songOn.key : 'Nashville'}
-                prosong={songOn.song.prosong}
-              />
-            </div>
-          ))}
-        </div>
+      <ScrollIndicator targetSel="#song-container" />
+      <div id="song-container" className="flex snap-x snap-mandatory overflow-x-auto">
+        {setlist.songs.map((songOn) => (
+          <div key={songOn.id} className="min-w-full snap-start snap-always overflow-hidden">
+            <SongRenderer
+              showTargetKey
+              targetKey={isNote(songOn.key) ? songOn.key : 'Nashville'}
+              prosong={songOn.song.prosong}
+            />
+          </div>
+        ))}
       </div>
-      <div className="fixed bottom-16 right-8 flex gap-4">
+      <div className="fixed bottom-12 right-8 flex gap-4">
         <ButtonLink to={`/setlists/${setlist.id}`} className="mr-4">
           X
         </ButtonLink>
-        <Button onClick={() => handleIndexChange(-1)}>← Prev</Button>
-        <Button onClick={() => handleIndexChange(1)}>Next →</Button>
       </div>
     </main>
   );
