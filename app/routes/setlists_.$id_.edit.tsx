@@ -19,7 +19,7 @@ const blankSetlist: Setlist = {
 };
 
 export async function loader({ params }: Route.LoaderArgs) {
-  const songs = await prisma.song.findMany();
+  const songs = await prisma.song.findMany({ orderBy: { title: 'asc' } });
   if (!songs) throw data('Error while fetching songs for setlist.', { status: 500 });
 
   if (params.id === 'new') return { setlist: { ...blankSetlist }, songs };

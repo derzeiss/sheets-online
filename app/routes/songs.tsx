@@ -5,7 +5,7 @@ import { prisma } from '~/modules/prisma';
 import type { Route } from './+types/songs';
 
 export const loader = async () => {
-  const songs = await prisma.song.findMany();
+  const songs = await prisma.song.findMany({ orderBy: { title: 'asc' } });
   return { songs };
 };
 
