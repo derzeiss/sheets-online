@@ -64,7 +64,7 @@ export const ScrollIndicator: FC<Props> = ({ targetSel = 'html' }) => {
 
   return (
     <div
-      className="fixed left-0 top-0 h-2 w-full origin-left bg-blue-300"
+      className="fixed left-0 top-0 z-20 h-2 w-full origin-left bg-blue-300"
       style={{ transform: `scaleX(${scalePerc}%)` }}
     />
   );
