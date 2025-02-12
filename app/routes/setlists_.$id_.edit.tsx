@@ -1,21 +1,27 @@
-import type { Setlist, Song, SongsOnSetlist } from '@prisma/client';
+import type { Prisma, Song } from '@prisma/client';
 import { useState, type FormEvent } from 'react';
 import { data, Form, useSubmit } from 'react-router';
 import { Button } from '~/components/Button';
 import { ButtonLink } from '~/components/ButtonLink';
 import { ConfirmButton } from '~/components/ConfirmButton';
 import { SongListItem } from '~/components/SongListItem';
-import { deleteSetlist } from '~/dal/deleteSetlist';
-import { upsertSetlist } from '~/dal/upsertSetlist';
-import { NOTES_SHARP } from '~/modules/chordpro-parser/constants';
+import { deleteSetlist, upsertSetlist } from '~/dal/setlist';
+import { NOTES_ALL } from '~/modules/chordpro-parser/constants';
 import { isNote } from '~/modules/chordpro-parser/typeguards';
 import { prisma } from '~/modules/prisma';
+import type { SongsOnSetlistClientDTO } from '~/schemas';
 import type { Route } from './+types/setlists_.$id_.edit';
 
-const blankSetlist: Setlist = {
+type SongsOnSetlistClient = SongsOnSetlistClientDTO & { song: Song };
+type SetlistPopulated = Prisma.SetlistGetPayload<{
+  include: { songs: { include: { song: true } } };
+}>;
+
+const blankSetlist: SetlistPopulated = {
   id: 'new',
   name: '',
   songAmount: 0,
+  songs: [],
 };
 
 export async function loader({ params }: Route.LoaderArgs) {
@@ -24,7 +30,10 @@ export async function loader({ params }: Route.LoaderArgs) {
 
   if (params.id === 'new') return { setlist: { ...blankSetlist }, songs };
 
-  const setlist = await prisma.setlist.findFirst({ where: { id: params.id } });
+  const setlist = await prisma.setlist.findFirst({
+    where: { id: params.id },
+    include: { songs: { include: { song: true } } },
+  });
   if (!setlist) throw data(`Setlist "${params.id}" not found.`, { status: 404 });
 
   return { setlist, songs };
@@ -40,14 +49,10 @@ export async function action({ request }: Route.ActionArgs) {
 
   switch (values._action) {
     case 'save':
-      return await upsertSetlist(values.id, values);
+      return await upsertSetlist(values);
     case 'delete':
       return await deleteSetlist(values.id);
   }
-}
-
-interface SongsOnSetlistClient extends SongsOnSetlist {
-  song: Song;
 }
 
 export default function SetlistsEditRoute({ loaderData }: Route.ComponentProps) {
@@ -55,23 +60,19 @@ export default function SetlistsEditRoute({ loaderData }: Route.ComponentProps) 
   const submit = useSubmit();
   const isCreation = setlist.id === 'new';
 
-  const [songsOn, setSongsOn] = useState<SongsOnSetlistClient[]>([]);
-  const [songsOnIds] = useState(new Set<string>());
-  const [songAmount, setSongAmount] = useState(setlist.songAmount);
+  const [songsOn, setSongsOn] = useState<SongsOnSetlistClient[]>(setlist.songs);
 
   const handleSubmit = (ev: FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
     let $form = ev.currentTarget;
     let formData = new FormData($form);
 
-    const songsOnServer: SongsOnSetlist[] = songsOn.map((s) => ({
-      id: s.id,
-      key: s.key,
-      order: s.order,
-      songId: s.songId,
-      setlistId: s.setlistId,
-    }));
-    formData.set('songs', JSON.stringify(songsOnServer));
+    const songsOnDTO: SongsOnSetlistClientDTO[] = songsOn.map((so) => {
+      const { song, ...songOn } = so;
+      return songOn;
+    });
+
+    formData.set('songs', JSON.stringify(songsOnDTO));
 
     submit(formData, {
       method: 'post',
@@ -79,31 +80,43 @@ export default function SetlistsEditRoute({ loaderData }: Route.ComponentProps) 
   };
 
   const handleSongAdd = (song: Song) => {
-    const songOnSetlist: SongsOnSetlistClient = {
+    const newSongOnSetlist: SongsOnSetlistClient = {
       id: crypto.randomUUID(),
       key: song.key,
       order: 0,
       setlistId: setlist.id,
       songId: song.id,
       song,
+      _added: true,
     };
-    setSongsOn([...songsOn, songOnSetlist]);
-    setSongAmount(songAmount + 1);
-    songsOnIds.add(song.id);
+    setSongsOn([...songsOn, newSongOnSetlist]);
   };
 
-  const handleSongRemove = (index: number) => {
-    const songId = songsOn[index].songId;
-    setSongsOn(songsOn.filter((_s, i) => i !== index));
-    setSongAmount(songAmount - 1);
-
-    if (!songsOn.find((songOn) => songOn.songId === songId)) songsOnIds.delete(songId);
+  const handleSongOnRemove = (id: string) => {
+    setSongsOn(
+      songsOn.reduce<SongsOnSetlistClient[]>((_songsOn, so) => {
+        if (so.id !== id) _songsOn.push(so);
+        else if (!so._added) {
+          let uneditedSongOn: SongsOnSetlistClientDTO | undefined = setlist.songs.find(
+            (_so) => _so.id === so.id,
+          );
+          if (!uneditedSongOn) uneditedSongOn = { ...so, _updated: false };
+          _songsOn.push({
+            ...uneditedSongOn,
+            song: so.song,
+            _deleted: true,
+            _updated: false,
+          });
+        }
+        return _songsOn;
+      }, []),
+    );
   };
 
   const handleKeyChange = (songOn: SongsOnSetlistClient, key: string) => {
     if (!isNote(key)) return;
 
-    const newSongOn = { ...songOn, key };
+    const newSongOn = { ...songOn, key, _updated: !songOn._added };
     setSongsOn([...songsOn.map((_songOn) => (_songOn.id === newSongOn.id ? newSongOn : _songOn))]);
   };
 
@@ -126,37 +139,38 @@ export default function SetlistsEditRoute({ loaderData }: Route.ComponentProps) 
         <h2 className="mt-6 text-2xl">Songs</h2>
 
         <ul className="mt-4">
-          {songsOn.map((songOn, i) => (
-            <li
-              key={songOn.id}
-              className="border-t-300 flex w-full justify-between gap-2 border-t px-2 py-1 text-left"
-            >
-              <div>
-                <h2>{songOn.song.title}</h2>
-                <div className="text-sm text-neutral-600">{songOn.song.artist}</div>
-              </div>
-              <select
-                className="btn ml-auto w-20"
-                value={songOn.key || 'C'}
-                onChange={(ev) => handleKeyChange(songOn, ev.target.value)}
-              >
-                {NOTES_SHARP.map((n) => (
-                  <option key={n} value={n}>
-                    {n}
-                  </option>
-                ))}
-                <option value="Nashville">Nashville</option>
-              </select>
-              <button
+          {songsOn
+            .filter((sO) => !sO._deleted)
+            .map((songOn) => (
+              <li
                 key={songOn.id}
-                onClick={() => handleSongRemove(i)}
-                className="btn bg-red-100"
-                type="button"
+                className="border-t-300 flex w-full justify-between gap-2 border-t px-2 py-1 text-left"
               >
-                X
-              </button>
-            </li>
-          ))}
+                <div>
+                  <h2>{songOn.song.title}</h2>
+                  <div className="text-sm text-neutral-600">{songOn.song.artist}</div>
+                </div>
+                <select
+                  className="btn ml-auto w-20"
+                  value={songOn.key || 'C'}
+                  onChange={(ev) => handleKeyChange(songOn, ev.target.value)}
+                >
+                  {NOTES_ALL.map((n) => (
+                    <option key={n} value={n}>
+                      {n}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  key={songOn.id}
+                  onClick={() => handleSongOnRemove(songOn.id)}
+                  className="btn bg-red-100"
+                  type="button"
+                >
+                  X
+                </button>
+              </li>
+            ))}
         </ul>
 
         <h2 className="mt-6 text-2xl">Add songs</h2>
@@ -174,7 +188,6 @@ export default function SetlistsEditRoute({ loaderData }: Route.ComponentProps) 
           ))}
         </ul>
 
-        <input type="hidden" name="songAmount" value={songAmount} />
         <div className="mt-8 flex gap-2">
           <Button type="submit">Save</Button>
           <ButtonLink to={`/setlists/${isCreation ? '' : setlist.id}`}>Cancel</ButtonLink>

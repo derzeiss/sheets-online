@@ -1,17 +1,15 @@
-import type { Setlist } from '@prisma/client';
 import { useState, type FormEvent } from 'react';
-import { data, Form, redirect, useSubmit } from 'react-router';
+import { data, Form, useSubmit } from 'react-router';
 import { Button } from '~/components/Button';
 import { ButtonLink } from '~/components/ButtonLink';
 import { ConfirmButton } from '~/components/ConfirmButton';
 import { SongControls } from '~/components/SongControls';
 import { SongRenderer } from '~/components/SongRenderer';
+import { deleteSong, upsertSong } from '~/dal/song';
 import { parseSong } from '~/modules/chordpro-parser/parser';
 import { isNote } from '~/modules/chordpro-parser/typeguards';
 import type { Note } from '~/modules/chordpro-parser/types/Note';
 import { prisma } from '~/modules/prisma';
-import { songSchema } from '~/schemas';
-import type { FormValues } from '~/types/FormValues';
 import type { Route } from './+types/songs_.$id_.edit';
 
 const songBlueprint = `{title: }
@@ -55,48 +53,6 @@ export async function action({ request }: Route.ActionArgs) {
     case 'delete':
       return await deleteSong(values.id);
   }
-}
-
-async function upsertSong(id: string, values: FormValues) {
-  const song = songSchema.parse(values);
-
-  if (values.id === 'new') {
-    await prisma.song.create({ data: song });
-    return redirect('/songs');
-  } else {
-    await prisma.song.update({ where: { id }, data: song });
-    return redirect(`/songs/${values.id}`);
-  }
-}
-
-async function deleteSong(id: string) {
-  const song = await prisma.song.findFirst({
-    where: { id },
-    include: { setlists: { include: { setlist: true } } },
-  });
-
-  if (!song) throw data(`Song "${id}" not found.`, { status: 404 });
-
-  let setlists = song.setlists.map((s) => s.setlist);
-  const countPerSetlist: Record<string, number> = {};
-  setlists.forEach((s) => {
-    if (!countPerSetlist[s.id]) countPerSetlist[s.id] = 0;
-    countPerSetlist[s.id]++;
-  });
-  setlists = setlists.reduce<Setlist[]>((newSetlists, s) => {
-    if (countPerSetlist[s.id]) {
-      s.songAmount = s.songAmount - countPerSetlist[s.id];
-      delete countPerSetlist[s.id];
-      newSetlists.push(s);
-    }
-    return newSetlists;
-  }, []);
-  await prisma.$transaction([
-    prisma.songsOnSetlist.deleteMany({ where: { songId: id } }),
-    prisma.song.delete({ where: { id } }),
-    ...setlists.map((s) => prisma.setlist.update({ where: { id: s.id }, data: s })),
-  ]);
-  return redirect('/songs');
 }
 
 export default function SongsEditRoute({ loaderData }: Route.ComponentProps) {

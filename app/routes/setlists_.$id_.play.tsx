@@ -70,7 +70,7 @@ export default function SongRoute({ loaderData }: Route.ComponentProps) {
             className="min-w-full snap-start snap-always overflow-hidden"
           >
             {/* key list */}
-            <div className="relative mb-2">
+            <div className="relative mb-2 w-fit">
               <KeyKeyboard
                 selectedKey={songKeys[songOn.id]}
                 onKeySelect={(n) => setSongKeys({ ...songKeys, [songOn.id]: n })}
