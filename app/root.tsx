@@ -48,6 +48,9 @@ export default function App() {
         <NavLink to="/songs" className="clickable block px-4 py-3 text-center text-sm">
           Songs
         </NavLink>
+        <NavLink to="/settings" className="clickable block px-4 py-3 text-center text-sm">
+          Settings
+        </NavLink>
       </nav>
       <Outlet />
     </>
