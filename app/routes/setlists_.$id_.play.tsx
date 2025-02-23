@@ -29,7 +29,7 @@ const getSetlistSongKeys = (setlist: PopulatedSetlist) => {
   return setlist.songs.reduce<Record<string, Note>>((songKeys, songOn) => {
     let key: Note = 'Nashville';
     if (isNote(songOn.key)) key = songOn.key;
-    if (isNote(songOn.song.key)) key = songOn.song.key;
+    else if (isNote(songOn.song.key)) key = songOn.song.key;
     songKeys[songOn.id] = key;
     return songKeys;
   }, {});
@@ -37,7 +37,7 @@ const getSetlistSongKeys = (setlist: PopulatedSetlist) => {
 
 export default function SongRoute({ loaderData }: Route.ComponentProps) {
   const { setlist } = loaderData;
-  const [songKeys, setSongKeys] = useState<Record<string, Note>>(getSetlistSongKeys(setlist));
+  const [songKeys, setSongKeys] = useState<Record<string, Note>>(() => getSetlistSongKeys(setlist));
   const [keyListOpen, setKeyListOpen] = useState(false);
   const [songListOpen, setSongListOpen] = useState(false);
 
@@ -83,7 +83,9 @@ export default function SongRoute({ loaderData }: Route.ComponentProps) {
                 )}
               />
 
-              <Button onClick={() => toggleList(!keyListOpen, setKeyListOpen)}>♫ Key</Button>
+              <Button onClick={() => toggleList(!keyListOpen, setKeyListOpen)}>
+                ♫ {songKeys[songOn.id]}
+              </Button>
             </div>
 
             <SongRenderer targetKey={songKeys[songOn.id]} prosong={songOn.song.prosong} />
