@@ -47,7 +47,7 @@ export const parseSong = (prosong: string): Jsong => {
             return { id: nextId++, chord, text };
           });
 
-        if (blocks.length > 1 || blocks[0].chord) {
+        if (blocks.length > 1 || blocks[0]?.chord) {
           lines.push({ id: nextId++, type: 'with-chords', content: blocks });
         }
         // lyrics-only
