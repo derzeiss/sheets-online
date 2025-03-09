@@ -3,7 +3,7 @@ import { data, Form, useSubmit } from 'react-router';
 import { Button } from '~/components/Button';
 import { ButtonLink } from '~/components/ButtonLink';
 import { ConfirmButton } from '~/components/ConfirmButton';
-import { SongControls } from '~/components/SongControls';
+import { KeySelectButton } from '~/components/KeySelectButton';
 import { SongRenderer } from '~/components/SongRenderer';
 import { deleteSong, upsertSong } from '~/dal/song';
 import { parseSong } from '~/modules/chordpro-parser/parser';
@@ -111,7 +111,7 @@ export default function SongsEditRoute({ loaderData }: Route.ComponentProps) {
         </Form>
       </div>
       <div>
-        <SongControls targetKey={targetKey} onKeyUpdated={setTargetKey} />
+        <KeySelectButton selectedKey={targetKey} onKeySelect={setTargetKey} />
         <SongRenderer targetKey={targetKey} prosong={prosong} />
       </div>
     </main>

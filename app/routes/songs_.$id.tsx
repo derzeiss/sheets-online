@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { data } from 'react-router';
 import { ButtonLink } from '~/components/ButtonLink';
-import { SongControls } from '~/components/SongControls';
+import { KeySelectButton } from '~/components/KeySelectButton';
 import { SongRenderer } from '~/components/SongRenderer';
 import type { Note } from '~/modules/chordpro-parser/types/Note';
 import { prisma } from '~/modules/prisma';
@@ -23,7 +23,7 @@ export default function SongRoute({ loaderData }: Route.ComponentProps) {
         <ButtonLink to="/songs">← Back</ButtonLink>
         <ButtonLink to="edit">Edit song</ButtonLink>
       </div>
-      <SongControls targetKey={targetKey} onKeyUpdated={setTargetKey} />
+      <KeySelectButton selectedKey={targetKey} onKeySelect={setTargetKey} />
       <SongRenderer targetKey={targetKey} prosong={song.prosong} />
     </main>
   );
