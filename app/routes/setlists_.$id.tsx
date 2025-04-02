@@ -9,7 +9,12 @@ import type { Route } from './+types/setlists_.$id';
 export async function loader({ params }: Route.LoaderArgs) {
   const setlist = await prisma.setlist.findFirst({
     where: { id: params.id },
-    include: { songs: { include: { song: true } } },
+    include: {
+      songs: {
+        include: { song: true },
+        orderBy: { order: 'asc' },
+      },
+    },
   });
   if (!setlist) throw data(`Setlist "${params.id}" not found.`, { status: 404 });
 

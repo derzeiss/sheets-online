@@ -9,6 +9,8 @@ import { deleteSetlist, upsertSetlist } from '~/dal/setlist';
 import { NOTES_ALL } from '~/modules/chordpro-parser/constants';
 import { isNote } from '~/modules/chordpro-parser/typeguards';
 import { prisma } from '~/modules/prisma';
+import type { ReorderType } from '~/modules/reorder-list/types/ReorderType';
+import { useReorderList } from '~/modules/reorder-list/useReorderList';
 import type { SongsOnSetlistClientDTO } from '~/schemas';
 import type { Route } from './+types/setlists_.$id_.edit';
 
@@ -32,7 +34,12 @@ export async function loader({ params }: Route.LoaderArgs) {
 
   const setlist = await prisma.setlist.findFirst({
     where: { id: params.id },
-    include: { songs: { include: { song: true } } },
+    include: {
+      songs: {
+        include: { song: true },
+        orderBy: { order: 'asc' },
+      },
+    },
   });
   if (!setlist) throw data(`Setlist "${params.id}" not found.`, { status: 404 });
 
@@ -55,21 +62,52 @@ export async function action({ request }: Route.ActionArgs) {
   }
 }
 
+const reorderSongsOn = (
+  songsOn: SongsOnSetlistClient[],
+  dragId: string,
+  dropId: string,
+  dropType: ReorderType,
+) => {
+  const iDrag = parseInt(dragId);
+  const iDrop = parseInt(dropId);
+  if (isNaN(iDrag) || isNaN(iDrop)) return;
+  const iMin = Math.min(iDrag, iDrop);
+  const iMax = Math.max(iDrag, iDrop);
+  const draggedSongOn = { ...songsOn[iDrag], _updated: true };
+
+  return songsOn.reduce<SongsOnSetlistClient[]>((reordered, songOn, index) => {
+    if (index === iDrag) return reordered;
+    if (index === iDrop && dropType === 'putBefore') reordered.push(draggedSongOn);
+
+    if (iMin <= index && iMax >= index) reordered.push({ ...songOn, _updated: true });
+    else reordered.push(songOn);
+
+    if (index === iDrop && dropType === 'putAfter') reordered.push(draggedSongOn);
+    return reordered;
+  }, []);
+};
+
 export default function SetlistsEditRoute({ loaderData }: Route.ComponentProps) {
   const { setlist, songs } = loaderData;
   const submit = useSubmit();
   const isCreation = setlist.id === 'new';
+  const { getHandlers } = useReorderList(handleSongsOnReorder);
 
   const [songsOn, setSongsOn] = useState<SongsOnSetlistClient[]>(setlist.songs);
+
+  function handleSongsOnReorder(dragId: string, dropId: string, dropType: ReorderType) {
+    const reordered = reorderSongsOn(songsOn, dragId, dropId, dropType);
+    if (reordered) setSongsOn(reordered);
+  }
 
   const handleSubmit = (ev: FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
     let $form = ev.currentTarget;
     let formData = new FormData($form);
 
-    const songsOnDTO: SongsOnSetlistClientDTO[] = songsOn.map((so) => {
+    const songsOnDTO: SongsOnSetlistClientDTO[] = songsOn.map((so, index) => {
       const { song, ...songOn } = so;
-      return songOn;
+      return { ...songOn, order: index };
     });
 
     formData.set('songs', JSON.stringify(songsOnDTO));
@@ -79,7 +117,7 @@ export default function SetlistsEditRoute({ loaderData }: Route.ComponentProps) 
     });
   };
 
-  const handleSongAdd = (song: Song) => {
+  const handleSongOnAdd = (song: Song) => {
     const newSongOnSetlist: SongsOnSetlistClient = {
       id: crypto.randomUUID(),
       key: song.key,
@@ -140,18 +178,21 @@ export default function SetlistsEditRoute({ loaderData }: Route.ComponentProps) 
 
         <ul className="mt-4">
           {songsOn
-            .filter((sO) => !sO._deleted)
-            .map((songOn) => (
+            .filter((songOn) => !songOn._deleted)
+            .map((songOn, index) => (
               <li
                 key={songOn.id}
-                className="flex w-full justify-between gap-2 border-t border-t-neutral-200 px-2 py-1 text-left"
+                className="relative flex w-full justify-between gap-2 border-t border-t-neutral-200 px-2 py-1 text-left"
+                {...getHandlers(index + '')}
               >
-                <div>
+                <div className="grow overflow-hidden">
                   <h2>{songOn.song.title}</h2>
-                  <div className="text-sm text-neutral-600">{songOn.song.artist}</div>
+                  <div className="overflow-hidden text-sm text-ellipsis whitespace-nowrap text-neutral-600">
+                    {songOn.song.artist}
+                  </div>
                 </div>
                 <select
-                  className="btn ml-auto w-20"
+                  className="btn w-20 flex-shrink-0"
                   value={songOn.key || 'C'}
                   onChange={(ev) => handleKeyChange(songOn, ev.target.value)}
                 >
@@ -179,7 +220,7 @@ export default function SetlistsEditRoute({ loaderData }: Route.ComponentProps) 
           {songs.map((song) => (
             <button
               key={song.id}
-              onClick={() => handleSongAdd(song)}
+              onClick={() => handleSongOnAdd(song)}
               className="block w-full"
               type="button"
             >
