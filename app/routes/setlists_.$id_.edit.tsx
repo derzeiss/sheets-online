@@ -107,6 +107,7 @@ export default function SetlistsEditRoute({ loaderData }: Route.ComponentProps) 
 
     const songsOnDTO: SongsOnSetlistClientDTO[] = songsOn.map((so, index) => {
       const { song, ...songOn } = so;
+      if (songOn._added && songOn._updated) songOn._updated = false;
       return { ...songOn, order: index };
     });
 
@@ -154,7 +155,7 @@ export default function SetlistsEditRoute({ loaderData }: Route.ComponentProps) 
   const handleKeyChange = (songOn: SongsOnSetlistClient, key: string) => {
     if (!isNote(key)) return;
 
-    const newSongOn = { ...songOn, key, _updated: !songOn._added };
+    const newSongOn = { ...songOn, key, _updated: true };
     setSongsOn([...songsOn.map((_songOn) => (_songOn.id === newSongOn.id ? newSongOn : _songOn))]);
   };
 
