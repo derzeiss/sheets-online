@@ -1,29 +1,17 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
-/* html,
-body {
-  @media (prefers-color-scheme: dark) {
-    color-scheme: dark;
-  }
-} */
-
-@layer components {
-  .content {
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: clamp(16px, 5vw, 64px);
-    padding-right: clamp(16px, 5vw, 64px);
-  }
-
-  .btn {
-    @apply clickable inline-block rounded bg-neutral-100 px-4 py-2 text-sm font-semibold;
-  }
+@theme {
+  --spacing-content: clamp(16px, 5vw, 64px);
 }
 
-@layer utilities {
-  .clickable {
-    @apply cursor-pointer transition-colors hover:bg-neutral-200 active:bg-neutral-300 active:transition-none;
-  }
+@utility content {
+  @apply px-content mx-auto max-w-7xl;
+}
+
+@utility btn {
+  @apply clickable inline-block rounded-sm bg-neutral-100 px-4 py-2 text-sm font-semibold;
+}
+
+@utility clickable {
+  @apply cursor-pointer transition-colors hover:bg-neutral-200 active:bg-neutral-300 active:transition-none;
 }

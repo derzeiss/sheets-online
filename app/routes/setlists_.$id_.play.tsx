@@ -69,11 +69,11 @@ export default function SongRoute({ loaderData }: Route.ComponentProps) {
         ← Back
       </ButtonLink>
 
-      <div className="fixed bottom-8 right-8 flex gap-4">
+      <div className="fixed right-8 bottom-8 flex gap-4">
         {/* song list */}
         <ul
           className={cx(
-            'absolute bottom-[calc(100%+0.5rem)] right-0 max-h-[calc(100vh-6rem)] w-[30rem] overflow-y-scroll rounded border bg-white shadow-lg transition-all',
+            'absolute right-0 bottom-[calc(100%+0.5rem)] max-h-[calc(100vh-6rem)] w-[30rem] overflow-y-scroll rounded-sm border border-neutral-200 bg-white shadow-lg transition-all',
             {
               'invisible -translate-y-2 opacity-0': !songListOpen,
               'visible translate-y-0 opacity-100': songListOpen,

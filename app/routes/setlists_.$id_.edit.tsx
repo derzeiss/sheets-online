@@ -144,7 +144,7 @@ export default function SetlistsEditRoute({ loaderData }: Route.ComponentProps) 
             .map((songOn) => (
               <li
                 key={songOn.id}
-                className="border-t-300 flex w-full justify-between gap-2 border-t px-2 py-1 text-left"
+                className="flex w-full justify-between gap-2 border-t border-t-neutral-200 px-2 py-1 text-left"
               >
                 <div>
                   <h2>{songOn.song.title}</h2>

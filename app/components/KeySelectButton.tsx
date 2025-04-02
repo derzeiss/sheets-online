@@ -25,7 +25,7 @@ export const KeySelectButton: FC<Props> = ({ selectedKey, onKeySelect }) => {
         selectedKey={selectedKey}
         onKeySelect={(note) => onKeySelect(note)}
         className={cx(
-          'absolute left-0 top-[calc(100%+0.5rem)] rounded border bg-white p-2 shadow-lg transition-all',
+          'absolute top-[calc(100%+0.5rem)] left-0 rounded-sm border border-neutral-200 bg-white p-2 shadow-lg transition-all',
           {
             'invisible -translate-y-2 opacity-0': !keyListOpen,
             'visible translate-y-0 opacity-100': keyListOpen,

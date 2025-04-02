@@ -12,7 +12,7 @@ export const SongControls: FC<Props> = ({ targetKey, onKeyUpdated }) => {
     <div className="mb-2 text-sm">
       Key:
       <select
-        className="rounded bg-neutral-100 px-2 py-1"
+        className="rounded-sm bg-neutral-100 px-2 py-1"
         value={targetKey}
         onChange={(ev) => onKeyUpdated(ev.target.value as Note)}
       >

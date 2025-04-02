@@ -7,7 +7,7 @@ interface Props {
 
 export const SetlistListItem: FC<Props> = ({ setlist }) => {
   return (
-    <li className="border-t-300 flex justify-between border-t px-2 py-1">
+    <li className="flex justify-between border-t border-t-neutral-200 px-2 py-1">
       <div>
         <h2>{setlist.name}</h2>
         {/* <div className="text-sm text-neutral-600">{setlist.songPreview}</div> */}
