@@ -161,9 +161,17 @@ export default function SetlistsEditRoute({ loaderData }: Route.ComponentProps) 
 
   return (
     <main className="content my-10 max-w-3xl">
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="text-4xl">{isCreation ? 'Create' : 'Edit'} Setlist</h1>
+        <Form method="post">
+          <input type="hidden" name="id" value={setlist.id} />
+          <input type="hidden" name="_action" value="delete" />
+          <ConfirmButton className="bg-red-200" type="submit">
+            Delete Setlist
+          </ConfirmButton>
+        </Form>
+      </div>
       <Form onSubmit={handleSubmit} method="post">
-        <h1 className="mb-6 text-4xl">{isCreation ? 'Create' : 'Edit'} Setlist</h1>
-
         <label htmlFor="name" className="mb-1 block text-sm font-semibold">
           Setlist Name
         </label>
@@ -230,21 +238,15 @@ export default function SetlistsEditRoute({ loaderData }: Route.ComponentProps) 
           ))}
         </ul>
 
-        <div className="mt-8 flex gap-2">
-          <Button type="submit">Save</Button>
-          <ButtonLink to={`/setlists/${isCreation ? '' : setlist.id}`}>Cancel</ButtonLink>
+        <div className="fixed bottom-0 left-0 w-full border-t border-t-neutral-200 bg-white py-3">
+          <div className="px-content mx-auto flex max-w-3xl gap-4">
+            <Button type="submit">Save</Button>
+            <ButtonLink to={`/setlists/${isCreation ? '' : setlist.id}`}>Cancel</ButtonLink>
+          </div>
         </div>
 
         <input type="hidden" name="id" value={setlist.id} />
         <input type="hidden" name="_action" value="save" />
-      </Form>
-
-      <Form method="post" className="mt-4">
-        <input type="hidden" name="id" value={setlist.id} />
-        <input type="hidden" name="_action" value="delete" />
-        <ConfirmButton className="bg-red-200" type="submit">
-          Delete Setlist
-        </ConfirmButton>
       </Form>
     </main>
   );
