@@ -62,9 +62,9 @@ const transposeChord = (chord: string, keyFrom: Note, keyTo: Note, delta: number
 };
 
 const extractNotesFromChord = (chord: string): ChordPart[] =>
-  chord.split('/').map(extractNoteFromChord);
+  chord.split('/').map(_extractNoteFromChord);
 
-const extractNoteFromChord = (chord: string): ChordPart => {
+export const _extractNoteFromChord = (chord: string): ChordPart => {
   if (chord[1] === '#' || chord[1] === 'b') {
     return [chord.substring(0, 2) as Note, chord.substring(2)];
   }
