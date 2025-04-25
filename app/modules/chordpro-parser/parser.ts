@@ -54,12 +54,10 @@ export const parseSong = (prosong: string): Jsong => {
   const lines: Jsong['lines'] = [];
 
   prosong.split('\n').map((line) => {
-    const lineTrim = line.trim();
+    const lineTrimmed = line.trim();
 
     // is directive
-    if (lineTrim.startsWith('{') && lineTrim.endsWith('}')) {
-      const lineTrimmed = lineTrim.substring(1, lineTrim.length - 1);
-
+    if (lineTrimmed.startsWith('{') && lineTrimmed.endsWith('}')) {
       const directive = _extractDirectiveData(lineTrimmed);
       if (directive) {
         const [name, val] = directive;
@@ -72,7 +70,7 @@ export const parseSong = (prosong: string): Jsong => {
       }
     } else {
       // whitespace
-      if (!lineTrim) {
+      if (!lineTrimmed) {
         // don't push whitespace as first line
         if (lines.length) {
           lines.push({ id: getNextId(), type: 'whitespace', content: '' });
