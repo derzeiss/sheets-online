@@ -79,7 +79,7 @@ export default function SongsEditRoute({ loaderData }: Route.ComponentProps) {
   };
 
   return (
-    <main className="content my-10 grid gap-12 lg:grid-cols-2">
+    <main className="content my-10 grid h-[calc(100vh-7.75rem)] gap-12 overflow-hidden lg:grid-cols-2">
       <div>
         <Form onSubmit={handleSubmit} method="post">
           <input type="hidden" name="id" value={song.id} />
@@ -110,7 +110,7 @@ export default function SongsEditRoute({ loaderData }: Route.ComponentProps) {
           </ConfirmButton>
         </Form>
       </div>
-      <div>
+      <div className="overflow-auto">
         <KeySelectButton selectedKey={targetKey} onKeySelect={setTargetKey} />
         <SongRenderer targetKey={targetKey} prosong={prosong} />
       </div>

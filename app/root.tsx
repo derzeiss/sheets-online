@@ -22,7 +22,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className="pb-10">
+      <body>
         {children}
         <ScrollRestoration />
         <Scripts />
@@ -50,7 +50,7 @@ export default function App() {
         </NavLink>
         <NavLink
           to="/settings"
-          className="clickable absolute right-0 top-0 block px-4 py-3 text-center text-sm"
+          className="clickable absolute top-0 right-0 block px-4 py-3 text-center text-sm"
         >
           Settings
         </NavLink>
