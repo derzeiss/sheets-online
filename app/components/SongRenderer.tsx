@@ -41,7 +41,7 @@ export const SongRenderer: FC<Props> = ({ prosong, targetKey }) => {
   }, [jsong.meta.key, jsong.meta.tempo, jsong.meta.time, targetKey]);
 
   if (!prosong || !jsong || !jsongTransposed)
-    return <div className="italic text-neutral-600">Enter a song to start</div>;
+    return <div className="text-neutral-600 italic">Enter a song to start</div>;
 
   return (
     <>
@@ -54,11 +54,11 @@ export const SongRenderer: FC<Props> = ({ prosong, targetKey }) => {
           </small>
         )}
       </div>
-      <div className="whitespace-pre text-lg leading-[1.3] tracking-[.015em]">
+      <div className="text-lg leading-[1.3] tracking-[.015em] whitespace-pre">
         {jsongTransposed.lines.map((line: SongLine) => {
           if (lineIsComment(line)) {
             return (
-              <strong key={line.id} className="block uppercase tracking-wide">
+              <strong key={line.id} className="block tracking-wide uppercase">
                 {line.content}
               </strong>
             );
@@ -68,13 +68,15 @@ export const SongRenderer: FC<Props> = ({ prosong, targetKey }) => {
           }
           if (lineIsWithChords(line)) {
             return (
-              <div key={line.id} className="ml-4 mt-2 flex flex-wrap">
+              <div key={line.id} className="mt-2 ml-4 flex flex-wrap">
                 {line.content.map((block: Block) => (
                   <div key={block.id}>
                     <div>
                       <strong>{block.chord}&nbsp;</strong>
                     </div>
-                    <div>{block.text}</div>
+                    <div style={{ height: line.type === 'chords-only' ? 0 : undefined }}>
+                      {block.text}
+                    </div>
                   </div>
                 ))}
               </div>
