@@ -11,32 +11,32 @@ datasource db {
 }
 
 model Song {
-  id String @id @default(uuid())
-  title String
-  artist String?
-  key String?
-  tempo String?
-  time String?
-  ccli String?
-  prosong String
+  id       String           @id @default(uuid())
+  title    String
+  artist   String?
+  key      String?
+  tempo    String?
+  time     String?
+  ccli     String?
+  prosong  String
   setlists SongsOnSetlist[]
 }
 
 model Setlist {
-  id String @id @default(uuid())
-  name String
+  id         String           @id @default(uuid())
+  name       String
   songAmount Int
-  songs SongsOnSetlist[]
+  songs      SongsOnSetlist[]
 }
 
 model SongsOnSetlist {
   id String @id @default(uuid())
-  
-  song Song @relation(fields: [songId], references: [id])
-  songId String
-  setlist Setlist @relation(fields: [setlistId], references: [id])
+
+  song      Song    @relation(fields: [songId], references: [id])
+  songId    String
+  setlist   Setlist @relation(fields: [setlistId], references: [id])
   setlistId String
 
-  key String?
+  key   String?
   order Int
 }

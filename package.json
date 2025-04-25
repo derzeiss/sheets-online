@@ -8,7 +8,8 @@
     "start": "react-router-serve ./build/server/index.js -- --port 3000",
     "typecheck": "react-router typegen && tsc",
     "seed": "npx tsx ./seed-db.ts",
-    "test": "vitest"
+    "test": "vitest",
+    "pretty": "prettier --write app/"
   },
   "dependencies": {
     "@flydotio/litestream": "^1.0.1",
@@ -29,6 +30,7 @@
     "@types/node": "^20",
     "@types/react": "^19.0.1",
     "@types/react-dom": "^19.0.1",
+    "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
     "prisma": "^6.2.1",
     "tailwindcss": "^4.0.17",
