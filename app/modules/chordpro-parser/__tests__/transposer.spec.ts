@@ -1,5 +1,5 @@
 import { it, describe, expect } from 'vitest';
-import { _extractNoteFromChord } from '~/modules/chordpro-parser/transposer';
+import { _extractNoteFromChord } from '../transposer';
 
 describe('transposer', () => {
   describe('extractNoteFromChord', () => {
