@@ -10,7 +10,7 @@ export const _extractDirectiveData = (lineTrimmed: string) => {
   const iFirstColon = lineTrimmed.indexOf(':');
   if (iFirstColon === -1) return null;
   const name = lineTrimmed.substring(1, iFirstColon);
-  const val = lineTrimmed.substring(iFirstColon + 1, lineTrimmed.length - 1);
+  const val = lineTrimmed.substring(iFirstColon + 1, lineTrimmed.length - 1).trim();
   return [name, val];
 };
 
