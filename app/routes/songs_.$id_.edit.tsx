@@ -29,16 +29,9 @@ export async function loader({ params }: Route.LoaderArgs) {
   if (params.id === 'new') return { song: { id: 'new', key: 'C', prosong: songBlueprint } };
 
   const song = await prisma.song.findFirst({ where: { id: params.id } });
-
   if (!song) throw data(`Song "${params.id}" not found.`, { status: 404 });
 
-  // TODO: This is only needed for a UX hint when deleting. Maybe do the query when we delete?
-  const setlistsWithSong = await prisma.setlist.findMany({
-    include: { songs: { where: { songId: params.id } } },
-  });
-  const setlistCount = setlistsWithSong.length;
-
-  return { song, setlistCount };
+  return { song };
 }
 
 export async function action({ request }: Route.ActionArgs) {
@@ -56,7 +49,7 @@ export async function action({ request }: Route.ActionArgs) {
 }
 
 export default function SongsEditRoute({ loaderData }: Route.ComponentProps) {
-  const { song, setlistCount } = loaderData;
+  const { song } = loaderData;
   const submit = useSubmit();
   const [targetKey, setTargetKey] = useState<Note>(isNote(song.key) ? song.key : 'C');
   const [prosong, setProsong] = useState(song.prosong);
@@ -101,11 +94,7 @@ export default function SongsEditRoute({ loaderData }: Route.ComponentProps) {
         <Form method="post" className="mt-4">
           <input type="hidden" name="id" value={song.id} />
           <input type="hidden" name="_action" value="delete" />
-          <ConfirmButton
-            className="bg-red-200"
-            type="submit"
-            childrenConfirm={`You sure? ${setlistCount && setlistCount > 0 ? `Song will also be deleted from ${setlistCount} setlist(s).` : ''} `}
-          >
+          <ConfirmButton className="bg-red-200" type="submit" childrenConfirm="You sure?">
             Delete song
           </ConfirmButton>
         </Form>
