@@ -7,4 +7,6 @@ export interface DragConfig {
   dropAtBottomCls: string;
   /** CSS-class to signal the item will be inserted into this dropzone. */
   dropIntoCls: string;
+  /** CSS-class to signal this item is currently dragged. */
+  isDraggedCls: string;
 }

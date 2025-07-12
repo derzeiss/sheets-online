@@ -7,4 +7,5 @@ export interface ReorderHandlers {
   onDragLeave: (ev: DragEvent<HTMLElement>) => void;
   onDrop: (ev: DragEvent<HTMLElement>) => void;
   draggable: boolean;
+  'data-rlid': string;
 }

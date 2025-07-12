@@ -25,3 +25,7 @@
   content: '';
   @apply pointer-events-none absolute -bottom-px left-0 z-10 block h-[3px] w-full bg-neutral-400;
 }
+
+.rl--is-dragged {
+  @apply opacity-50;
+}

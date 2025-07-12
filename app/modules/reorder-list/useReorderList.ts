@@ -19,13 +19,13 @@ const initDragImage = () => {
 if (typeof window !== 'undefined') initDragImage();
 
 type DragEv = DragEvent<HTMLElement>;
-type DragHandler = (ev: DragEv, id: string) => void;
 
-const defaultConfig = {
+const defaultConfig: DragConfig = {
   isContainer: false,
   dropAtTopCls: 'rl--drop-top',
   dropAtBottomCls: 'rl--drop-bottom',
   dropIntoCls: 'rl--drop-into',
+  isDraggedCls: 'rl--is-dragged',
 };
 
 export const useReorderList = (
@@ -43,11 +43,12 @@ export const useReorderList = (
    * @param ev React drag event.
    * @param id Dragged item id.
    */
-  const handleDragStart: DragHandler = (ev, id) => {
+  const handleDragStart = (ev: DragEv, id: string, config: DragConfig) => {
     ev.dataTransfer.setDragImage(dragImage, 25, 25);
     ev.dataTransfer.effectAllowed = 'move';
     ev.dataTransfer.clearData();
     ev.dataTransfer.setData('text/plain', id);
+    ev.currentTarget.classList.add(config.isDraggedCls);
   };
 
   /**
@@ -92,8 +93,14 @@ export const useReorderList = (
    * @param config Drag config.
    */
   const handleDrop = (ev: DragEv, dropId: string, config: DragConfig) => {
+    ev.preventDefault();
+
     const dragId = ev.dataTransfer.getData('text');
     removeDropzoneClasses(ev, config);
+
+    // TODO: Remove isDragged class when dragged onto nothing
+    const draggedEl = ev.currentTarget.parentElement?.querySelector(`[data-rlid="${dragId}"]`);
+    if (draggedEl) draggedEl.classList.remove(config.isDraggedCls);
 
     // dropped item on itself -> nothing to do
     if (dragId === dropId) return;
@@ -117,12 +124,13 @@ export const useReorderList = (
     const elConfig = { ...hookConfig, ...config };
 
     return {
-      onDragStart: (ev: DragEv) => handleDragStart(ev, id),
+      onDragStart: (ev: DragEv) => handleDragStart(ev, id, elConfig),
       onDragEnter: (ev: DragEv) => updateDropzoneClasses(ev, id, elConfig),
       onDragOver: (ev: DragEv) => updateDropzoneClasses(ev, id, elConfig),
       onDragLeave: (ev: DragEv) => removeDropzoneClasses(ev, elConfig),
       onDrop: (ev: DragEv) => handleDrop(ev, id, elConfig),
       draggable: true,
+      'data-rlid': id,
     };
   };
 

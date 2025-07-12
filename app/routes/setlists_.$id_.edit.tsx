@@ -192,7 +192,7 @@ export default function SetlistsEditRoute({ loaderData }: Route.ComponentProps) 
               <li
                 key={songOn.id}
                 className="relative flex w-full justify-between gap-2 border-t border-t-neutral-200 px-2 py-1 text-left select-none"
-                {...getReorderHandlers(index + '')}
+                {...getReorderHandlers(index + '')} // TODO: don't use index
               >
                 <div className="grow overflow-hidden">
                   <h2>{songOn.song.title}</h2>
@@ -202,6 +202,7 @@ export default function SetlistsEditRoute({ loaderData }: Route.ComponentProps) 
                 </div>
                 <select
                   className="btn w-20 flex-shrink-0"
+                  name="key"
                   value={songOn.key || 'C'}
                   onChange={(ev) => handleKeyChange(songOn, ev.target.value)}
                 >
