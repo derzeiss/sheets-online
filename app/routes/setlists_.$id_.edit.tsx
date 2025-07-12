@@ -91,7 +91,7 @@ export default function SetlistsEditRoute({ loaderData }: Route.ComponentProps) 
   const { setlist, songs } = loaderData;
   const submit = useSubmit();
   const isCreation = setlist.id === 'new';
-  const { getHandlers } = useReorderList(handleSongsOnReorder);
+  const { getHandlers: getReorderHandlers } = useReorderList(handleSongsOnReorder);
 
   const [songsOn, setSongsOn] = useState<SongsOnSetlistClient[]>(setlist.songs);
 
@@ -191,8 +191,8 @@ export default function SetlistsEditRoute({ loaderData }: Route.ComponentProps) 
             .map((songOn, index) => (
               <li
                 key={songOn.id}
-                className="relative flex w-full justify-between gap-2 border-t border-t-neutral-200 px-2 py-1 text-left"
-                {...getHandlers(index + '')}
+                className="relative flex w-full justify-between gap-2 border-t border-t-neutral-200 px-2 py-1 text-left select-none"
+                {...getReorderHandlers(index + '')}
               >
                 <div className="grow overflow-hidden">
                   <h2>{songOn.song.title}</h2>
