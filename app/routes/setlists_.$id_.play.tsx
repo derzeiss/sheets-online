@@ -1,6 +1,5 @@
-import type { Setlist, Song, SongsOnSetlist } from '@prisma/client';
 import { useState } from 'react';
-import { data } from 'react-router';
+import { data, Link } from 'react-router';
 import { Button } from '~/components/Button';
 import { ButtonLink } from '~/components/ButtonLink';
 import { KeySelectButton } from '~/components/KeySelectButton';
@@ -11,32 +10,26 @@ import { TooltipCloseBg } from '~/components/TooltipCloseBg';
 import { isNote } from '~/modules/chordpro-parser/typeguards';
 import type { Note } from '~/modules/chordpro-parser/types/Note';
 import { prisma } from '~/modules/prisma';
+import { setlistWithItemsWithSongInclude, type SetlistWithItemWithSong } from '~/prismaExtensions';
 import { cx } from '~/utils/cx';
 import type { Route } from './+types/setlists_.$id_.play';
-
-type PopulatedSetlist = Setlist & { songs: (SongsOnSetlist & { song: Song })[] };
 
 export async function loader({ params }: Route.LoaderArgs) {
   const setlist = await prisma.setlist.findFirst({
     where: { id: params.id },
-    include: {
-      songs: {
-        include: { song: true },
-        orderBy: { order: 'asc' },
-      },
-    },
+    include: setlistWithItemsWithSongInclude,
   });
   if (!setlist) throw data(`Setlist "${params.id}" not found.`, { status: 404 });
 
   return { setlist };
 }
 
-const getSetlistSongKeys = (setlist: PopulatedSetlist) => {
-  return setlist.songs.reduce<Record<string, Note>>((songKeys, songOn) => {
+const getSetlistSongKeys = (setlist: SetlistWithItemWithSong) => {
+  return setlist.items.reduce<Record<string, Note>>((songKeys, item) => {
     let key: Note = 'Nashville';
-    if (isNote(songOn.key)) key = songOn.key;
-    else if (isNote(songOn.song.key)) key = songOn.song.key;
-    songKeys[songOn.id] = key;
+    if (isNote(item.key)) key = item.key;
+    else if (isNote(item.song.key)) key = item.song.key;
+    songKeys[item.id] = key;
     return songKeys;
   }, {});
 };
@@ -53,19 +46,19 @@ export default function SongRoute({ loaderData }: Route.ComponentProps) {
       <TooltipCloseBg visible={songListOpen} onClick={() => setSongListOpen(false)} />
 
       <div id="song-container" className="flex snap-x snap-mandatory overflow-x-auto scroll-smooth">
-        {setlist.songs.map((songOn) => (
+        {setlist.items.map((item) => (
           <div
-            id={songOn.id}
-            key={songOn.id}
+            id={item.id}
+            key={item.id}
             className="min-w-full snap-start snap-always overflow-hidden"
           >
             {/* key list */}
             <KeySelectButton
-              selectedKey={songKeys[songOn.id]}
-              onKeySelect={(note) => setSongKeys({ ...songKeys, [songOn.id]: note })}
+              selectedKey={songKeys[item.id]}
+              onKeySelect={(note) => setSongKeys({ ...songKeys, [item.id]: note })}
             />
 
-            <SongRenderer targetKey={songKeys[songOn.id]} prosong={songOn.song.prosong} />
+            <SongRenderer targetKey={songKeys[item.id]} prosong={item.song.prosong} />
           </div>
         ))}
       </div>
@@ -78,17 +71,17 @@ export default function SongRoute({ loaderData }: Route.ComponentProps) {
         {/* song list */}
         <ul
           className={cx(
-            'absolute right-0 bottom-[calc(100%+0.5rem)] max-h-[calc(100vh-6rem)] w-[30rem] overflow-y-scroll rounded-sm border border-neutral-200 bg-white shadow-lg transition-all',
+            'absolute right-0 bottom-[calc(100%+0.5rem)] max-h-[calc(100vh-6rem)] w-[30rem] max-w-[90vw] overflow-y-scroll rounded-sm border border-neutral-200 bg-white shadow-lg transition-all',
             {
               'invisible -translate-y-2 opacity-0': !songListOpen,
               'visible translate-y-0 opacity-100': songListOpen,
             },
           )}
         >
-          {setlist.songs.map((songOn) => (
-            <a key={songOn.id} href={`#${songOn.id}`} className="clickable block">
-              <SongListItem song={{ ...songOn.song, key: songOn.key }} />
-            </a>
+          {setlist.items.map((item) => (
+            <Link key={item.id} to={`#${item.id}`} className="clickable block">
+              <SongListItem song={{ ...item.song, key: item.key }} />
+            </Link>
           ))}
         </ul>
         <Button onClick={() => setSongListOpen(!songListOpen)}>= Songs</Button>

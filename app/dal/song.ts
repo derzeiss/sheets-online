@@ -40,7 +40,7 @@ export async function deleteSong(id: string) {
   }, []);
 
   await prisma.$transaction([
-    prisma.songsOnSetlist.deleteMany({ where: { songId: id } }),
+    prisma.setlistItem.deleteMany({ where: { songId: id } }),
     prisma.song.delete({ where: { id } }),
     ...setlists.map((s) => prisma.setlist.update({ where: { id: s.id }, data: s })),
   ]);

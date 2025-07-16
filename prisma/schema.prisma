@@ -11,7 +11,7 @@ datasource db {
 }
 
 model Song {
-  id       String           @id @default(uuid())
+  id       String        @id @default(uuid())
   title    String
   artist   String?
   key      String?
@@ -19,17 +19,17 @@ model Song {
   time     String?
   ccli     String?
   prosong  String
-  setlists SongsOnSetlist[]
+  setlists SetlistItem[]
 }
 
 model Setlist {
-  id         String           @id @default(uuid())
+  id         String        @id @default(uuid())
   name       String
   songAmount Int
-  songs      SongsOnSetlist[]
+  items      SetlistItem[]
 }
 
-model SongsOnSetlist {
+model SetlistItem {
   id String @id @default(uuid())
 
   song      Song    @relation(fields: [songId], references: [id])
