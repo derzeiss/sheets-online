@@ -141,7 +141,7 @@ export default function SetlistsEditRoute({ loaderData }: Route.ComponentProps) 
   };
 
   return (
-    <main className="content my-10 max-w-3xl">
+    <main className="content my-10 max-w-3xl pb-10">
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-4xl">{isCreation ? 'Create' : 'Edit'} Setlist</h1>
         <Form method="post">
