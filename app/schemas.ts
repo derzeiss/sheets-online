@@ -1,4 +1,9 @@
-import { z } from 'zod';
+import { type Setlist, type SetlistItem, type Song } from '@prisma/client';
+import { z, ZodObject, ZodType } from 'zod';
+
+type ToZodSchema<T> = ZodObject<{
+  [K in keyof Partial<T>]: K extends keyof T ? ZodType<T[K]> : never;
+}>;
 
 export const songSchema = z.object({
   title: z.string(),
@@ -10,29 +15,25 @@ export const songSchema = z.object({
   prosong: z.string(),
 });
 
-export const songsOnSetlistClientSchema = z.object({
+export const setlistItemSchema = z.object({
   id: z.string(),
-  key: z.string().nullish(),
+  key: z.string().nullable(),
   order: z.number(),
   songId: z.string(),
   setlistId: z.string(),
+}) satisfies ToZodSchema<SetlistItem>;
+
+export const setlistItemClientSchema = setlistItemSchema.extend({
   _deleted: z.boolean().nullish(),
   _added: z.boolean().nullish(),
   _updated: z.boolean().nullish(),
 });
-export type SongsOnSetlistClientDTO = z.infer<typeof songsOnSetlistClientSchema>;
-
-export const songsOnSetlistSchema = z.object({
-  id: z.string(),
-  key: z.string().nullish(),
-  order: z.number(),
-  songId: z.string(),
-  setlistId: z.string(),
-});
+export type SetlistItemClientDTO = z.infer<typeof setlistItemClientSchema>;
+export type SetlistItemWithSongClientDTO = SetlistItemClientDTO & { song: Song };
 
 export const setlistSchema = z.object({
   id: z.string(),
   name: z.string(),
   songAmount: z.coerce.number(),
-  songs: z.array(songsOnSetlistClientSchema),
-});
+  items: z.array(setlistItemClientSchema),
+}) satisfies ToZodSchema<Setlist>;

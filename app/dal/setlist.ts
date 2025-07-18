@@ -1,35 +1,37 @@
 import type { Prisma, Setlist } from '@prisma/client';
 import { data, redirect } from 'react-router';
 import { prisma } from '~/modules/prisma';
-import { setlistSchema, songsOnSetlistSchema, type SongsOnSetlistClientDTO } from '~/schemas';
+import { setlistItemSchema, setlistSchema, type SetlistItemClientDTO } from '~/schemas';
 import type { FormValues } from '~/types/FormValues';
 
 export async function upsertSetlist(values: FormValues) {
-  if (typeof values.songs !== 'string') return data('"songs" must be JSON string.');
-  const songs: SongsOnSetlistClientDTO[] = JSON.parse(values.songs);
+  if (typeof values.setlistItems !== 'string') return data('"setlistItems" must be JSON string.');
+  const setlistItems: SetlistItemClientDTO[] = JSON.parse(values.setlistItems);
 
   values.songAmount = '0';
   const setlist = setlistSchema.parse({
     ...values,
     songAmount: '0',
-    songs: songs.filter((so) => !so._deleted).map((so) => songsOnSetlistSchema.parse(so)),
+    items: setlistItems
+      .filter((item) => !item._deleted)
+      .map((item) => setlistItemSchema.parse(item)),
   });
 
-  const songsOnAdded = songs
-    .filter((so) => so._added)
-    .map((so) => ({
-      key: so.key || null,
-      order: so.order,
-      songId: so.songId,
+  const itemsAdded = setlistItems
+    .filter((item) => item._added)
+    .map((item) => ({
+      key: item.key || null,
+      order: item.order,
+      songId: item.songId,
     }));
-  const songsOnDeleted = songs
-    .filter((so) => so._deleted)
-    .map((so) => songsOnSetlistSchema.parse(so));
-  const songsOnUpdated = songs
-    .filter((so) => so._updated)
-    .map((so) => songsOnSetlistSchema.parse(so));
+  const itemsDeleted = setlistItems
+    .filter((item) => item._deleted)
+    .map((item) => setlistItemSchema.parse(item));
+  const itemsUpdated = setlistItems
+    .filter((item) => item._updated)
+    .map((item) => setlistItemSchema.parse(item));
 
-  setlist.songAmount = songs.length - songsOnDeleted.length;
+  setlist.songAmount = setlistItems.length - itemsDeleted.length;
 
   let querySetlist: Prisma.Prisma__SetlistClient<Setlist>;
   if (setlist.id === 'new') {
@@ -37,7 +39,7 @@ export async function upsertSetlist(values: FormValues) {
       data: {
         ...setlist,
         id: undefined,
-        songs: { create: songsOnAdded },
+        items: { create: itemsAdded },
       },
     });
   } else {
@@ -45,7 +47,7 @@ export async function upsertSetlist(values: FormValues) {
       where: { id: setlist.id },
       data: {
         ...setlist,
-        songs: { create: songsOnAdded, delete: songsOnDeleted },
+        items: { create: itemsAdded, delete: itemsDeleted },
       },
     });
   }
@@ -53,7 +55,9 @@ export async function upsertSetlist(values: FormValues) {
   // TODO: There's a 500 bug when you edit a song and delete it afterwards, but I can't find it
   const results = await prisma.$transaction([
     querySetlist,
-    ...songsOnUpdated.map((so) => prisma.songsOnSetlist.update({ where: { id: so.id }, data: so })),
+    ...itemsUpdated.map((item) =>
+      prisma.setlistItem.update({ where: { id: item.id }, data: item }),
+    ),
   ]);
 
   if (!results.length) return redirect('/setlists');
@@ -61,8 +65,8 @@ export async function upsertSetlist(values: FormValues) {
 }
 
 export async function deleteSetlist(id: string) {
-  const deleteSongsOn = prisma.songsOnSetlist.deleteMany({ where: { setlistId: id } });
+  const deleteItems = prisma.setlistItem.deleteMany({ where: { setlistId: id } });
   const deleteSetlist = prisma.setlist.delete({ where: { id } });
-  await prisma.$transaction([deleteSongsOn, deleteSetlist]);
+  await prisma.$transaction([deleteItems, deleteSetlist]);
   return redirect('/setlists');
 }

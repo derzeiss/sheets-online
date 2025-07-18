@@ -1,20 +1,16 @@
-import { data, Form } from 'react-router';
+import { data, Form, Link } from 'react-router';
 import { ButtonLink } from '~/components/ButtonLink';
 import { ConfirmButton } from '~/components/ConfirmButton';
 import { SongListItem } from '~/components/SongListItem';
 import { deleteSetlist } from '~/dal/setlist';
 import { prisma } from '~/modules/prisma';
+import { setlistWithItemsWithSongInclude } from '~/prismaExtensions';
 import type { Route } from './+types/setlists_.$id';
 
 export async function loader({ params }: Route.LoaderArgs) {
   const setlist = await prisma.setlist.findFirst({
     where: { id: params.id },
-    include: {
-      songs: {
-        include: { song: true },
-        orderBy: { order: 'asc' },
-      },
-    },
+    include: setlistWithItemsWithSongInclude,
   });
   if (!setlist) throw data(`Setlist "${params.id}" not found.`, { status: 404 });
 
@@ -54,8 +50,10 @@ export default function SetlistRoute({ loaderData }: Route.ComponentProps) {
       <div className="text-neutral-600">{setlist.songAmount} Songs</div>
 
       <ul className="mt-4">
-        {setlist.songs.map((songOn) => (
-          <SongListItem key={songOn.id} song={{ ...songOn.song, key: songOn.key }} />
+        {setlist.items.map((item) => (
+          <Link key={item.id} to={`play#${item.id}`} className="clickable block">
+            <SongListItem song={{ ...item.song, key: item.key }} />
+          </Link>
         ))}
       </ul>
     </main>
