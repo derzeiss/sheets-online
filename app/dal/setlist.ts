@@ -5,22 +5,13 @@ import { setlistItemSchema, setlistSchema, type SetlistItemClientDTO } from '~/s
 import type { FormValues } from '~/types/FormValues';
 
 export async function upsertSetlist(values: FormValues) {
-  if (typeof values.setlistItems !== 'string') return data('"setlistItems" must be JSON string.');
-  const setlistItems: SetlistItemClientDTO[] = JSON.parse(values.setlistItems);
-
-  values.songAmount = '0';
-  const setlist = setlistSchema.parse({
-    ...values,
-    songAmount: '0',
-    items: setlistItems
-      .filter((item) => !item._deleted)
-      .map((item) => setlistItemSchema.parse(item)),
-  });
+  if (typeof values.items !== 'string') return data('"setlistItems" must be JSON string.');
+  const setlistItems: SetlistItemClientDTO[] = JSON.parse(values.items);
 
   const itemsAdded = setlistItems
     .filter((item) => item._added)
     .map((item) => ({
-      key: item.key || null,
+      key: item.key,
       order: item.order,
       songId: item.songId,
     }));
@@ -31,7 +22,11 @@ export async function upsertSetlist(values: FormValues) {
     .filter((item) => item._updated)
     .map((item) => setlistItemSchema.parse(item));
 
-  setlist.songAmount = setlistItems.length - itemsDeleted.length;
+  const setlist = setlistSchema.parse({
+    ...values,
+    songAmount: setlistItems.length - itemsDeleted.length,
+    items: [],
+  });
 
   let querySetlist: Prisma.Prisma__SetlistClient<Setlist>;
   if (setlist.id === 'new') {
@@ -47,14 +42,19 @@ export async function upsertSetlist(values: FormValues) {
       where: { id: setlist.id },
       data: {
         ...setlist,
-        items: { create: itemsAdded, delete: itemsDeleted },
+        items: { create: itemsAdded },
       },
     });
   }
 
-  // TODO: There's a 500 bug when you edit a song and delete it afterwards, but I can't find it
   const results = await prisma.$transaction([
+    // create / update setlist
     querySetlist,
+    // delete items
+    prisma.setlistItem.deleteMany({
+      where: { id: { in: itemsDeleted.map((item) => item.id) }, setlistId: setlist.id },
+    }),
+    // update items
     ...itemsUpdated.map((item) =>
       prisma.setlistItem.update({ where: { id: item.id }, data: item }),
     ),

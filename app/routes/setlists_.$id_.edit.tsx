@@ -102,13 +102,14 @@ export default function SetlistsEditRoute({ loaderData }: Route.ComponentProps) 
     let $form = ev.currentTarget;
     let formData = new FormData($form);
 
-    const setlistItemDTO: SetlistItemClientDTO[] = setlistItems.map((item, index) => {
+    const setlistItemDTOs: SetlistItemClientDTO[] = setlistItems.map((item, index) => {
       const { song, ...itemWithoutSong } = item;
       if (itemWithoutSong._added && itemWithoutSong._updated) itemWithoutSong._updated = false;
       return { ...itemWithoutSong, order: index };
     });
 
-    formData.set('setlistItems', JSON.stringify(setlistItemDTO));
+    const itemsKey: keyof SetlistWithItemWithSong = 'items'; // make sure we stay in-line with setlist prop names
+    formData.set(itemsKey, JSON.stringify(setlistItemDTOs));
 
     submit(formData, {
       method: 'post',
@@ -137,12 +138,8 @@ export default function SetlistsEditRoute({ loaderData }: Route.ComponentProps) 
       setlistItems.reduce<SetlistItemWithSongClientDTO[]>((items, item) => {
         if (item.id !== id) items.push(item);
         else if (!item._added) {
-          let uneditedItem: SetlistItemClientDTO | undefined = setlist.items.find(
-            (_item) => _item.id === item.id,
-          );
-          if (!uneditedItem) uneditedItem = { ...item, _updated: false };
           items.push({
-            ...uneditedItem,
+            ...item,
             song: item.song,
             _deleted: true,
             _updated: false,
