@@ -23,17 +23,8 @@ export const setlistItemSchema = z.object({
   setlistId: z.string(),
 }) satisfies ToZodSchema<SetlistItem>;
 
-export const setlistItemClientSchema = setlistItemSchema.extend({
-  _deleted: z.boolean().nullish(),
-  _added: z.boolean().nullish(),
-  _updated: z.boolean().nullish(),
-});
-export type SetlistItemClientDTO = z.infer<typeof setlistItemClientSchema>;
-export type SetlistItemWithSongClientDTO = SetlistItemClientDTO & { song: Song };
-
 export const setlistSchema = z.object({
   id: z.string(),
   name: z.string(),
   songAmount: z.coerce.number(),
-  items: z.array(setlistItemClientSchema),
 }) satisfies ToZodSchema<Setlist>;

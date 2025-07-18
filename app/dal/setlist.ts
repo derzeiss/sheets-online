@@ -1,12 +1,13 @@
-import type { Prisma, Setlist } from '@prisma/client';
+import type { Prisma, Setlist, SetlistItem } from '@prisma/client';
 import { data, redirect } from 'react-router';
 import { prisma } from '~/modules/prisma';
-import { setlistItemSchema, setlistSchema, type SetlistItemClientDTO } from '~/schemas';
+import { setlistItemSchema, setlistSchema } from '~/schemas';
 import type { FormValues } from '~/types/FormValues';
+import type { ClientListItem } from '~/utils/useClientList';
 
 export async function upsertSetlist(values: FormValues) {
   if (typeof values.items !== 'string') return data('"setlistItems" must be JSON string.');
-  const setlistItems: SetlistItemClientDTO[] = JSON.parse(values.items);
+  const setlistItems: ClientListItem<SetlistItem>[] = JSON.parse(values.items);
 
   const itemsAdded = setlistItems
     .filter((item) => item._added)
@@ -25,7 +26,6 @@ export async function upsertSetlist(values: FormValues) {
   const setlist = setlistSchema.parse({
     ...values,
     songAmount: setlistItems.length - itemsDeleted.length,
-    items: [],
   });
 
   let querySetlist: Prisma.Prisma__SetlistClient<Setlist>;

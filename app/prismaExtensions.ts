@@ -10,3 +10,7 @@ export const setlistWithItemsWithSongInclude = Prisma.validator<Prisma.SetlistIn
     orderBy: { order: 'asc' },
   },
 });
+
+export type SetlistItemWithSong = Prisma.SetlistItemGetPayload<{
+  include: { song: true };
+}>;
