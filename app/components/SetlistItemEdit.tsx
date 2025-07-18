@@ -1,9 +1,11 @@
-import type { FC } from 'react';
-import { NOTES_ALL } from '~/modules/chordpro-parser/constants';
+import { useMemo, type FC } from 'react';
 import { isNote } from '~/modules/chordpro-parser/typeguards';
+import type { Note } from '~/modules/chordpro-parser/types/Note';
 import type { ReorderType } from '~/modules/reorder-list/types/ReorderType';
 import { useReorderList } from '~/modules/reorder-list/useReorderList';
 import type { SetlistItemWithSong } from '~/prismaExtensions';
+import { getSongKey } from '~/utils/getSongKey';
+import { KeySelectButton } from './KeySelectButton';
 
 interface Props {
   item: SetlistItemWithSong;
@@ -19,8 +21,9 @@ export const SetlistItemEdit: FC<Props> = ({
   onItemsReorder,
 }) => {
   const { getHandlers: getReorderHandlers } = useReorderList(onItemsReorder);
+  const songKey = useMemo(() => getSongKey(item), [item.key]);
 
-  const handleKeyChange = (item: SetlistItemWithSong, key: string) => {
+  const handleKeyChange = (key: Note) => {
     if (!isNote(key)) return;
     onItemUpdate({ ...item, key });
   };
@@ -37,19 +40,9 @@ export const SetlistItemEdit: FC<Props> = ({
         </div>
       </div>
 
-      <select
-        className="btn w-20 flex-shrink-0"
-        name="key"
-        value={item.key || 'C'}
-        onChange={(ev) => handleKeyChange(item, ev.target.value)}
-      >
-        {/* TODO: Use transpose keyboard */}
-        {NOTES_ALL.map((n) => (
-          <option key={n} value={n}>
-            {n}
-          </option>
-        ))}
-      </select>
+      <KeySelectButton selectedKey={songKey || 'C'} onKeySelect={handleKeyChange} closeOnSelect />
+      <input name="key" type="hidden" value={songKey || ''} />
+
       <button
         key={item.id}
         onClick={() => onItemRemove(item.id)}

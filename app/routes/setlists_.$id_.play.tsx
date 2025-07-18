@@ -56,6 +56,7 @@ export default function SongRoute({ loaderData }: Route.ComponentProps) {
             <KeySelectButton
               selectedKey={songKeys[item.id]}
               onKeySelect={(note) => setSongKeys({ ...songKeys, [item.id]: note })}
+              className="mb-2"
             />
 
             <SongRenderer targetKey={songKeys[item.id]} prosong={item.song.prosong} />

@@ -1,17 +1,18 @@
-import type { FC } from 'react';
-import { Button, type ButtonProps } from './Button';
+import type { FC, RefObject } from 'react';
 import type { Note } from '~/modules/chordpro-parser/types/Note';
 import { cx } from '~/utils/cx';
+import { Button, type ButtonProps } from './Button';
 
 interface Props {
   selectedKey: Note;
   onKeySelect: (key: Note) => void;
   className?: string;
+  ref: RefObject<HTMLDivElement | null>;
 }
 
-export const KeyKeyboard: FC<Props> = ({ className, ...props }) => {
+export const KeyKeyboard: FC<Props> = ({ className, ref, ...props }) => {
   return (
-    <div className={cx('w-fit space-y-2', className)}>
+    <div className={cx('w-fit space-y-2', className)} ref={ref}>
       <div className="flex gap-2">
         <KeyButton {...props} note="Nashville" />
       </div>
@@ -42,7 +43,7 @@ export const KeyKeyboard: FC<Props> = ({ className, ...props }) => {
   );
 };
 
-const KeyButton: FC<ButtonProps & Props & { note: Note }> = ({
+const KeyButton: FC<ButtonProps & Omit<Props, 'ref'> & { note: Note }> = ({
   selectedKey,
   onKeySelect,
   note,
@@ -50,8 +51,9 @@ const KeyButton: FC<ButtonProps & Props & { note: Note }> = ({
   ...props
 }) => (
   <Button
+    type="button"
     {...props}
-    className={cx(className, { 'outline outline-4 outline-blue-500': selectedKey === note })}
+    className={cx(className, { 'outline-4 outline-blue-500': selectedKey === note })}
     onClick={() => onKeySelect(note)}
   >
     {note}
