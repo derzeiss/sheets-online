@@ -5,7 +5,7 @@ import { ButtonLink } from '~/components/ButtonLink';
 import { ConfirmButton } from '~/components/ConfirmButton';
 import { KeySelectButton } from '~/components/KeySelectButton';
 import { SongRenderer } from '~/components/SongRenderer';
-import { deleteSong, upsertSong } from '~/dal/song';
+import { deleteSong, upsertSong } from '~/dal/songDal';
 import { parseSong } from '~/modules/chordpro-parser/parser';
 import { isNote } from '~/modules/chordpro-parser/typeguards';
 import type { Note } from '~/modules/chordpro-parser/types/Note';
