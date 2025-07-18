@@ -12,7 +12,9 @@ export async function upsertSetlist(values: FormValues) {
   const setlist = setlistSchema.parse({
     ...values,
     songAmount: '0',
-    items: setlistItems.filter((item) => !item._deleted).map((so) => setlistItemSchema.parse(so)),
+    items: setlistItems
+      .filter((item) => !item._deleted)
+      .map((item) => setlistItemSchema.parse(item)),
   });
 
   const itemsAdded = setlistItems
@@ -53,7 +55,9 @@ export async function upsertSetlist(values: FormValues) {
   // TODO: There's a 500 bug when you edit a song and delete it afterwards, but I can't find it
   const results = await prisma.$transaction([
     querySetlist,
-    ...itemsUpdated.map((so) => prisma.setlistItem.update({ where: { id: so.id }, data: so })),
+    ...itemsUpdated.map((item) =>
+      prisma.setlistItem.update({ where: { id: item.id }, data: item }),
+    ),
   ]);
 
   if (!results.length) return redirect('/setlists');
