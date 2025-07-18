@@ -1,5 +1,5 @@
 import type { Song } from '@prisma/client';
-import { useState, type FormEvent } from 'react';
+import { useMemo, useRef, useState, type FormEvent } from 'react';
 import { data, Form, useSubmit } from 'react-router';
 import { Button } from '~/components/Button';
 import { ButtonLink } from '~/components/ButtonLink';
@@ -83,8 +83,14 @@ export default function SetlistsEditRoute({ loaderData }: Route.ComponentProps) 
   const submit = useSubmit();
   const isCreation = setlist.id === 'new';
   const { getHandlers: getReorderHandlers } = useReorderList(handleSetlistItemsReorder);
-
   const [setlistItems, setSetlistItems] = useState<SetlistItemWithSongClientDTO[]>(setlist.items);
+  const [songQuery, setSongQuery] = useState('');
+  const $songQuery = useRef<HTMLInputElement>(null);
+
+  const songListFiltered = useMemo(() => {
+    if (songQuery.length < 2) return songs;
+    return songs.filter((song) => song.title.toLowerCase().indexOf(songQuery) > -1);
+  }, [songQuery]);
 
   function handleSetlistItemsReorder(dragId: string, dropId: string, dropType: ReorderType) {
     const reordered = reorderSetlistItems(setlistItems, dragId, dropId, dropType);
@@ -120,6 +126,10 @@ export default function SetlistsEditRoute({ loaderData }: Route.ComponentProps) 
       _added: true,
     };
     setSetlistItems([...setlistItems, newSetlistItem]);
+
+    const songQuerySet = !!songQuery.length;
+    setSongQuery('');
+    if (songQuerySet) $songQuery.current?.focus();
   };
 
   const handleItemRemove = (id: string) => {
@@ -217,12 +227,20 @@ export default function SetlistsEditRoute({ loaderData }: Route.ComponentProps) 
 
         <h2 className="mt-6 text-2xl">Add songs</h2>
 
+        <input
+          className="mt-3 w-full rounded-lg border border-neutral-300 px-3 py-2"
+          value={songQuery}
+          onChange={(ev) => setSongQuery(ev.target.value)}
+          placeholder="Filter songs..."
+          ref={$songQuery}
+        />
+
         <ul className="mt-4">
-          {songs.map((song) => (
+          {songListFiltered.map((song) => (
             <button
               key={song.id}
               onClick={() => handleItemAdd(song)}
-              className="block w-full"
+              className="clickable block w-full"
               type="button"
             >
               <SongListItem song={song} />
