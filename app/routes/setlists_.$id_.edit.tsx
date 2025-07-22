@@ -91,7 +91,8 @@ export default function SetlistsEditRoute({ loaderData }: Route.ComponentProps) 
   const $songQuery = useRef<HTMLInputElement>(null);
   const songListFiltered = useMemo(() => {
     if (songQuery.length < 2) return songs;
-    return songs.filter((song) => song.title.toLowerCase().indexOf(songQuery) > -1);
+    const queryLower = songQuery.toLowerCase();
+    return songs.filter((song) => song.title.toLowerCase().indexOf(queryLower) > -1);
   }, [songQuery]);
 
   const isCreation = setlist.id === 'new';
