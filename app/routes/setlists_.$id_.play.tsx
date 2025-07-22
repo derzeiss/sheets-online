@@ -38,6 +38,7 @@ export default function SongRoute({ loaderData }: Route.ComponentProps) {
   const { setlist } = loaderData;
   const [songKeys, setSongKeys] = useState<Record<string, Note>>(() => getSetlistSongKeys(setlist));
   const [songListOpen, setSongListOpen] = useState(false);
+  const [showTextOnly, setShowTextOnly] = useState(false);
 
   return (
     <main className="content my-10">
@@ -52,14 +53,22 @@ export default function SongRoute({ loaderData }: Route.ComponentProps) {
             key={item.id}
             className="min-w-full snap-start snap-always overflow-hidden"
           >
-            {/* key list */}
-            <KeySelectButton
-              selectedKey={songKeys[item.id]}
-              onKeySelect={(note) => setSongKeys({ ...songKeys, [item.id]: note })}
-              className="mb-2"
-            />
+            <div className="mb-2 flex gap-2">
+              {/* key list */}
+              <KeySelectButton
+                selectedKey={songKeys[item.id]}
+                onKeySelect={(note) => setSongKeys({ ...songKeys, [item.id]: note })}
+              />
+              <Button type="button" onClick={() => setShowTextOnly(!showTextOnly)}>
+                <strong>Aa</strong> {showTextOnly ? 'Show chords' : 'Show lyrics'}
+              </Button>
+            </div>
 
-            <SongRenderer targetKey={songKeys[item.id]} prosong={item.song.prosong} />
+            <SongRenderer
+              targetKey={songKeys[item.id]}
+              prosong={item.song.prosong}
+              textOnly={showTextOnly}
+            />
           </div>
         ))}
       </div>

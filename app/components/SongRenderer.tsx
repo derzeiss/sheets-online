@@ -10,9 +10,10 @@ import { useDebounce } from '~/utils/useDebounce';
 interface Props {
   prosong: string;
   targetKey: Note;
+  textOnly?: boolean;
 }
 
-export const SongRenderer: FC<Props> = ({ prosong, targetKey }) => {
+export const SongRenderer: FC<Props> = ({ prosong, targetKey, textOnly }) => {
   const prosongDebounced = useDebounce(prosong);
   const jsong = useMemo(() => parseSong(prosongDebounced), [prosongDebounced]);
 
@@ -71,9 +72,11 @@ export const SongRenderer: FC<Props> = ({ prosong, targetKey }) => {
               <div key={line.id} className="mt-2 ml-4 flex flex-wrap">
                 {line.content.map((block: Block) => (
                   <div key={block.id}>
-                    <div>
-                      <strong>{block.chord}&nbsp;</strong>
-                    </div>
+                    {!textOnly && (
+                      <div>
+                        <strong>{block.chord}&nbsp;</strong>
+                      </div>
+                    )}
                     <div style={{ height: line.type === 'chords-only' ? 0 : undefined }}>
                       {block.text}
                     </div>
