@@ -20,19 +20,26 @@ export const KeySelectButton: FC<Props> = ({
   const [keyListOpen, setKeyListOpen] = useState(false);
   const $container = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (!$container.current) return;
-    const clientWidth = document.body.clientWidth;
-    const { left, width } = $container.current.getBoundingClientRect();
-    const overlapRight = left + width - clientWidth;
-    if (overlapRight > 0) {
-      $container.current.style.left = overlapRight * -1 - 16 + 'px';
-    }
-  }, [$container.current]);
+  useEffect(() => {}, [$container.current]);
 
   const handleKeySelect = (note: Note) => {
     if (closeOnSelect) setKeyListOpen(false);
     onKeySelect(note);
+  };
+
+  const toggleKeyListOpen = (newState?: boolean) => {
+    if (newState === undefined) newState = !keyListOpen;
+
+    if (newState && $container.current) {
+      const clientWidth = document.body.clientWidth;
+      const { left, width } = $container.current.getBoundingClientRect();
+      const overlapRight = left + width - clientWidth;
+      if (overlapRight > 0) {
+        $container.current.style.left = overlapRight * -1 - 16 + 'px';
+      }
+    }
+
+    setKeyListOpen(newState);
   };
 
   return (
@@ -42,7 +49,7 @@ export const KeySelectButton: FC<Props> = ({
           hidden: !keyListOpen,
           visible: keyListOpen,
         })}
-        onClick={() => setKeyListOpen(false)}
+        onClick={() => toggleKeyListOpen(false)}
       />
       <KeyKeyboard
         ref={$container}
@@ -57,7 +64,7 @@ export const KeySelectButton: FC<Props> = ({
         )}
       />
 
-      <Button type="button" onClick={() => setKeyListOpen(!keyListOpen)}>
+      <Button type="button" onClick={() => toggleKeyListOpen()}>
         ♫ {selectedKey}
       </Button>
     </div>
