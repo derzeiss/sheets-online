@@ -40,3 +40,19 @@ model SetlistItem {
   key   String?
   order Int
 }
+
+model User {
+  id       String    @id @default(cuid()) // TODO: Use cuid in whole app instead of uuid?
+  email    String    @unique
+  name     String    @default("")
+  password Password?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Password {
+  hash   String
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
