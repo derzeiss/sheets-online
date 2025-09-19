@@ -1,5 +1,5 @@
 import type { ComponentProps, FC } from 'react';
-import { cx } from '~/utils/cx';
+import { cx } from '~/domain/utils/cx';
 
 export interface ButtonProps extends ComponentProps<'button'> {}
 

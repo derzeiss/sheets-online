@@ -4,7 +4,7 @@ import type { Note } from '~/domain/chordpro-parser/types/Note';
 import type { ReorderType } from '~/domain/reorder-list/types/ReorderType';
 import { useReorderList } from '~/domain/reorder-list/useReorderList';
 import type { SetlistItemWithSong } from '~/prismaExtensions';
-import { getSongKey } from '~/utils/getSongKey';
+import { getSongKey } from '~/domain/utils/getSongKey';
 import { KeySelectButton } from './KeySelectButton';
 
 interface Props {

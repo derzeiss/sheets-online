@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { cx } from '~/utils/cx';
+import { cx } from '~/domain/utils/cx';
 
 interface Props {
   visible: boolean;

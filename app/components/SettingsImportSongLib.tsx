@@ -1,7 +1,7 @@
 import { useState, useEffect, type ChangeEvent, type FormEvent, type FC } from 'react';
 import { useSubmit, Form } from 'react-router';
-import { cx } from '~/utils/cx';
-import { useBasicStateMachine } from '~/utils/useStateMachine';
+import { cx } from '~/domain/utils/cx';
+import { useBasicStateMachine } from '~/domain/utils/useStateMachine';
 import { Button } from './Button';
 import type { Prisma, Song } from '@prisma/client';
 import { prisma } from '~/domain/prisma';

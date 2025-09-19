@@ -9,12 +9,12 @@ import { SongListItem } from '~/components/SongListItem';
 import { deleteSetlist, upsertSetlist } from '~/dal/setlistDal';
 import { prisma } from '~/domain/prisma';
 import type { ReorderType } from '~/domain/reorder-list/types/ReorderType';
+import { useClientList, type ClientListItem } from '~/domain/utils/useClientList';
 import {
   setlistWithItemsWithSongInclude,
   type SetlistItemWithSong,
   type SetlistWithItemWithSong,
 } from '~/prismaExtensions';
-import { useClientList, type ClientListItem } from '~/utils/useClientList';
 import type { Route } from './+types/setlists_.$id_.edit';
 
 type SetlistItemWithSongClientDTO = ClientListItem<SetlistItemWithSong>;

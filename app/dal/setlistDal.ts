@@ -3,7 +3,7 @@ import { data, redirect } from 'react-router';
 import { prisma } from '~/domain/prisma';
 import { setlistItemSchema, setlistSchema } from '~/schemas';
 import type { FormValues } from '~/types/FormValues';
-import type { ClientListItem } from '~/utils/useClientList';
+import type { ClientListItem } from '~/domain/utils/useClientList';
 
 export async function upsertSetlist(values: FormValues) {
   if (typeof values.items !== 'string') return data('"setlistItems" must be JSON string.');

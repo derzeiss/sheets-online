@@ -1,4 +1,4 @@
-import { toArrayIndex } from '~/utils/toArrayIndex';
+import { toArrayIndex } from '~/domain/utils/toArrayIndex';
 import { KEYS_FLAT, NASHVILLE_FLAT, NASHVILLE_SHARP, NOTES_FLAT, NOTES_SHARP } from './constants';
 import { isNashville, isNote } from './typeguards';
 import type { Nashville } from './types/Nashville';

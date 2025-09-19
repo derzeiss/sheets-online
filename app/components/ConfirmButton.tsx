@@ -1,5 +1,5 @@
 import { useState, type ComponentProps, type FC, type MouseEvent, type ReactNode } from 'react';
-import { cx } from '~/utils/cx';
+import { cx } from '~/domain/utils/cx';
 
 interface Props extends ComponentProps<'button'> {
   childrenConfirm?: ReactNode;

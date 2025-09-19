@@ -5,7 +5,7 @@ import { lineIsComment, lineIsWithChords } from '~/domain/chordpro-parser/typegu
 import type { Block } from '~/domain/chordpro-parser/types/Block';
 import type { Note } from '~/domain/chordpro-parser/types/Note';
 import type { SongLine } from '~/domain/chordpro-parser/types/SongLine';
-import { useDebounce } from '~/utils/useDebounce';
+import { useDebounce } from '~/domain/utils/useDebounce';
 
 interface Props {
   prosong: string;
