@@ -1,5 +1,5 @@
 import type { FC, RefObject } from 'react';
-import type { Note } from '~/modules/chordpro-parser/types/Note';
+import type { Note } from '~/domain/chordpro-parser/types/Note';
 import { cx } from '~/utils/cx';
 import { Button, type ButtonProps } from './Button';
 

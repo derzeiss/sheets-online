@@ -1,8 +1,8 @@
 import { useMemo, type FC } from 'react';
-import { isNote } from '~/modules/chordpro-parser/typeguards';
-import type { Note } from '~/modules/chordpro-parser/types/Note';
-import type { ReorderType } from '~/modules/reorder-list/types/ReorderType';
-import { useReorderList } from '~/modules/reorder-list/useReorderList';
+import { isNote } from '~/domain/chordpro-parser/typeguards';
+import type { Note } from '~/domain/chordpro-parser/types/Note';
+import type { ReorderType } from '~/domain/reorder-list/types/ReorderType';
+import { useReorderList } from '~/domain/reorder-list/useReorderList';
 import type { SetlistItemWithSong } from '~/prismaExtensions';
 import { getSongKey } from '~/utils/getSongKey';
 import { KeySelectButton } from './KeySelectButton';

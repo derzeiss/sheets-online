@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
 import { ButtonLink } from '~/components/ButtonLink';
 import { SetlistListItem } from '~/components/SetlistListItem';
-import { prisma } from '~/modules/prisma';
+import { prisma } from '~/domain/prisma';
 import type { Route } from './+types/setlists';
 
 export const loader = async () => {

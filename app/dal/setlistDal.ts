@@ -1,6 +1,6 @@
 import type { Prisma, Setlist, SetlistItem } from '@prisma/client';
 import { data, redirect } from 'react-router';
-import { prisma } from '~/modules/prisma';
+import { prisma } from '~/domain/prisma';
 import { setlistItemSchema, setlistSchema } from '~/schemas';
 import type { FormValues } from '~/types/FormValues';
 import type { ClientListItem } from '~/utils/useClientList';

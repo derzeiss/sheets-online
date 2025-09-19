@@ -1,6 +1,6 @@
 import type { FC } from 'react';
-import { NOTES_SHARP } from '~/modules/chordpro-parser/constants';
-import type { Note } from '~/modules/chordpro-parser/types/Note';
+import { NOTES_SHARP } from '~/domain/chordpro-parser/constants';
+import type { Note } from '~/domain/chordpro-parser/types/Note';
 
 interface Props {
   targetKey: Note;

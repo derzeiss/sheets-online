@@ -6,10 +6,10 @@ import { ConfirmButton } from '~/components/ConfirmButton';
 import { KeySelectButton } from '~/components/KeySelectButton';
 import { SongRenderer } from '~/components/SongRenderer';
 import { deleteSong, upsertSong } from '~/dal/songDal';
-import { parseSong } from '~/modules/chordpro-parser/parser';
-import { isNote } from '~/modules/chordpro-parser/typeguards';
-import type { Note } from '~/modules/chordpro-parser/types/Note';
-import { prisma } from '~/modules/prisma';
+import { parseSong } from '~/domain/chordpro-parser/parser';
+import { isNote } from '~/domain/chordpro-parser/typeguards';
+import type { Note } from '~/domain/chordpro-parser/types/Note';
+import { prisma } from '~/domain/prisma';
 import type { Route } from './+types/songs_.$id_.edit';
 
 const songBlueprint = `{title: }

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FC } from 'react';
-import type { Note } from '~/modules/chordpro-parser/types/Note';
+import type { Note } from '~/domain/chordpro-parser/types/Note';
 import { cx } from '~/utils/cx';
 import { Button } from './Button';
 import { KeyKeyboard } from './KeyKeyboard';

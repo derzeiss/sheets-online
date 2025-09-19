@@ -1,10 +1,10 @@
 import { useMemo, type FC } from 'react';
-import { parseSong } from '~/modules/chordpro-parser/parser';
-import { transposeSong } from '~/modules/chordpro-parser/transposer';
-import { lineIsComment, lineIsWithChords } from '~/modules/chordpro-parser/typeguards';
-import type { Block } from '~/modules/chordpro-parser/types/Block';
-import type { Note } from '~/modules/chordpro-parser/types/Note';
-import type { SongLine } from '~/modules/chordpro-parser/types/SongLine';
+import { parseSong } from '~/domain/chordpro-parser/parser';
+import { transposeSong } from '~/domain/chordpro-parser/transposer';
+import { lineIsComment, lineIsWithChords } from '~/domain/chordpro-parser/typeguards';
+import type { Block } from '~/domain/chordpro-parser/types/Block';
+import type { Note } from '~/domain/chordpro-parser/types/Note';
+import type { SongLine } from '~/domain/chordpro-parser/types/SongLine';
 import { useDebounce } from '~/utils/useDebounce';
 
 interface Props {

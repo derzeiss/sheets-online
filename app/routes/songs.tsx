@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
 import { ButtonLink } from '~/components/ButtonLink';
 import { SongListItem } from '~/components/SongListItem';
-import { prisma } from '~/modules/prisma';
+import { prisma } from '~/domain/prisma';
 import type { Route } from './+types/songs';
 import { useState, useRef, useMemo } from 'react';
 

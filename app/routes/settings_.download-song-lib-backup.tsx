@@ -1,4 +1,4 @@
-import { prisma } from '~/modules/prisma';
+import { prisma } from '~/domain/prisma';
 
 export async function loader() {
   const songs = await prisma.song.findMany({ orderBy: { title: 'asc' } });

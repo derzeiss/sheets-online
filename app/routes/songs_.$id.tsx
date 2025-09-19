@@ -3,8 +3,8 @@ import { data } from 'react-router';
 import { ButtonLink } from '~/components/ButtonLink';
 import { KeySelectButton } from '~/components/KeySelectButton';
 import { SongRenderer } from '~/components/SongRenderer';
-import type { Note } from '~/modules/chordpro-parser/types/Note';
-import { prisma } from '~/modules/prisma';
+import type { Note } from '~/domain/chordpro-parser/types/Note';
+import { prisma } from '~/domain/prisma';
 import type { Route } from './+types/songs_.$id';
 
 export async function loader({ params }: Route.LoaderArgs) {

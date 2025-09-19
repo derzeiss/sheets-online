@@ -1,5 +1,5 @@
-import { isNote } from '~/modules/chordpro-parser/typeguards';
-import type { Note } from '~/modules/chordpro-parser/types/Note';
+import { isNote } from '~/domain/chordpro-parser/typeguards';
+import type { Note } from '~/domain/chordpro-parser/types/Note';
 import type { SetlistItemWithSong } from '~/prismaExtensions';
 
 // Kinda duplicate in ./getSongKey.ts

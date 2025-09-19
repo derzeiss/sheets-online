@@ -3,7 +3,7 @@ import { ButtonLink } from '~/components/ButtonLink';
 import { ConfirmButton } from '~/components/ConfirmButton';
 import { SongListItem } from '~/components/SongListItem';
 import { deleteSetlist } from '~/dal/setlistDal';
-import { prisma } from '~/modules/prisma';
+import { prisma } from '~/domain/prisma';
 import { setlistWithItemsWithSongInclude } from '~/prismaExtensions';
 import type { Route } from './+types/setlists_.$id';
 

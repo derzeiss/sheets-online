@@ -1,6 +1,6 @@
 import type { Setlist } from '@prisma/client';
 import { data, redirect } from 'react-router';
-import { prisma } from '~/modules/prisma';
+import { prisma } from '~/domain/prisma';
 import { songSchema } from '~/schemas';
 import type { FormValues } from '~/types/FormValues';
 

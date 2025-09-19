@@ -7,8 +7,8 @@ import { ConfirmButton } from '~/components/ConfirmButton';
 import { SetlistItemEdit } from '~/components/SetlistItemEdit';
 import { SongListItem } from '~/components/SongListItem';
 import { deleteSetlist, upsertSetlist } from '~/dal/setlistDal';
-import { prisma } from '~/modules/prisma';
-import type { ReorderType } from '~/modules/reorder-list/types/ReorderType';
+import { prisma } from '~/domain/prisma';
+import type { ReorderType } from '~/domain/reorder-list/types/ReorderType';
 import {
   setlistWithItemsWithSongInclude,
   type SetlistItemWithSong,
