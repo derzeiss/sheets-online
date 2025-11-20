@@ -5,7 +5,7 @@ import { KeySelectButton } from '~/components/KeySelectButton';
 import { SongRenderer } from '~/components/SongRenderer';
 import type { Note } from '~/domain/chordpro-parser/types/Note';
 import { prisma } from '~/domain/prisma';
-import type { Route } from './+types/songs_.$id';
+import type { Route } from './+types/$id';
 
 export async function loader({ params }: Route.LoaderArgs) {
   const song = await prisma.song.findFirst({ where: { id: params.id } });

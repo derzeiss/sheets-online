@@ -1,9 +1,10 @@
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import { ButtonLink } from '~/components/ButtonLink';
 import { SongListItem } from '~/components/SongListItem';
+import { Textbox } from '~/components/Textbox';
 import { prisma } from '~/domain/prisma';
-import type { Route } from './+types/songs';
-import { useState, useRef, useMemo } from 'react';
+import type { Route } from './+types';
 
 export const loader = async () => {
   const songs = await prisma.song.findMany({ orderBy: { title: 'asc' } });
@@ -27,8 +28,8 @@ export default function SongsRoute({ loaderData }: Route.ComponentProps) {
 
       <ButtonLink to="/songs/new/edit">+ Add Song</ButtonLink>
 
-      <input
-        className="mt-3 w-full rounded-lg border border-neutral-300 px-3 py-2"
+      <Textbox
+        className="mt-3"
         value={songQuery}
         onChange={(ev) => setSongQuery(ev.target.value)}
         placeholder="Search songs..."

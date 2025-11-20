@@ -20,8 +20,6 @@ export const KeySelectButton: FC<Props> = ({
   const [keyListOpen, setKeyListOpen] = useState(false);
   const $container = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {}, [$container.current]);
-
   const handleKeySelect = (note: Note) => {
     if (closeOnSelect) setKeyListOpen(false);
     onKeySelect(note);

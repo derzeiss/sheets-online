@@ -16,6 +16,10 @@
   @apply cursor-pointer transition-colors hover:bg-neutral-200 active:bg-neutral-300 active:transition-none;
 }
 
+@utility inline-link {
+  @apply hover:underline;
+}
+
 .rl--drop-top:after {
   content: '';
   @apply pointer-events-none absolute -top-px left-0 z-10 block h-[3px] w-full bg-neutral-400;

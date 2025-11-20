@@ -5,12 +5,12 @@ import { ButtonLink } from '~/components/ButtonLink';
 import { ConfirmButton } from '~/components/ConfirmButton';
 import { KeySelectButton } from '~/components/KeySelectButton';
 import { SongRenderer } from '~/components/SongRenderer';
-import { deleteSong, upsertSong } from '~/dal/songDal';
 import { parseSong } from '~/domain/chordpro-parser/parser';
 import { isNote } from '~/domain/chordpro-parser/typeguards';
 import type { Note } from '~/domain/chordpro-parser/types/Note';
 import { prisma } from '~/domain/prisma';
-import type { Route } from './+types/songs_.$id_.edit';
+import { deleteSong, upsertSong } from '~/domain/song/songDal';
+import type { Route } from './+types/$id.edit';
 
 const songBlueprint = `{title: }
 {artist: }

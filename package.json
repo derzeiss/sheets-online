@@ -14,7 +14,6 @@
   "dependencies": {
     "@flydotio/litestream": "^1.0.1",
     "@prisma/client": "^6.16.2",
-    "@react-router/fs-routes": "^7.9.1",
     "@react-router/node": "^7.9.1",
     "@react-router/serve": "^7.9.1",
     "isbot": "^5.1.30",

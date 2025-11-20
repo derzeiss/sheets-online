@@ -6,16 +6,17 @@ import { ButtonLink } from '~/components/ButtonLink';
 import { ConfirmButton } from '~/components/ConfirmButton';
 import { SetlistItemEdit } from '~/components/SetlistItemEdit';
 import { SongListItem } from '~/components/SongListItem';
-import { deleteSetlist, upsertSetlist } from '~/dal/setlistDal';
+import { Textbox } from '~/components/Textbox';
 import { prisma } from '~/domain/prisma';
 import type { ReorderType } from '~/domain/reorder-list/types/ReorderType';
+import { deleteSetlist, upsertSetlist } from '~/domain/setlist/setlistDal';
 import { useClientList, type ClientListItem } from '~/domain/utils/useClientList';
 import {
   setlistWithItemsWithSongInclude,
   type SetlistItemWithSong,
   type SetlistWithItemWithSong,
 } from '~/prismaExtensions';
-import type { Route } from './+types/setlists_.$id_.edit';
+import type { Route } from './+types/$id.edit';
 
 type SetlistItemWithSongClientDTO = ClientListItem<SetlistItemWithSong>;
 
@@ -157,20 +158,15 @@ export default function SetlistsEditRoute({ loaderData }: Route.ComponentProps) 
         <label htmlFor="name" className="mb-1 block text-sm font-semibold">
           Setlist Name
         </label>
-        <input
-          id="name"
-          name="name"
-          className="w-full rounded-lg border border-neutral-300 px-3 py-2"
-          defaultValue={setlist.name}
-          required
-        />
+
+        <Textbox id="name" name="name" defaultValue={setlist.name} required />
 
         <h2 className="mt-6 text-2xl">Songs</h2>
 
         <ul className="mt-4">
           {setlistItems
             .filter((item) => !item._deleted)
-            .map((item, index) => (
+            .map((item) => (
               <SetlistItemEdit
                 key={item.id}
                 item={item}
@@ -183,8 +179,8 @@ export default function SetlistsEditRoute({ loaderData }: Route.ComponentProps) 
 
         <h2 className="mt-6 text-2xl">Add songs</h2>
 
-        <input
-          className="mt-3 w-full rounded-lg border border-neutral-300 px-3 py-2"
+        <Textbox
+          className="mt-3"
           value={songQuery}
           onChange={(ev) => setSongQuery(ev.target.value)}
           placeholder="Filter songs..."

@@ -12,7 +12,7 @@ import type { Note } from '~/domain/chordpro-parser/types/Note';
 import { prisma } from '~/domain/prisma';
 import { cx } from '~/domain/utils/cx';
 import { setlistWithItemsWithSongInclude, type SetlistWithItemWithSong } from '~/prismaExtensions';
-import type { Route } from './+types/setlists_.$id_.play';
+import type { Route } from './+types/$id.play';
 
 export async function loader({ params }: Route.LoaderArgs) {
   const setlist = await prisma.setlist.findFirst({

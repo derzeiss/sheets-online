@@ -1,8 +1,8 @@
 import type { Setlist } from '@prisma/client';
 import { data, redirect } from 'react-router';
 import { prisma } from '~/domain/prisma';
-import { songSchema } from '~/schemas';
 import type { FormValues } from '~/types/FormValues';
+import { songSchema } from './song.schema';
 
 export async function upsertSong(id: string, values: FormValues) {
   const song = songSchema.parse(values);

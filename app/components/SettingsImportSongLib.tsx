@@ -5,7 +5,7 @@ import { useBasicStateMachine } from '~/domain/utils/useStateMachine';
 import { Button } from './Button';
 import type { Prisma, Song } from '@prisma/client';
 import { prisma } from '~/domain/prisma';
-import type { Route } from '../routes/+types/settings';
+import type { Route } from '../routes/settings/+types';
 
 export const ACTION_IMPORT_SONG_LIB = 'import-song-lib-backup';
 const FIELD_SONG_LIB = 'song-lib-json';
