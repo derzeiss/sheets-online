@@ -22,7 +22,7 @@ export default function SetsRoute({ loaderData }: Route.ComponentProps) {
 
       <ul className="mt-4">
         {setlists.map((setlist) => (
-          <Link key={setlist.id} to={`/setlists/${setlist.id}`} className="clickable block">
+          <Link key={setlist.id} to={`/setlists/${setlist.slug}`} className="clickable block">
             <SetlistListItem setlist={setlist} />
           </Link>
         ))}

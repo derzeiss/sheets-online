@@ -41,6 +41,7 @@ const reorderSetlistItems = (
 
 const blankSetlist: SetlistWithItemWithSong = {
   id: 'new',
+  slug: '',
   name: '',
   songAmount: 0,
   items: [],
@@ -52,13 +53,13 @@ export async function loader({ params }: Route.LoaderArgs) {
   const songs = await prisma.song.findMany({ orderBy: { title: 'asc' } });
   if (!songs) throw data('Error while fetching songs for setlist.', { status: 500 });
 
-  if (params.id === 'new') return { setlist: { ...blankSetlist }, songs };
+  if (params.slug === 'new') return { setlist: { ...blankSetlist }, songs };
 
   const setlist = await prisma.setlist.findFirst({
-    where: { id: params.id },
+    where: { slug: params.slug },
     include: setlistWithItemsWithSongInclude,
   });
-  if (!setlist) throw data(`Setlist "${params.id}" not found.`, { status: 404 });
+  if (!setlist) throw data(`Setlist "${params.slug}" not found.`, { status: 404 });
 
   return { setlist, songs };
 }

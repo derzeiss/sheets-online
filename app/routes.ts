@@ -12,10 +12,10 @@ export default [
   ]),
 
   ...prefix('setlists', [
-    index('routes/setlists/index.tsx'),
-    route(':id/edit', 'routes/setlists/$id.edit.tsx'),
-    route(':id', 'routes/setlists/$id.tsx'),
-    route(':id/play', 'routes/setlists/$id.play.tsx'),
+    index('routes/setlists/index.tsx'), // protected
+    route(':slug/edit', 'routes/setlists/$id.edit.tsx'), // protected
+    route(':slug', 'routes/setlists/$id.tsx'),
+    route(':slug/play', 'routes/setlists/$id.play.tsx'),
   ]),
 
   layout('routes/auth/withAuth.tsx', [

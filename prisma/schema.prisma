@@ -24,6 +24,7 @@ model Song {
 
 model Setlist {
   id         String        @id @default(uuid())
+  slug       String        @unique
   name       String
   songAmount Int
   items      SetlistItem[]

@@ -1,8 +1,10 @@
 import type { Prisma, Setlist, SetlistItem } from '@prisma/client';
 import { data, redirect } from 'react-router';
 import { prisma } from '~/domain/prisma';
-import type { FormValues } from '~/types/FormValues';
 import type { ClientListItem } from '~/domain/utils/useClientList';
+import type { FormValues } from '~/types/FormValues';
+import { findNextUniqueSlug } from '../utils/findNextUniqueSlug.server';
+import { toSlug } from '../utils/toSlug';
 import { setlistItemSchema, setlistSchema } from './setlist.schema';
 
 export async function upsertSetlist(values: FormValues) {
@@ -30,10 +32,13 @@ export async function upsertSetlist(values: FormValues) {
 
   let querySetlist: Prisma.Prisma__SetlistClient<Setlist>;
   if (setlist.id === 'new') {
+    const slug = await findNextUniqueSlug(prisma.setlist.findUnique, toSlug(setlist.name));
+
     querySetlist = prisma.setlist.create({
       data: {
         ...setlist,
         id: undefined,
+        slug,
         items: { create: itemsAdded },
       },
     });
@@ -61,7 +66,7 @@ export async function upsertSetlist(values: FormValues) {
   ]);
 
   if (!results.length) return redirect('/setlists');
-  return redirect(`/setlists/${results[0].id}`);
+  return redirect(`/setlists/${results[0].slug}`);
 }
 
 export async function deleteSetlist(id: string) {

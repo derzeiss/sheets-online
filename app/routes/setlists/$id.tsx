@@ -14,10 +14,10 @@ const QR_CODE_SIZE = 400;
 
 export async function loader({ params }: Route.LoaderArgs) {
   const setlist = await prisma.setlist.findFirst({
-    where: { id: params.id },
+    where: { slug: params.slug },
     include: setlistWithItemsWithSongInclude,
   });
-  if (!setlist) throw data(`Setlist "${params.id}" not found.`, { status: 404 });
+  if (!setlist) throw data(`Setlist "${params.slug}" not found.`, { status: 404 });
 
   return { setlist };
 }
