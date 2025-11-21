@@ -13,7 +13,7 @@ const passwordSchema = z
   .refine((password) => /[0-9]/.test(password), {
     message: 'Your password should contain at least one digit',
   })
-  .refine((password) => /[!@#$%^&*]/.test(password), {
+  .refine((password) => /[!@#$%^&*_-]/.test(password), {
     message: 'Your password should contain at least one special character (!@#$%^&*)',
   });
 

@@ -1,3 +1,4 @@
+import { href } from 'react-router';
 import { ButtonLink } from '~/components/ButtonLink';
 import {
   ACTION_IMPORT_SONG_LIB,
@@ -5,7 +6,6 @@ import {
   SettingsImportSongLib,
 } from '~/components/SettingsImportSongLib';
 import type { Route } from './+types';
-import { href } from 'react-router';
 
 export async function action({ request }: Route.ActionArgs) {
   const formData = await request.formData();
@@ -18,21 +18,17 @@ export async function action({ request }: Route.ActionArgs) {
 
 export default function SettingsRoute({ actionData }: Route.ComponentProps) {
   return (
-    <main className="content my-10 max-w-3xl">
-      <h1 className="mb-4 text-5xl">Settings</h1>
+    <section className="my-8">
+      <h2 className="text-2xl">Import / Export Song Library</h2>
+      <ButtonLink to={href('/settings/download-song-lib')} reloadDocument className="mt-4">
+        Download Song Library Backup
+      </ButtonLink>
 
-      <section className="my-8">
-        <h2 className="text-2xl">Import / Export Song Library</h2>
-        <ButtonLink to={href('/settings/download-song-lib')} reloadDocument className="mt-4">
-          Download Song Library Backup
-        </ButtonLink>
+      <SettingsImportSongLib actionData={actionData} />
 
-        <SettingsImportSongLib actionData={actionData} />
-
-        <ButtonLink to={href('/auth/logout')} className="mt-4">
-          Logout
-        </ButtonLink>
-      </section>
-    </main>
+      <ButtonLink to={href('/auth/logout')} className="mt-4">
+        Logout
+      </ButtonLink>
+    </section>
   );
 }

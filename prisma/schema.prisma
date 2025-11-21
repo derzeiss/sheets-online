@@ -47,8 +47,17 @@ model User {
   name     String    @default("")
   password Password?
 
+  role     UserRole @default(default)
+  isActive Boolean  @default(false)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum UserRole {
+  default
+  moderator
+  admin
 }
 
 model Password {

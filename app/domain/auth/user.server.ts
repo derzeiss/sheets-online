@@ -1,5 +1,6 @@
 import { hash } from 'node:crypto';
-import { redirect } from 'react-router';
+import { href, redirect } from 'react-router';
+import { SYS_ADMIN_EMAIL } from '~/config';
 import { prisma } from '../prisma';
 import type { UserLoginDto } from './login.schema';
 import type { UserRegisterDto } from './register.schema';
@@ -23,11 +24,12 @@ export async function getUserByEmail(email: string) {
 export async function register(
   request: Request,
   userDto: UserRegisterDto,
-  redirectUrl = '/',
 ): Promise<Response | ErrorsFor<UserRegisterDto>> {
   const { name, email, password } = userDto;
   const existingUser = await getUserByEmail(email);
   if (existingUser) return { errors: { email: 'Email already exists' } };
+
+  const isSysAdmin = email === SYS_ADMIN_EMAIL;
 
   // Create a new user
   try {
@@ -36,17 +38,24 @@ export async function register(
         name,
         email,
         password: { create: { hash: hash('sha256', password) } },
+        isActive: isSysAdmin,
+        role: isSysAdmin ? 'admin' : 'default',
       },
     });
+
+    if (!isSysAdmin) {
+      return redirect(href('/auth/waiting-for-approval'));
+    }
 
     const authSession = await getSession(request);
     authSession.set('user', {
       id: newUser.id,
       name: newUser.name,
       email: newUser.email,
+      role: newUser.role,
     });
 
-    return redirect(redirectUrl, {
+    return redirect(href('/settings'), {
       headers: {
         'Set-Cookie': await commitSession(authSession),
       },
@@ -72,18 +81,22 @@ export async function login(
       id: true,
       email: true,
       name: true,
+      isActive: true,
+      role: true,
     },
   });
 
   if (!user) {
     return { errors: { email: LOGIN_ERR_MSG } };
   }
+  if (!user.isActive) return redirect(href('/auth/waiting-for-approval'));
 
   const authSession = await getSession(request);
   authSession.set('user', {
     id: user.id,
     name: user.name,
     email: user.email,
+    role: user.role,
   });
 
   return redirect(redirectUrl, {

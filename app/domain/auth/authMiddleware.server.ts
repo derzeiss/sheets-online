@@ -1,3 +1,4 @@
+import type { UserRole } from '@prisma/client';
 import { createContext, redirect, type MiddlewareFunction } from 'react-router';
 import { hrefQuery } from '../utils/hrefQuery';
 import { getSession } from './session.server';
@@ -5,7 +6,7 @@ import type { SessionUser } from './types/SessionUser';
 
 export const userContext = createContext<SessionUser | null>(null);
 
-export const requireUser: MiddlewareFunction<Response> = async ({ request, context }, next) => {
+export const requireUser: MiddlewareFunction<Response> = async ({ request, context }) => {
   const session = await getSession(request);
   const user = session.get('user');
 
@@ -14,6 +15,14 @@ export const requireUser: MiddlewareFunction<Response> = async ({ request, conte
   }
 
   context.set(userContext, user);
+};
 
-  return next();
+export const requireRole: (...roles: UserRole[]) => MiddlewareFunction<Response> = (roles) => {
+  return async ({ context }) => {
+    const user = context.get(userContext);
+
+    if (!user || !roles.includes(user.role)) {
+      throw redirect('/404');
+    }
+  };
 };

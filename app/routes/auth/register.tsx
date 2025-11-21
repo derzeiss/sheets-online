@@ -6,7 +6,6 @@ import { registerFormSchema, type UserRegisterDto } from '~/domain/auth/register
 import { register } from '~/domain/auth/user.server';
 import { useFormBucket } from '~/domain/form/useFormBucket';
 import { formatZodError } from '~/domain/utils/formatZodError';
-import { getQueryParam } from '~/domain/utils/getQueryParam';
 import type { Route } from './+types/register';
 
 export const action = async ({ request }: Route.ActionArgs) => {
@@ -15,11 +14,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
 
   const parseResult = registerFormSchema.safeParse(values);
   if (!parseResult.success) return { errors: formatZodError(parseResult.error) };
-  return await register(
-    request,
-    parseResult.data,
-    getQueryParam(request, 'redirect') || '/setlists',
-  );
+  return await register(request, parseResult.data);
 };
 
 export default function RegisterRoute({ actionData }: Route.ComponentProps) {
@@ -83,7 +78,6 @@ export default function RegisterRoute({ actionData }: Route.ComponentProps) {
           Already have an Account?
         </Link>
       </Form>
-      <pre>{JSON.stringify(formData, null, 2)}</pre>
     </main>
   );
 }

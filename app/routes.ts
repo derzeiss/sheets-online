@@ -8,6 +8,7 @@ export default [
     route('logout', 'routes/auth/logout.tsx'),
     route('register', 'routes/auth/register.tsx'),
     route('forgot-password', 'routes/auth/forgot-password.tsx'),
+    route('waiting-for-approval', 'routes/auth/waiting-for-approval.tsx'),
   ]),
 
   layout('routes/auth/withAuth.tsx', [
@@ -24,8 +25,9 @@ export default [
       route(':id/edit', 'routes/songs/$id.edit.tsx'),
     ]),
 
-    ...prefix('settings', [
+    route('settings', 'routes/settings/layout.tsx', [
       index('routes/settings/index.tsx'),
+      route('user-admin', 'routes/settings/user-admin.tsx'),
       route('download-song-lib', 'routes/settings/download-song-lib.tsx'),
     ]),
   ]),

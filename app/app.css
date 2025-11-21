@@ -33,3 +33,7 @@
 .rl--is-dragged {
   @apply opacity-50;
 }
+
+a.active {
+  @apply bg-neutral-100;
+}
