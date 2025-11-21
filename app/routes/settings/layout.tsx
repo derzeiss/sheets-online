@@ -4,6 +4,8 @@ import type { Route } from './+types/layout';
 
 export const middleware: Route.MiddlewareFunction[] = [requireRole('admin')];
 
+export const loader = () => null;
+
 export default function () {
   return (
     <main className="content my-10 max-w-3xl">
