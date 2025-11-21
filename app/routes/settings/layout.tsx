@@ -2,7 +2,7 @@ import { href, NavLink, Outlet } from 'react-router';
 import { requireRole } from '~/domain/auth/authMiddleware.server';
 import type { Route } from './+types/layout';
 
-export const middleware: Route.MiddlewareFunction[] = [requireRole('admin')];
+// export const middleware: Route.MiddlewareFunction[] = [requireRole('admin')];
 
 export const loader = () => null;
 
