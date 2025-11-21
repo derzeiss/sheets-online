@@ -1,4 +1,7 @@
+import QRCode from 'qrcode';
+import { useRef } from 'react';
 import { data, Form, Link } from 'react-router';
+import { Button } from '~/components/Button';
 import { ButtonLink } from '~/components/ButtonLink';
 import { ConfirmButton } from '~/components/ConfirmButton';
 import { SongListItem } from '~/components/SongListItem';
@@ -6,6 +9,8 @@ import { prisma } from '~/domain/prisma';
 import { deleteSetlist } from '~/domain/setlist/setlistDal';
 import { setlistWithItemsWithSongInclude } from '~/prismaExtensions';
 import type { Route } from './+types/$id';
+
+const QR_CODE_SIZE = 400;
 
 export async function loader({ params }: Route.LoaderArgs) {
   const setlist = await prisma.setlist.findFirst({
@@ -30,12 +35,24 @@ export async function action({ request }: Route.ActionArgs) {
 
 export default function SetlistRoute({ loaderData }: Route.ComponentProps) {
   const { setlist } = loaderData;
+  const qrCodeRef = useRef<HTMLCanvasElement>(null);
+
+  const toggleQrCode = () => {
+    if (!qrCodeRef.current) return;
+    QRCode.toCanvas(qrCodeRef.current, location.href, {
+      errorCorrectionLevel: 'H',
+      width: QR_CODE_SIZE,
+    });
+    qrCodeRef.current.classList.toggle('hidden');
+  };
+
   return (
     <main className="content my-10 max-w-3xl">
       <div className="mb-4 flex gap-2">
         <ButtonLink to="/setlists">← Back</ButtonLink>
         <ButtonLink to="edit">Edit Setlist</ButtonLink>
         <ButtonLink to="play">▶︎ Play</ButtonLink>
+        <Button onClick={toggleQrCode}>↪︎ Share</Button>
 
         <Form method="post" className="ml-auto">
           <input type="hidden" name="id" value={setlist.id} />
@@ -45,6 +62,8 @@ export default function SetlistRoute({ loaderData }: Route.ComponentProps) {
           </ConfirmButton>
         </Form>
       </div>
+
+      <canvas className="hidden" ref={qrCodeRef} width={QR_CODE_SIZE} height={QR_CODE_SIZE} />
 
       <h1 className="text-4xl">{setlist.name}</h1>
       <div className="text-neutral-600">{setlist.songAmount} Songs</div>

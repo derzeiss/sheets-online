@@ -11,11 +11,13 @@
     "Perc",
     "prisma",
     "prosong",
+    "qrcode",
     "rlid",
     "setlist",
     "setlists",
     "sqlite",
     "typeguards",
     "uuid"
-  ]
+  ],
+  "prisma.pinToPrisma6": true
 }
