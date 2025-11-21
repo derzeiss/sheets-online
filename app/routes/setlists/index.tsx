@@ -1,8 +1,11 @@
 import { Link } from 'react-router';
 import { ButtonLink } from '~/components/ButtonLink';
 import { SetlistListItem } from '~/components/SetlistListItem';
+import { requireUser } from '~/domain/auth/authMiddleware.server';
 import { prisma } from '~/domain/prisma';
 import type { Route } from './+types';
+
+export const middleware: Route.MiddlewareFunction[] = [requireUser];
 
 export const loader = async () => {
   const setlists = await prisma.setlist.findMany();

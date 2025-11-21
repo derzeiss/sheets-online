@@ -11,14 +11,14 @@ export default [
     route('waiting-for-approval', 'routes/auth/waiting-for-approval.tsx'),
   ]),
 
-  layout('routes/auth/withAuth.tsx', [
-    ...prefix('setlists', [
-      index('routes/setlists/index.tsx'),
-      route(':id', 'routes/setlists/$id.tsx'),
-      route(':id/edit', 'routes/setlists/$id.edit.tsx'),
-      route(':id/play', 'routes/setlists/$id.play.tsx'),
-    ]),
+  ...prefix('setlists', [
+    index('routes/setlists/index.tsx'),
+    route(':id/edit', 'routes/setlists/$id.edit.tsx'),
+    route(':id', 'routes/setlists/$id.tsx'),
+    route(':id/play', 'routes/setlists/$id.play.tsx'),
+  ]),
 
+  layout('routes/auth/withAuth.tsx', [
     ...prefix('songs', [
       index('routes/songs/index.tsx'),
       route(':id', 'routes/songs/$id.tsx'),

@@ -7,6 +7,7 @@ import { ConfirmButton } from '~/components/ConfirmButton';
 import { SetlistItemEdit } from '~/components/SetlistItemEdit';
 import { SongListItem } from '~/components/SongListItem';
 import { Textbox } from '~/components/Textbox';
+import { requireUser } from '~/domain/auth/authMiddleware.server';
 import { prisma } from '~/domain/prisma';
 import type { ReorderType } from '~/domain/reorder-list/types/ReorderType';
 import { deleteSetlist, upsertSetlist } from '~/domain/setlist/setlistDal';
@@ -44,6 +45,8 @@ const blankSetlist: SetlistWithItemWithSong = {
   songAmount: 0,
   items: [],
 };
+
+export const middleware: Route.MiddlewareFunction[] = [requireUser];
 
 export async function loader({ params }: Route.LoaderArgs) {
   const songs = await prisma.song.findMany({ orderBy: { title: 'asc' } });
