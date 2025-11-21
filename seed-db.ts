@@ -2,7 +2,7 @@ import { PrismaClient, type Song } from '@prisma/client';
 import { readdirSync, readFileSync } from 'fs';
 import path from 'path';
 import { parseSong } from '~/domain/chordpro-parser/parser';
-import { songSchema } from '~/schemas';
+import { songSchema } from '~/domain/song/song.schema';
 
 const dir = path.join(import.meta.dirname, 'songs');
 const prisma = new PrismaClient();

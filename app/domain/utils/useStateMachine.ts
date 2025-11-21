@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export type BasicState = 'initial' | 'loading' | 'success' | 'error' | 'info';
+export type BasicState = 'idle' | 'loading' | 'success' | 'error' | 'info';
 
 export const useStateMachine = <T>(initialState: T) => {
   const [state, setState] = useState<T>(initialState);
@@ -18,6 +18,6 @@ export const useStateMachine = <T>(initialState: T) => {
   return { state, msg, nextState };
 };
 
-export const useBasicStateMachine = (initialState: BasicState = 'initial') => {
+export const useBasicStateMachine = (initialState: BasicState = 'idle') => {
   return useStateMachine(initialState);
 };

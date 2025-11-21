@@ -2,9 +2,10 @@ import { href } from 'react-router';
 import { ButtonLink } from '~/components/ButtonLink';
 import {
   ACTION_IMPORT_SONG_LIB,
-  actionImportSongs,
+  FIELD_SONG_LIB,
   SettingsImportSongLib,
 } from '~/components/SettingsImportSongLib';
+import { importSongFile } from '~/domain/song/importSongs.server';
 import type { Route } from './+types';
 
 export async function action({ request }: Route.ActionArgs) {
@@ -12,7 +13,7 @@ export async function action({ request }: Route.ActionArgs) {
   const values = Object.fromEntries(formData);
 
   if (values._action === ACTION_IMPORT_SONG_LIB) {
-    return actionImportSongs(values);
+    return importSongFile(values[FIELD_SONG_LIB]);
   }
 }
 
@@ -24,7 +25,7 @@ export default function SettingsRoute({ actionData }: Route.ComponentProps) {
         Download Song Library Backup
       </ButtonLink>
 
-      <SettingsImportSongLib actionData={actionData} />
+      <SettingsImportSongLib statusMsg={actionData} />
 
       <ButtonLink to={href('/auth/logout')} className="mt-4">
         Logout

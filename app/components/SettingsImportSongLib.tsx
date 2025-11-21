@@ -1,59 +1,18 @@
-import { useState, useEffect, type ChangeEvent, type FormEvent, type FC } from 'react';
-import { useSubmit, Form } from 'react-router';
+import { useEffect, useState, type ChangeEvent, type FC, type FormEvent } from 'react';
+import { Form, useSubmit } from 'react-router';
 import { cx } from '~/domain/utils/cx';
 import { useBasicStateMachine } from '~/domain/utils/useStateMachine';
+import type { StatusMessage } from '~/types/StatusMessage';
 import { Button } from './Button';
-import type { Prisma, Song } from '@prisma/client';
-import { prisma } from '~/domain/prisma';
-import type { Route } from '../routes/settings/+types';
 
 export const ACTION_IMPORT_SONG_LIB = 'import-song-lib-backup';
-const FIELD_SONG_LIB = 'song-lib-json';
-
-export const actionImportSongs = async (values: { [k: string]: FormDataEntryValue }) => {
-  if (typeof values[FIELD_SONG_LIB] !== 'string') return;
-  try {
-    const songs = JSON.parse(values[FIELD_SONG_LIB]) satisfies Song[];
-    const amountImported = await performDbImport(songs);
-    if (amountImported === 0) return { status: 'info', msg: 'No new songs found in backup.' };
-    return { status: 'success', msg: `Successfully imported ${amountImported} songs.` };
-  } catch (err) {
-    console.error(err);
-    return {
-      status: 'error',
-      msg: `Error while importing songs. Please make sure you uploaded a valid song-lib file.`,
-    };
-    // TODO: Log error
-  }
-};
-
-const performDbImport = async (songs: Song[]) => {
-  const existingSongs = await prisma.song.findMany({
-    select: {
-      title: true,
-      artist: true,
-    },
-  });
-  const existingSongsSet = new Set(existingSongs.map((song) => `${song.title}≥${song.artist}`)); // using unusual char as divider on purpose
-
-  const queries: Prisma.Prisma__SongClient<Song>[] = [];
-  songs.forEach((song) => {
-    const songKey = `${song.title}≥${song.artist}`;
-    if (existingSongsSet.has(songKey)) return;
-    queries.push(prisma.song.create({ data: song }));
-  });
-
-  if (queries.length > 0) {
-    await prisma.$transaction(queries);
-  }
-  return queries.length;
-};
+export const FIELD_SONG_LIB = 'song-lib-json';
 
 interface Props {
-  actionData: Route.ComponentProps['actionData'];
+  statusMsg: StatusMessage | undefined;
 }
 
-export const SettingsImportSongLib: FC<Props> = ({ actionData }) => {
+export const SettingsImportSongLib: FC<Props> = ({ statusMsg }) => {
   const submit = useSubmit();
   const [songLib, setSongLib] = useState<{ name: string; data?: string }>({
     name: '',
@@ -61,15 +20,15 @@ export const SettingsImportSongLib: FC<Props> = ({ actionData }) => {
   const { state, msg, nextState } = useBasicStateMachine();
 
   useEffect(() => {
-    if (!actionData) return;
+    if (!statusMsg) return;
     if (
-      actionData.status === 'info' ||
-      actionData.status === 'success' ||
-      actionData.status === 'error'
+      statusMsg.status === 'info' ||
+      statusMsg.status === 'success' ||
+      statusMsg.status === 'error'
     ) {
-      return nextState(actionData.status, actionData.msg);
+      return nextState(statusMsg.status, statusMsg.msg);
     }
-  }, [actionData]);
+  }, [statusMsg]);
 
   const handleFileUploadChange = (ev: ChangeEvent<HTMLInputElement>) => {
     const files = ev.target.files;
@@ -80,11 +39,11 @@ export const SettingsImportSongLib: FC<Props> = ({ actionData }) => {
       .json()
       .then((songs) => {
         setSongLib({ name: file.name, data: songs });
-        nextState('initial');
+        nextState('idle');
       })
-      .catch((err) => {
-        console.error(`Couldn't parse json`, err);
+      .catch(() => {
         nextState('error', `Couldn't read song-lib file. Please make sure it's a valid json file.`);
+        // TODO: Log error
       });
   };
 
@@ -120,7 +79,7 @@ export const SettingsImportSongLib: FC<Props> = ({ actionData }) => {
           )}
         </label>
       </Form>
-      {state !== 'initial' && (
+      {state !== 'idle' && (
         <div
           className={cx('mt-3 w-fit p-1', {
             'bg-green-100': state === 'success',
