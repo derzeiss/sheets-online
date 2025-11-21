@@ -70,6 +70,8 @@ export default function App() {
         <NavLink to="/songs" className="clickable block px-4 py-3 text-center text-sm">
           Songs
         </NavLink>
+        <NavLink to="/settings">Settings #1</NavLink>
+        <NavLink to={href('/settings')}>Settings #2</NavLink>
         <NavLink
           to={url}
           className="clickable absolute top-0 right-0 block px-4 py-3 text-center text-sm"
