@@ -1,5 +1,10 @@
-import { toArrayIndex } from '~/domain/utils/toArrayIndex';
-import { KEYS_FLAT, NASHVILLE_FLAT, NASHVILLE_SHARP, NOTES_FLAT, NOTES_SHARP } from './constants';
+import {
+  KEYS_FLAT,
+  NASHVILLE_FLAT,
+  NASHVILLE_SHARP,
+  NOTES_FLAT,
+  NOTES_SHARP,
+} from './constants';
 import { isNashville, isNote } from './typeguards';
 import type { Nashville } from './types/Nashville';
 import type { Note } from './types/Note';
@@ -14,8 +19,8 @@ import type { Note } from './types/Note';
 type ChordPart = [string, string];
 
 export const transposeSong = (prosong: string, keyFrom: Note, keyTo: Note) => {
-  const delta = getKeyDelta(keyFrom, keyTo);
-  if (delta === null) return prosong; // return original song if invalid original oder target key given
+  const keyDelta = _getKeyDelta(keyFrom, keyTo);
+  if (keyDelta === null) return prosong; // return original song if invalid original oder target key given
   let transposedSong = '';
 
   let i = 0;
@@ -28,7 +33,7 @@ export const transposeSong = (prosong: string, keyFrom: Note, keyTo: Note) => {
     const chord = prosong.substring(iChordStart + 1, iChordEnd);
     transposedSong += prosong.substring(i, iChordStart);
     if (chord) {
-      const transposedChord = transposeChord(chord, keyFrom, keyTo, delta);
+      const transposedChord = transposeChord(chord, keyFrom, keyTo, keyDelta);
       transposedSong += `[${transposedChord}]`;
     }
     i = iChordEnd + 1;
@@ -38,8 +43,13 @@ export const transposeSong = (prosong: string, keyFrom: Note, keyTo: Note) => {
   return transposedSong;
 };
 
-const transposeChord = (chord: string, keyFrom: Note, keyTo: Note, delta: number) => {
-  const parts = extractNotesFromChord(chord);
+const transposeChord = (
+  chord: string,
+  keyFrom: Note,
+  keyTo: Note,
+  keyDelta: number,
+) => {
+  const parts = _extractNotesFromChord(chord);
   const partsTransposed = parts.map(([note, appendix]) => {
     let transposedNote;
 
@@ -49,7 +59,7 @@ const transposeChord = (chord: string, keyFrom: Note, keyTo: Note, delta: number
       if (keyTo === 'Nashville') {
         transposedNote = transposeToNashville(note, keyFrom);
       } else {
-        transposedNote = transposeNote(note, keyTo, delta);
+        transposedNote = _transposeNote(note, keyTo, keyDelta);
       }
     } else {
       // non-note character -> don't transpose
@@ -61,7 +71,7 @@ const transposeChord = (chord: string, keyFrom: Note, keyTo: Note, delta: number
   return partsTransposed.join('/');
 };
 
-const extractNotesFromChord = (chord: string): ChordPart[] =>
+export const _extractNotesFromChord = (chord: string): ChordPart[] =>
   chord.split('/').map(_extractNoteFromChord);
 
 export const _extractNoteFromChord = (chord: string): ChordPart => {
@@ -71,11 +81,11 @@ export const _extractNoteFromChord = (chord: string): ChordPart => {
   return [chord[0] as Note, chord.substring(1)]; // TODO: check if extracted string really is a note?
 };
 
-const transposeNote = (note: Note, keyTo: Note, delta: number) => {
+export const _transposeNote = (note: Note, keyTo: Note, keyDelta: number) => {
   const notes = isFlatKey(keyTo) ? NOTES_FLAT : NOTES_SHARP;
   const i = getNoteIndex(note);
   if (i === null) return note;
-  const iNew = toArrayIndex(notes, i + delta);
+  const iNew = _toArrayIndex(notes.length, i + keyDelta);
   return notes[iNew];
 };
 
@@ -85,7 +95,7 @@ const transposeToNashville = (note: Note, keyFrom: Note) => {
   if (iNote === null || iKey === null) return note;
 
   const steps = isFlatNote(note) ? NASHVILLE_FLAT : NASHVILLE_SHARP;
-  const iDelta = toArrayIndex(steps, iNote - iKey);
+  const iDelta = _toArrayIndex(steps.length, iNote - iKey);
   return steps[iDelta];
 };
 
@@ -100,13 +110,13 @@ const transposeFromNashville = (step: Nashville, keyTo: Note) => {
   const notes = isFlatKey(keyTo) ? NOTES_FLAT : NOTES_SHARP;
   const halfNotesUpFromKey = steps.indexOf(step);
 
-  return notes[toArrayIndex(notes, iKey + halfNotesUpFromKey)];
+  return notes[_toArrayIndex(notes.length, iKey + halfNotesUpFromKey)];
 };
 
 /**
  * Get key index delta. Returns null if one key is not a valid {@link Note}.
  */
-const getKeyDelta = (keyFrom: Note, keyTo: Note) => {
+export const _getKeyDelta = (keyFrom: Note, keyTo: Note) => {
   if (keyFrom === 'Nashville' || keyTo === 'Nashville') return 0;
   const iKeyFrom = getNoteIndex(keyFrom);
   const iKeyTo = getNoteIndex(keyTo);
@@ -129,3 +139,17 @@ const getNoteIndex = (note: Note) => {
 const isFlatNote = (note: Note | Nashville) => note.indexOf('b') !== -1;
 
 const isFlatKey = (key: Note) => KEYS_FLAT.indexOf(key) !== -1;
+
+/**
+ * clamp {@link index} to {@link arrLength.length} so that it can be used as an index
+ * @example toArrayIndex([1,2,3], 1) -> 1
+ * @example toArrayIndex([1,2,3], 4) -> 1
+ * @example toArrayIndex([1,2,3], 7) -> 1
+ * @example toArrayIndex([1,2,3], 8) -> 2
+ * @example toArrayIndex([1,2,3], -8) -> 2
+ */
+export const _toArrayIndex = (arrLength: number, index: number) => {
+  // This rather complicated calculation is needed to account for negative values
+  if (index >= 0) return index % arrLength;
+  return ((index % arrLength) + arrLength) % arrLength;
+};
