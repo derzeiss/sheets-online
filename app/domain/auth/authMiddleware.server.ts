@@ -6,15 +6,21 @@ import type { SessionUser } from './types/SessionUser';
 
 export const userContext = createContext<SessionUser | null>(null);
 
-export const requireUser: MiddlewareFunction<Response> = async ({ request, context }) => {
+export const useUserSessionMiddleware: MiddlewareFunction<Response> = async ({
+  request,
+  context,
+}) => {
   const session = await getSession(request);
   const user = session.get('user');
+  if (user) context.set(userContext, user);
+};
+
+export const requireUser: MiddlewareFunction<Response> = async ({ request, context }) => {
+  const user = context.get(userContext);
 
   if (!user) {
     throw redirect(hrefQuery('/auth/login', { query: { redirect: request.url } }));
   }
-
-  context.set(userContext, user);
 };
 
 export const requireRole: (...roles: UserRole[]) => MiddlewareFunction<Response> = (roles) => {

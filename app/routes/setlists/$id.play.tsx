@@ -16,10 +16,10 @@ import type { Route } from './+types/$id.play';
 
 export async function loader({ params }: Route.LoaderArgs) {
   const setlist = await prisma.setlist.findFirst({
-    where: { id: params.id },
+    where: { slug: params.slug },
     include: setlistWithItemsWithSongInclude,
   });
-  if (!setlist) throw data(`Setlist "${params.id}" not found.`, { status: 404 });
+  if (!setlist) throw data(`Setlist "${params.slug}" not found.`, { status: 404 });
 
   return { setlist };
 }
@@ -73,7 +73,7 @@ export default function SongRoute({ loaderData }: Route.ComponentProps) {
         ))}
       </div>
 
-      <ButtonLink to={`/setlists/${setlist.id}`} className="fixed bottom-8 left-8">
+      <ButtonLink to=".." relative="path" className="fixed bottom-8 left-8">
         ← Back
       </ButtonLink>
 

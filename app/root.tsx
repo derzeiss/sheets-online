@@ -9,11 +9,11 @@ import {
   ScrollRestoration,
   useLoaderData,
 } from 'react-router';
-
 import type { Route } from './+types/root';
 import stylesheet from './app.css?url';
-import { userContext } from './domain/auth/authMiddleware.server';
+import { userContext, useUserSessionMiddleware } from './domain/auth/authMiddleware.server';
 
+export const middleware: Route.MiddlewareFunction[] = [useUserSessionMiddleware];
 export const links: Route.LinksFunction = () => [{ rel: 'stylesheet', href: stylesheet }];
 
 export function Layout({ children }: { children: React.ReactNode }) {
