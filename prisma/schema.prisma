@@ -20,6 +20,9 @@ model Song {
   ccli     String?
   prosong  String
   setlists SetlistItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 model Setlist {
@@ -28,6 +31,9 @@ model Setlist {
   name       String
   songAmount Int
   items      SetlistItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 model SetlistItem {
