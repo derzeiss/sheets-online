@@ -17,7 +17,9 @@ export async function loader({ params }: Route.LoaderArgs) {
     where: { slug: params.slug },
     include: setlistWithItemsWithSongInclude,
   });
-  if (!setlist) throw data(`Setlist "${params.slug}" not found.`, { status: 404 });
+  if (!setlist) {
+    throw data(`Setlist "${params.slug}" not found.`, { status: 404 });
+  }
 
   return { setlist };
 }
@@ -63,14 +65,23 @@ export default function SetlistRoute({ loaderData }: Route.ComponentProps) {
         </Form>
       </div>
 
-      <canvas className="hidden" ref={qrCodeRef} width={QR_CODE_SIZE} height={QR_CODE_SIZE} />
+      <canvas
+        className="hidden"
+        ref={qrCodeRef}
+        width={QR_CODE_SIZE}
+        height={QR_CODE_SIZE}
+      />
 
       <h1 className="text-4xl">{setlist.name}</h1>
       <div className="text-neutral-600">{setlist.songAmount} Songs</div>
 
       <ul className="mt-4">
         {setlist.items.map((item) => (
-          <Link key={item.id} to={`play#${item.id}`} className="clickable block">
+          <Link
+            key={item.id}
+            to={`play#${item.id}`}
+            className="clickable block"
+          >
             <SongListItem song={{ ...item.song, key: item.key }} />
           </Link>
         ))}

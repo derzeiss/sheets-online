@@ -10,7 +10,10 @@ type SessionFlashData = {
   error: string;
 };
 
-const cookieSessionStorage = createCookieSessionStorage<SessionData, SessionFlashData>({
+const cookieSessionStorage = createCookieSessionStorage<
+  SessionData,
+  SessionFlashData
+>({
   cookie: {
     name: '_session',
     httpOnly: true,

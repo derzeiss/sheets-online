@@ -2,7 +2,10 @@ import { Form, href, Link } from 'react-router';
 import { Button } from '~/components/Button';
 import { ErrorMessage } from '~/components/ErrorMessage';
 import { Textbox } from '~/components/Textbox';
-import { registerFormSchema, type UserRegisterDto } from '~/domain/auth/register.schema';
+import {
+  registerFormSchema,
+  type UserRegisterDto,
+} from '~/domain/auth/register.schema';
 import { register } from '~/domain/auth/user.server';
 import { useFormBucket } from '~/domain/form/useFormBucket';
 import { formatZodError } from '~/domain/utils/formatZodError';
@@ -13,7 +16,9 @@ export const action = async ({ request }: Route.ActionArgs) => {
   const values = Object.fromEntries(formData);
 
   const parseResult = registerFormSchema.safeParse(values);
-  if (!parseResult.success) return { errors: formatZodError(parseResult.error) };
+  if (!parseResult.success) {
+    return { errors: formatZodError(parseResult.error) };
+  }
   return await register(request, parseResult.data);
 };
 
@@ -33,7 +38,13 @@ export default function RegisterRoute({ actionData }: Route.ComponentProps) {
       <h1 className="mb-4 text-5xl">Register</h1>
 
       <Form method="post">
-        <Textbox className="mt-3" type="text" placeholder="Name" required {...register('name')} />
+        <Textbox
+          className="mt-3"
+          type="text"
+          placeholder="Name"
+          required
+          {...register('name')}
+        />
         {errorFor('name', (msg) => (
           <ErrorMessage className="mt-1">{msg}</ErrorMessage>
         ))}
@@ -74,7 +85,10 @@ export default function RegisterRoute({ actionData }: Route.ComponentProps) {
         <Button className="mt-3" type="submit">
           Register
         </Button>
-        <Link to={href('/auth/login')} className="inline-link mt-4 block text-sm text-neutral-600">
+        <Link
+          to={href('/auth/login')}
+          className="inline-link mt-4 block text-sm text-neutral-600"
+        >
           Already have an Account?
         </Link>
       </Form>

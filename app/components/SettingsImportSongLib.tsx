@@ -1,4 +1,10 @@
-import { useEffect, useState, type ChangeEvent, type FC, type FormEvent } from 'react';
+import {
+  useEffect,
+  useState,
+  type ChangeEvent,
+  type FC,
+  type FormEvent,
+} from 'react';
 import { Form, useSubmit } from 'react-router';
 import { cx } from '~/domain/utils/cx';
 import { useBasicStateMachine } from '~/domain/utils/useStateMachine';
@@ -42,7 +48,10 @@ export const SettingsImportSongLib: FC<Props> = ({ statusMsg }) => {
         nextState('idle');
       })
       .catch(() => {
-        nextState('error', `Couldn't read song-lib file. Please make sure it's a valid json file.`);
+        nextState(
+          'error',
+          `Couldn't read song-lib file. Please make sure it's a valid json file.`,
+        );
         // TODO: Log error
       });
   };
@@ -72,7 +81,10 @@ export const SettingsImportSongLib: FC<Props> = ({ statusMsg }) => {
             <div className="mt-3 w-fit border p-4">
               <code className="bg-neutral-100 p-1">{songLib.name}</code>
               <br />
-              <code className="bg-neutral-100 p-1">{songLib.data.length}</code> songs
+              <code className="bg-neutral-100 p-1">
+                {songLib.data.length}
+              </code>{' '}
+              songs
               <br />
               <Button className="mt-2">Perform Import</Button>
             </div>

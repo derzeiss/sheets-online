@@ -19,7 +19,20 @@ export const NOTES_SHARP: Note[] = [
   'A#',
   'B',
 ];
-export const NOTES_FLAT: Note[] = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+export const NOTES_FLAT: Note[] = [
+  'C',
+  'Db',
+  'D',
+  'Eb',
+  'E',
+  'F',
+  'Gb',
+  'G',
+  'Ab',
+  'A',
+  'Bb',
+  'B',
+];
 
 export const NOTES_ALL: Note[] = [
   'C',
@@ -92,5 +105,17 @@ export const NASHVILLE_FLAT: Nashville[] = [
   '7',
 ];
 
-export const KEYS_SHARP: Note[] = ['C', 'C#', 'G', 'G#', 'D', 'D#', 'A', 'A#', 'E', 'B', 'F#'];
+export const KEYS_SHARP: Note[] = [
+  'C',
+  'C#',
+  'G',
+  'G#',
+  'D',
+  'D#',
+  'A',
+  'A#',
+  'E',
+  'B',
+  'F#',
+];
 export const KEYS_FLAT: Note[] = ['F', 'Bb', 'Eb', 'Ab', 'Db', 'Gb'];

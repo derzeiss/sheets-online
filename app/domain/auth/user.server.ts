@@ -7,7 +7,8 @@ import type { UserRegisterDto } from './register.schema';
 import { commitSession, destroySession, getSession } from './session.server';
 import type { ErrorsFor } from './types/ErrorsFor';
 
-const LOGIN_ERR_MSG = "Sorry we couldn't log you in. Please check your credentials and try again.";
+const LOGIN_ERR_MSG =
+  "Sorry we couldn't log you in. Please check your credentials and try again.";
 
 export async function getUserByEmail(email: string) {
   const user = await prisma.user.findUnique({

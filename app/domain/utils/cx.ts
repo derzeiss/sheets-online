@@ -1,4 +1,6 @@
-export const cx = (...args: Array<null | undefined | string | Record<string, boolean>>) =>
+export const cx = (
+  ...args: Array<null | undefined | string | Record<string, boolean>>
+) =>
   args
     .map((curr) => {
       if (curr === null || curr === undefined) return '';

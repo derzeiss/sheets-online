@@ -1,4 +1,10 @@
-import { useState, type ComponentProps, type FC, type MouseEvent, type ReactNode } from 'react';
+import {
+  useState,
+  type ComponentProps,
+  type FC,
+  type MouseEvent,
+  type ReactNode,
+} from 'react';
 import { cx } from '~/domain/utils/cx';
 
 interface Props extends ComponentProps<'button'> {
@@ -35,14 +41,23 @@ export const ConfirmButton: FC<Props> = ({
 
   if (!confirming) {
     return (
-      <button {...props} className={cx(className, 'btn')} onClick={handleFirstClick} type="button">
+      <button
+        {...props}
+        className={cx(className, 'btn')}
+        onClick={handleFirstClick}
+        type="button"
+      >
         {children}
       </button>
     );
   }
 
   return (
-    <button {...props} className={cx(className, 'btn')} onClick={handleSecondClick}>
+    <button
+      {...props}
+      className={cx(className, 'btn')}
+      onClick={handleSecondClick}
+    >
       {childrenConfirm}
     </button>
   );

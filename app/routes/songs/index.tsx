@@ -19,7 +19,9 @@ export default function SongsRoute({ loaderData }: Route.ComponentProps) {
   const songsFiltered = useMemo(() => {
     if (songQuery.length < 2) return songs;
     const queryLower = songQuery.toLowerCase();
-    return songs.filter((song) => song.title.toLowerCase().indexOf(queryLower) > -1);
+    return songs.filter(
+      (song) => song.title.toLowerCase().indexOf(queryLower) > -1,
+    );
   }, [songQuery]);
 
   return (
@@ -36,7 +38,11 @@ export default function SongsRoute({ loaderData }: Route.ComponentProps) {
       />
       <ul className="mt-4">
         {songsFiltered.map((song) => (
-          <Link key={song.id} to={`/songs/${song.id}`} className="clickable block">
+          <Link
+            key={song.id}
+            to={`/songs/${song.id}`}
+            className="clickable block"
+          >
             <SongListItem song={song} />
           </Link>
         ))}

@@ -57,18 +57,31 @@ export const useReorderList = (
    * @param ev React drag event.
    * @param config Drag config.
    */
-  const updateDropzoneClasses = (ev: DragEv, id: string, config: DragConfig) => {
+  const updateDropzoneClasses = (
+    ev: DragEv,
+    id: string,
+    config: DragConfig,
+  ) => {
     ev.preventDefault();
 
     const relativeY = getRelativeMouseY(ev);
     if (config.isContainer && relativeY >= 0.33 && relativeY < 0.67) {
-      ev.currentTarget.classList.remove(config.dropAtTopCls, config.dropAtBottomCls);
+      ev.currentTarget.classList.remove(
+        config.dropAtTopCls,
+        config.dropAtBottomCls,
+      );
       ev.currentTarget.classList.add(config.dropIntoCls);
     } else if (id === 'eol' || relativeY < 0.5) {
-      ev.currentTarget.classList.remove(config.dropAtBottomCls, config.dropIntoCls);
+      ev.currentTarget.classList.remove(
+        config.dropAtBottomCls,
+        config.dropIntoCls,
+      );
       ev.currentTarget.classList.add(config.dropAtTopCls);
     } else {
-      ev.currentTarget.classList.remove(config.dropAtTopCls, config.dropIntoCls);
+      ev.currentTarget.classList.remove(
+        config.dropAtTopCls,
+        config.dropIntoCls,
+      );
       ev.currentTarget.classList.add(config.dropAtBottomCls);
     }
   };
@@ -99,7 +112,9 @@ export const useReorderList = (
     removeDropzoneClasses(ev, config);
 
     // TODO: Remove isDragged class when dragged onto nothing
-    const draggedEl = ev.currentTarget.parentElement?.querySelector(`[data-rlid="${dragId}"]`);
+    const draggedEl = ev.currentTarget.parentElement?.querySelector(
+      `[data-rlid="${dragId}"]`,
+    );
     if (draggedEl) draggedEl.classList.remove(config.isDraggedCls);
 
     // dropped item on itself -> nothing to do
@@ -107,8 +122,9 @@ export const useReorderList = (
 
     const relativeY = getRelativeMouseY(ev);
     let reorderType: ReorderType;
-    if (config.isContainer && relativeY >= 0.33 && relativeY < 0.67) reorderType = 'insertInto';
-    else if (relativeY < 0.5) reorderType = 'putBefore';
+    if (config.isContainer && relativeY >= 0.33 && relativeY < 0.67) {
+      reorderType = 'insertInto';
+    } else if (relativeY < 0.5) reorderType = 'putBefore';
     else reorderType = 'putAfter';
     onItemsReordered(dragId, dropId, reorderType);
   };
@@ -120,7 +136,10 @@ export const useReorderList = (
    * @param config Drag config.
    * @returns object of handlers applicable to a JSX element.
    */
-  const getHandlers = (id: string, config?: Partial<DragConfig>): ReorderHandlers => {
+  const getHandlers = (
+    id: string,
+    config?: Partial<DragConfig>,
+  ): ReorderHandlers => {
     const elConfig = { ...hookConfig, ...config };
 
     return {

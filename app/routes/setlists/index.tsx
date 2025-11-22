@@ -24,7 +24,9 @@ export default function SetsRoute({ loaderData }: Route.ComponentProps) {
   const setlistsFiltered = useMemo(() => {
     if (setlistQuery.length < 2) return setlists;
     const queryLower = setlistQuery.toLowerCase();
-    return setlists.filter((setlists) => setlists.name.toLowerCase().indexOf(queryLower) > -1);
+    return setlists.filter(
+      (setlists) => setlists.name.toLowerCase().indexOf(queryLower) > -1,
+    );
   }, [setlistQuery]);
 
   return (
@@ -42,7 +44,11 @@ export default function SetsRoute({ loaderData }: Route.ComponentProps) {
 
       <ul className="mt-4">
         {setlistsFiltered.map((setlist) => (
-          <Link key={setlist.id} to={`/setlists/${setlist.slug}`} className="clickable block">
+          <Link
+            key={setlist.id}
+            to={`/setlists/${setlist.slug}`}
+            className="clickable block"
+          >
             <SetlistListItem setlist={setlist} />
           </Link>
         ))}

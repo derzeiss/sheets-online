@@ -9,8 +9,13 @@ export const importSongFile = async (
   try {
     const songs = JSON.parse(songsFormValue) satisfies Song[];
     const amountImported = await performDbImport(songs);
-    if (amountImported === 0) return { status: 'info', msg: 'No new songs found in backup.' };
-    return { status: 'success', msg: `Successfully imported ${amountImported} songs.` };
+    if (amountImported === 0) {
+      return { status: 'info', msg: 'No new songs found in backup.' };
+    }
+    return {
+      status: 'success',
+      msg: `Successfully imported ${amountImported} songs.`,
+    };
   } catch (err) {
     return {
       status: 'error',
@@ -27,7 +32,9 @@ const performDbImport = async (songs: Song[]) => {
       artist: true,
     },
   });
-  const existingSongsSet = new Set(existingSongs.map((song) => `${song.title}≥${song.artist}`)); // using unusual char as divider on purpose
+  const existingSongsSet = new Set(
+    existingSongs.map((song) => `${song.title}≥${song.artist}`),
+  ); // using unusual char as divider on purpose
   const queries: Prisma.Prisma__SongClient<Song>[] = [];
 
   songs.forEach((song) => {

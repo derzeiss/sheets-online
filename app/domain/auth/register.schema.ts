@@ -3,7 +3,9 @@ import z from 'zod';
 const passwordSchema = z
   .string()
   .min(8, { message: 'Your password should be at least 8 characters long.' })
-  .max(20, { message: 'Your password should not be longer that 20 characters.' })
+  .max(20, {
+    message: 'Your password should not be longer that 20 characters.',
+  })
   .refine((password) => /[A-Z]/.test(password), {
     message: 'Your password should contain at least one uppercase letter.',
   })
@@ -14,7 +16,8 @@ const passwordSchema = z
     message: 'Your password should contain at least one digit',
   })
   .refine((password) => /[!@#$%^&*_-]/.test(password), {
-    message: 'Your password should contain at least one special character (!@#$%^&*)',
+    message:
+      'Your password should contain at least one special character (!@#$%^&*)',
   });
 
 export const registerFormSchema = z

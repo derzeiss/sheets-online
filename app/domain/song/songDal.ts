@@ -11,7 +11,10 @@ export async function upsertSong(id: string, values: FormValues) {
     await prisma.song.create({ data: song });
     return redirect('/songs');
   } else {
-    await prisma.song.update({ where: { id }, data: song });
+    await prisma.song.update({
+      where: { id },
+      data: { ...song, updatedAt: new Date() },
+    });
     return redirect(`/songs/${values.id}`);
   }
 }
@@ -42,7 +45,9 @@ export async function deleteSong(id: string) {
   await prisma.$transaction([
     prisma.setlistItem.deleteMany({ where: { songId: id } }),
     prisma.song.delete({ where: { id } }),
-    ...setlists.map((s) => prisma.setlist.update({ where: { id: s.id }, data: s })),
+    ...setlists.map((s) =>
+      prisma.setlist.update({ where: { id: s.id }, data: s }),
+    ),
   ]);
   return redirect('/songs');
 }

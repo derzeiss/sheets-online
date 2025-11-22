@@ -8,7 +8,9 @@ import { toSlug } from '../utils/toSlug';
 import { setlistItemSchema, setlistSchema } from './setlist.schema';
 
 export async function upsertSetlist(values: FormValues) {
-  if (typeof values.items !== 'string') return data('"setlistItems" must be JSON string.');
+  if (typeof values.items !== 'string') {
+    return data('"setlistItems" must be JSON string.');
+  }
   const setlistItems: ClientListItem<SetlistItem>[] = JSON.parse(values.items);
 
   const itemsAdded = setlistItems
@@ -32,7 +34,10 @@ export async function upsertSetlist(values: FormValues) {
 
   let querySetlist: Prisma.Prisma__SetlistClient<Setlist>;
   if (setlist.id === 'new') {
-    const slug = await findNextUniqueSlug(prisma.setlist.findUnique, toSlug(setlist.name));
+    const slug = await findNextUniqueSlug(
+      prisma.setlist.findUnique,
+      toSlug(setlist.name),
+    );
 
     querySetlist = prisma.setlist.create({
       data: {
@@ -40,6 +45,8 @@ export async function upsertSetlist(values: FormValues) {
         id: undefined,
         slug,
         items: { create: itemsAdded },
+        createdAt: undefined,
+        updatedAt: undefined,
       },
     });
   } else {
@@ -48,6 +55,8 @@ export async function upsertSetlist(values: FormValues) {
       data: {
         ...setlist,
         items: { create: itemsAdded },
+        createdAt: undefined,
+        updatedAt: new Date(),
       },
     });
   }
@@ -57,7 +66,10 @@ export async function upsertSetlist(values: FormValues) {
     querySetlist,
     // delete items
     prisma.setlistItem.deleteMany({
-      where: { id: { in: itemsDeleted.map((item) => item.id) }, setlistId: setlist.id },
+      where: {
+        id: { in: itemsDeleted.map((item) => item.id) },
+        setlistId: setlist.id,
+      },
     }),
     // update items
     ...itemsUpdated.map((item) =>
@@ -70,7 +82,9 @@ export async function upsertSetlist(values: FormValues) {
 }
 
 export async function deleteSetlist(id: string) {
-  const deleteItems = prisma.setlistItem.deleteMany({ where: { setlistId: id } });
+  const deleteItems = prisma.setlistItem.deleteMany({
+    where: { setlistId: id },
+  });
   const deleteSetlist = prisma.setlist.delete({ where: { id } });
   await prisma.$transaction([deleteItems, deleteSetlist]);
   return redirect('/setlists');

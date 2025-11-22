@@ -11,10 +11,17 @@ import {
 } from 'react-router';
 import type { Route } from './+types/root';
 import stylesheet from './app.css?url';
-import { userContext, useUserSessionMiddleware } from './domain/auth/authMiddleware.server';
+import {
+  userContext,
+  useUserSessionMiddleware,
+} from './domain/auth/authMiddleware.server';
 
-export const middleware: Route.MiddlewareFunction[] = [useUserSessionMiddleware];
-export const links: Route.LinksFunction = () => [{ rel: 'stylesheet', href: stylesheet }];
+export const middleware: Route.MiddlewareFunction[] = [
+  useUserSessionMiddleware,
+];
+export const links: Route.LinksFunction = () => [
+  { rel: 'stylesheet', href: stylesheet },
+];
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -37,7 +44,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export function meta({}: Route.MetaArgs) {
   return [
     { title: 'sheets-online' },
-    { name: 'description', content: 'Manage and use your Worship Song-Sheets online' },
+    {
+      name: 'description',
+      content: 'Manage and use your Worship Song-Sheets online',
+    },
   ];
 }
 
@@ -64,10 +74,16 @@ export default function App() {
   return (
     <>
       <nav className="flex w-full justify-center">
-        <NavLink to="/setlists" className="clickable block px-4 py-3 text-center text-sm">
+        <NavLink
+          to="/setlists"
+          className="clickable block px-4 py-3 text-center text-sm"
+        >
           Sets
         </NavLink>
-        <NavLink to="/songs" className="clickable block px-4 py-3 text-center text-sm">
+        <NavLink
+          to="/songs"
+          className="clickable block px-4 py-3 text-center text-sm"
+        >
           Songs
         </NavLink>
         <NavLink
@@ -98,7 +114,9 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   if (isRouteErrorResponse(error)) {
     message = error.status === 404 ? '404' : 'Error';
     details =
-      error.status === 404 ? 'The requested page could not be found.' : error.statusText || details;
+      error.status === 404
+        ? 'The requested page could not be found.'
+        : error.statusText || details;
   } else if (import.meta.env.DEV && error && error instanceof Error) {
     details = error.message;
     stack = error.stack;

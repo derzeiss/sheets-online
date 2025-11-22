@@ -40,7 +40,11 @@ export const SetlistItemEdit: FC<Props> = ({
         </div>
       </div>
 
-      <KeySelectButton selectedKey={songKey || 'C'} onKeySelect={handleKeyChange} closeOnSelect />
+      <KeySelectButton
+        selectedKey={songKey || 'C'}
+        onKeySelect={handleKeyChange}
+        closeOnSelect
+      />
       <input name="key" type="hidden" value={songKey || ''} />
 
       <button

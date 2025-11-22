@@ -11,7 +11,9 @@ export const findNextUniqueSlug = async <T extends Function>(
 
   const existingRecord = await findUnique({ where: { slug } });
 
-  if (existingRecord) return findNextUniqueSlug(findUnique, baseSlug, suffix + 1);
+  if (existingRecord) {
+    return findNextUniqueSlug(findUnique, baseSlug, suffix + 1);
+  }
   if (suffix >= 500) throw new Error('Tried 500 times, no slug found.'); // TODO: this will some day throw
 
   return slug;

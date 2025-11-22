@@ -15,15 +15,22 @@ export const useUserSessionMiddleware: MiddlewareFunction<Response> = async ({
   if (user) context.set(userContext, user);
 };
 
-export const requireUser: MiddlewareFunction<Response> = async ({ request, context }) => {
+export const requireUser: MiddlewareFunction<Response> = async ({
+  request,
+  context,
+}) => {
   const user = context.get(userContext);
 
   if (!user) {
-    throw redirect(hrefQuery('/auth/login', { query: { redirect: request.url } }));
+    throw redirect(
+      hrefQuery('/auth/login', { query: { redirect: request.url } }),
+    );
   }
 };
 
-export const requireRole: (...roles: UserRole[]) => MiddlewareFunction<Response> = (roles) => {
+export const requireRole: (
+  ...roles: UserRole[]
+) => MiddlewareFunction<Response> = (roles) => {
   return async ({ context }) => {
     const user = context.get(userContext);
 

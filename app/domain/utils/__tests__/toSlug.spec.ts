@@ -19,7 +19,9 @@ describe('toSlug', () => {
   });
 
   it('should convert umlauts to their replacements', () => {
-    expect(toSlug('Mädchen müssen Möwen mögen')).toBe('maedchen-muessen-moewen-moegen');
+    expect(toSlug('Mädchen müssen Möwen mögen')).toBe(
+      'maedchen-muessen-moewen-moegen',
+    );
   });
 
   it('should convert special chars to their specified replacements', () => {

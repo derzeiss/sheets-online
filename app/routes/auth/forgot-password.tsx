@@ -17,7 +17,10 @@ export default function ForgotPasswordRoute() {
         <Button className="mt-3">Send password reset email</Button>
       </Form>
 
-      <Link to={href('/auth/login')} className="inline-link mt-4 block text-sm text-neutral-600">
+      <Link
+        to={href('/auth/login')}
+        className="inline-link mt-4 block text-sm text-neutral-600"
+      >
         Back to login
       </Link>
     </main>

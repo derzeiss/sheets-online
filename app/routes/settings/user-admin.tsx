@@ -69,12 +69,18 @@ export default function () {
               <td className="px-4 py-2">{u.email}</td>
               <td className="px-4 py-2">
                 <Form method="post">
-                  <input name="_action" value={ACTION_SET_USER_ROLE} type="hidden" />
+                  <input
+                    name="_action"
+                    value={ACTION_SET_USER_ROLE}
+                    type="hidden"
+                  />
                   <input name="id" value={u.id} type="hidden" />
                   <select
                     name="role"
                     defaultValue={u.role}
-                    onChange={(ev) => submit(ev.target.parentElement as HTMLFormElement)}
+                    onChange={(ev) =>
+                      submit(ev.target.parentElement as HTMLFormElement)
+                    }
                   >
                     <option value="default">User</option>
                     <option value="moderator">Moderator</option>
@@ -84,9 +90,17 @@ export default function () {
               </td>
               <td>
                 <Form method="post">
-                  <input name="_action" value={ACTION_TOGGLE_USER_ACTIVE} type="hidden" />
+                  <input
+                    name="_action"
+                    value={ACTION_TOGGLE_USER_ACTIVE}
+                    type="hidden"
+                  />
                   <input name="id" value={u.id} type="hidden" />
-                  <input name="isActive" value={!u.isActive + ''} type="hidden" />
+                  <input
+                    name="isActive"
+                    value={!u.isActive + ''}
+                    type="hidden"
+                  />
                   <button className="btn" type="submit">
                     {u.isActive ? 'Deactivate' : 'Activate'}
                   </button>

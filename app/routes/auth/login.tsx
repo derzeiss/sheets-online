@@ -14,8 +14,14 @@ export const action = async ({ request }: Route.ActionArgs) => {
   const values = Object.fromEntries(formData);
 
   const parseResult = loginFormSchema.safeParse(values);
-  if (!parseResult.success) return { errors: formatZodError(parseResult.error) };
-  return await login(request, parseResult.data, getQueryParam(request, 'redirect') || '/setlists');
+  if (!parseResult.success) {
+    return { errors: formatZodError(parseResult.error) };
+  }
+  return await login(
+    request,
+    parseResult.data,
+    getQueryParam(request, 'redirect') || '/setlists',
+  );
 };
 
 export default function LoginRoute({ actionData }: Route.ComponentProps) {
@@ -24,8 +30,20 @@ export default function LoginRoute({ actionData }: Route.ComponentProps) {
       <h1 className="mb-4 text-5xl">Login</h1>
 
       <Form method="post">
-        <Textbox className="mt-3" name="email" type="email" placeholder="E-Mail" required />
-        <Textbox className="mt-3" name="password" type="password" placeholder="Password" required />
+        <Textbox
+          className="mt-3"
+          name="email"
+          type="email"
+          placeholder="E-Mail"
+          required
+        />
+        <Textbox
+          className="mt-3"
+          name="password"
+          type="password"
+          placeholder="Password"
+          required
+        />
 
         {/* Show server errors */}
         {actionData?.errors && (
@@ -37,7 +55,12 @@ export default function LoginRoute({ actionData }: Route.ComponentProps) {
         <Button className="mt-3" type="submit">
           Login
         </Button>
-        <ButtonLink to={href('/auth/register')} tertiary className="mt-3 ml-3" type="submit">
+        <ButtonLink
+          to={href('/auth/register')}
+          tertiary
+          className="mt-3 ml-3"
+          type="submit"
+        >
           Sign up
         </ButtonLink>
         <Link

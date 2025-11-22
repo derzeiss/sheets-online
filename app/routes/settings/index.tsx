@@ -21,7 +21,11 @@ export default function SettingsRoute({ actionData }: Route.ComponentProps) {
   return (
     <section className="my-8">
       <h2 className="text-2xl">Import / Export Song Library</h2>
-      <ButtonLink to={href('/settings/download-song-lib')} reloadDocument className="mt-4">
+      <ButtonLink
+        to={href('/settings/download-song-lib')}
+        reloadDocument
+        className="mt-4"
+      >
         Download Song Library Backup
       </ButtonLink>
 

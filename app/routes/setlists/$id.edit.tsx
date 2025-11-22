@@ -11,7 +11,10 @@ import { requireUser } from '~/domain/auth/authMiddleware.server';
 import { prisma } from '~/domain/prisma';
 import type { ReorderType } from '~/domain/reorder-list/types/ReorderType';
 import { deleteSetlist, upsertSetlist } from '~/domain/setlist/setlistDal';
-import { useClientList, type ClientListItem } from '~/domain/utils/useClientList';
+import {
+  useClientList,
+  type ClientListItem,
+} from '~/domain/utils/useClientList';
 import {
   setlistWithItemsWithSongInclude,
   type SetlistItemWithSong,
@@ -30,13 +33,20 @@ const reorderSetlistItems = (
   const itemDragged = setlistItems.find((_item) => _item.id === dragId);
   if (!itemDragged) return;
 
-  return setlistItems.reduce<SetlistItemWithSongClientDTO[]>((reordered, item) => {
-    if (item.id === dragId) return reordered;
-    if (item.id === dropId && dropType === 'putBefore') reordered.push(itemDragged);
-    reordered.push(item);
-    if (item.id === dropId && dropType === 'putAfter') reordered.push(itemDragged);
-    return reordered;
-  }, []);
+  return setlistItems.reduce<SetlistItemWithSongClientDTO[]>(
+    (reordered, item) => {
+      if (item.id === dragId) return reordered;
+      if (item.id === dropId && dropType === 'putBefore') {
+        reordered.push(itemDragged);
+      }
+      reordered.push(item);
+      if (item.id === dropId && dropType === 'putAfter') {
+        reordered.push(itemDragged);
+      }
+      return reordered;
+    },
+    [],
+  );
 };
 
 const blankSetlist: SetlistWithItemWithSong = {
@@ -45,13 +55,17 @@ const blankSetlist: SetlistWithItemWithSong = {
   name: '',
   songAmount: 0,
   items: [],
+  createdAt: new Date(),
+  updatedAt: new Date(),
 };
 
 export const middleware: Route.MiddlewareFunction[] = [requireUser];
 
 export async function loader({ params }: Route.LoaderArgs) {
   const songs = await prisma.song.findMany({ orderBy: { title: 'asc' } });
-  if (!songs) throw data('Error while fetching songs for setlist.', { status: 500 });
+  if (!songs) {
+    throw data('Error while fetching songs for setlist.', { status: 500 });
+  }
 
   if (params.slug === 'new') return { setlist: { ...blankSetlist }, songs };
 
@@ -59,7 +73,9 @@ export async function loader({ params }: Route.LoaderArgs) {
     where: { slug: params.slug },
     include: setlistWithItemsWithSongInclude,
   });
-  if (!setlist) throw data(`Setlist "${params.slug}" not found.`, { status: 404 });
+  if (!setlist) {
+    throw data(`Setlist "${params.slug}" not found.`, { status: 404 });
+  }
 
   return { setlist, songs };
 }
@@ -80,7 +96,9 @@ export async function action({ request }: Route.ActionArgs) {
   }
 }
 
-export default function SetlistsEditRoute({ loaderData }: Route.ComponentProps) {
+export default function SetlistsEditRoute({
+  loaderData,
+}: Route.ComponentProps) {
   const submit = useSubmit();
   const { setlist, songs } = loaderData;
   const {
@@ -97,13 +115,24 @@ export default function SetlistsEditRoute({ loaderData }: Route.ComponentProps) 
   const songListFiltered = useMemo(() => {
     if (songQuery.length < 2) return songs;
     const queryLower = songQuery.toLowerCase();
-    return songs.filter((song) => song.title.toLowerCase().indexOf(queryLower) > -1);
+    return songs.filter(
+      (song) => song.title.toLowerCase().indexOf(queryLower) > -1,
+    );
   }, [songQuery]);
 
   const isCreation = setlist.id === 'new';
 
-  function handleSetlistItemsReorder(dragId: string, dropId: string, dropType: ReorderType) {
-    const reordered = reorderSetlistItems(setlistItems, dragId, dropId, dropType);
+  function handleSetlistItemsReorder(
+    dragId: string,
+    dropId: string,
+    dropType: ReorderType,
+  ) {
+    const reordered = reorderSetlistItems(
+      setlistItems,
+      dragId,
+      dropId,
+      dropType,
+    );
     if (reordered) setItems(reordered);
   }
 
@@ -207,7 +236,9 @@ export default function SetlistsEditRoute({ loaderData }: Route.ComponentProps) 
         <div className="fixed bottom-0 left-0 w-full border-t border-t-neutral-200 bg-white py-3">
           <div className="px-content mx-auto flex max-w-3xl gap-4">
             <Button type="submit">Save</Button>
-            <ButtonLink to={`/setlists/${isCreation ? '' : setlist.id}`}>Cancel</ButtonLink>
+            <ButtonLink to={`/setlists/${isCreation ? '' : setlist.id}`}>
+              Cancel
+            </ButtonLink>
           </div>
         </div>
 

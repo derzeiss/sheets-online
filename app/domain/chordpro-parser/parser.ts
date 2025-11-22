@@ -10,11 +10,17 @@ export const _extractDirectiveData = (lineTrimmed: string) => {
   const iFirstColon = lineTrimmed.indexOf(':');
   if (iFirstColon === -1) return null;
   const name = lineTrimmed.substring(1, iFirstColon);
-  const val = lineTrimmed.substring(iFirstColon + 1, lineTrimmed.length - 1).trim();
+  const val = lineTrimmed
+    .substring(iFirstColon + 1, lineTrimmed.length - 1)
+    .trim();
   return [name, val];
 };
 
-export const _setMetaField = (meta: Jsong['meta'], name: string, val: string) => {
+export const _setMetaField = (
+  meta: Jsong['meta'],
+  name: string,
+  val: string,
+) => {
   if (meta[name] && ADDITIVE_DIRECTIVES.includes(name)) {
     meta[name] = `${meta[name]}; ${val}`;
   } else {

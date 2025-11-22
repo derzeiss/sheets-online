@@ -53,7 +53,9 @@ const KeyButton: FC<ButtonProps & Omit<Props, 'ref'> & { note: Note }> = ({
   <Button
     type="button"
     {...props}
-    className={cx(className, { 'outline-4 outline-blue-500': selectedKey === note })}
+    className={cx(className, {
+      'outline-4 outline-blue-500': selectedKey === note,
+    })}
     onClick={() => onKeySelect(note)}
   >
     {note}

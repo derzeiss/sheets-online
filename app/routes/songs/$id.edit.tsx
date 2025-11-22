@@ -26,7 +26,9 @@ const songBlueprint = `{title: }
 {comment: Bridge}`;
 
 export async function loader({ params }: Route.LoaderArgs) {
-  if (params.id === 'new') return { song: { id: 'new', key: 'C', prosong: songBlueprint } };
+  if (params.id === 'new') {
+    return { song: { id: 'new', key: 'C', prosong: songBlueprint } };
+  }
 
   const song = await prisma.song.findFirst({ where: { id: params.id } });
   if (!song) throw data(`Song "${params.id}" not found.`, { status: 404 });
@@ -38,7 +40,9 @@ export async function action({ request }: Route.ActionArgs) {
   const formData = await request.formData();
   const values = Object.fromEntries(formData);
 
-  if (!values.id || typeof values.id !== 'string') throw data('No song id given.', { status: 400 });
+  if (!values.id || typeof values.id !== 'string') {
+    throw data('No song id given.', { status: 400 });
+  }
 
   switch (values._action) {
     case 'save':
@@ -51,7 +55,9 @@ export async function action({ request }: Route.ActionArgs) {
 export default function SongsEditRoute({ loaderData }: Route.ComponentProps) {
   const { song } = loaderData;
   const submit = useSubmit();
-  const [targetKey, setTargetKey] = useState<Note>(isNote(song.key) ? song.key : 'C');
+  const [targetKey, setTargetKey] = useState<Note>(
+    isNote(song.key) ? song.key : 'C',
+  );
   const [prosong, setProsong] = useState(song.prosong);
   const isCreation = song.id === 'new';
 
@@ -86,7 +92,9 @@ export default function SongsEditRoute({ loaderData }: Route.ComponentProps) {
             ></textarea>
             <div className="flex gap-2">
               <Button type="submit">Save</Button>
-              <ButtonLink to={`/songs/${isCreation ? '' : song.id}`}>Cancel</ButtonLink>
+              <ButtonLink to={`/songs/${isCreation ? '' : song.id}`}>
+                Cancel
+              </ButtonLink>
             </div>
           </div>
         </Form>
@@ -94,7 +102,11 @@ export default function SongsEditRoute({ loaderData }: Route.ComponentProps) {
         <Form method="post" className="mt-4">
           <input type="hidden" name="id" value={song.id} />
           <input type="hidden" name="_action" value="delete" />
-          <ConfirmButton className="bg-red-200" type="submit" childrenConfirm="You sure?">
+          <ConfirmButton
+            className="bg-red-200"
+            type="submit"
+            childrenConfirm="You sure?"
+          >
             Delete song
           </ConfirmButton>
         </Form>

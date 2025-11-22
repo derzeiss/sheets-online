@@ -11,7 +11,10 @@ import { isNote } from '~/domain/chordpro-parser/typeguards';
 import type { Note } from '~/domain/chordpro-parser/types/Note';
 import { prisma } from '~/domain/prisma';
 import { cx } from '~/domain/utils/cx';
-import { setlistWithItemsWithSongInclude, type SetlistWithItemWithSong } from '~/prismaExtensions';
+import {
+  setlistWithItemsWithSongInclude,
+  type SetlistWithItemWithSong,
+} from '~/prismaExtensions';
 import type { Route } from './+types/$id.play';
 
 export async function loader({ params }: Route.LoaderArgs) {
@@ -19,7 +22,9 @@ export async function loader({ params }: Route.LoaderArgs) {
     where: { slug: params.slug },
     include: setlistWithItemsWithSongInclude,
   });
-  if (!setlist) throw data(`Setlist "${params.slug}" not found.`, { status: 404 });
+  if (!setlist) {
+    throw data(`Setlist "${params.slug}" not found.`, { status: 404 });
+  }
 
   return { setlist };
 }
@@ -36,7 +41,9 @@ const getSetlistSongKeys = (setlist: SetlistWithItemWithSong) => {
 
 export default function SongRoute({ loaderData }: Route.ComponentProps) {
   const { setlist } = loaderData;
-  const [songKeys, setSongKeys] = useState<Record<string, Note>>(() => getSetlistSongKeys(setlist));
+  const [songKeys, setSongKeys] = useState<Record<string, Note>>(() =>
+    getSetlistSongKeys(setlist),
+  );
   const [songListOpen, setSongListOpen] = useState(false);
   const [showTextOnly, setShowTextOnly] = useState(false);
 
@@ -44,9 +51,15 @@ export default function SongRoute({ loaderData }: Route.ComponentProps) {
     <main className="content my-10">
       <ScrollIndicator targetSel="#song-container" />
 
-      <TooltipCloseBg visible={songListOpen} onClick={() => setSongListOpen(false)} />
+      <TooltipCloseBg
+        visible={songListOpen}
+        onClick={() => setSongListOpen(false)}
+      />
 
-      <div id="song-container" className="flex snap-x snap-mandatory overflow-x-auto scroll-smooth">
+      <div
+        id="song-container"
+        className="flex snap-x snap-mandatory overflow-x-auto scroll-smooth"
+      >
         {setlist.items.map((item) => (
           <div
             id={item.id}
@@ -57,10 +70,16 @@ export default function SongRoute({ loaderData }: Route.ComponentProps) {
               {/* key list */}
               <KeySelectButton
                 selectedKey={songKeys[item.id]}
-                onKeySelect={(note) => setSongKeys({ ...songKeys, [item.id]: note })}
+                onKeySelect={(note) =>
+                  setSongKeys({ ...songKeys, [item.id]: note })
+                }
               />
-              <Button type="button" onClick={() => setShowTextOnly(!showTextOnly)}>
-                <strong>Aa</strong> {showTextOnly ? 'Show chords' : 'Show lyrics'}
+              <Button
+                type="button"
+                onClick={() => setShowTextOnly(!showTextOnly)}
+              >
+                <strong>Aa</strong>{' '}
+                {showTextOnly ? 'Show chords' : 'Show lyrics'}
               </Button>
             </div>
 

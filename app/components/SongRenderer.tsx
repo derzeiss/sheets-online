@@ -1,7 +1,10 @@
 import { useMemo, type FC } from 'react';
 import { parseSong } from '~/domain/chordpro-parser/parser';
 import { transposeSong } from '~/domain/chordpro-parser/transposer';
-import { lineIsComment, lineIsWithChords } from '~/domain/chordpro-parser/typeguards';
+import {
+  lineIsComment,
+  lineIsWithChords,
+} from '~/domain/chordpro-parser/typeguards';
 import type { Block } from '~/domain/chordpro-parser/types/Block';
 import type { Note } from '~/domain/chordpro-parser/types/Note';
 import type { SongLine } from '~/domain/chordpro-parser/types/SongLine';
@@ -22,7 +25,10 @@ export const SongRenderer: FC<Props> = ({ prosong, targetKey, textOnly }) => {
     () => transposeSong(prosongDebounced, jsong.meta.key, targetKey),
     [prosongDebounced, targetKey],
   );
-  const jsongTransposed = useMemo(() => parseSong(prosongTransposed), [prosongTransposed]);
+  const jsongTransposed = useMemo(
+    () => parseSong(prosongTransposed),
+    [prosongTransposed],
+  );
 
   const metaSubhead = useMemo(() => {
     const metaWithTargetKey: typeof jsong.meta = {
@@ -34,7 +40,9 @@ export const SongRenderer: FC<Props> = ({ prosong, targetKey, textOnly }) => {
       .reduce((acc, name) => {
         const val = metaWithTargetKey[name];
         if (val) {
-          acc.push(`${name.substring(0, 1).toUpperCase() + name.substring(1)} - ${val}`);
+          acc.push(
+            `${name.substring(0, 1).toUpperCase() + name.substring(1)} - ${val}`,
+          );
         }
         return acc;
       }, [] as string[])
@@ -48,7 +56,9 @@ export const SongRenderer: FC<Props> = ({ prosong, targetKey, textOnly }) => {
     <>
       <div className="mb-6">
         <h2 className="mb-1 text-3xl font-semibold">{jsong.meta.title}</h2>
-        {jsong.meta.artist && <small className="block">{jsong.meta.artist}</small>}
+        {jsong.meta.artist && (
+          <small className="block">{jsong.meta.artist}</small>
+        )}
         {metaSubhead && (
           <small className="block">
             <strong>{metaSubhead}</strong>
@@ -77,7 +87,11 @@ export const SongRenderer: FC<Props> = ({ prosong, targetKey, textOnly }) => {
                         <strong>{block.chord}&nbsp;</strong>
                       </div>
                     )}
-                    <div style={{ height: line.type === 'chords-only' ? 0 : undefined }}>
+                    <div
+                      style={{
+                        height: line.type === 'chords-only' ? 0 : undefined,
+                      }}
+                    >
                       {block.text}
                     </div>
                   </div>

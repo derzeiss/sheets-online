@@ -1,15 +1,22 @@
-import { useState, type ChangeEvent, type FC, type FocusEvent, type ReactNode } from 'react';
+import {
+  useState,
+  type ChangeEvent,
+  type FocusEvent,
+  type ReactNode,
+} from 'react';
 import type { z } from 'zod';
 import { formatZodError } from '../utils/formatZodError';
 import type { FormBucket } from './FormBucket';
-import type { ErrorMessageProps } from '~/components/ErrorMessage';
 
 interface UseFormBucketProps<T> {
   initialData: T;
   schema: z.ZodType<T>;
 }
 
-export const useFormBucket = <T extends object>({ initialData, schema }: UseFormBucketProps<T>) => {
+export const useFormBucket = <T extends object>({
+  initialData,
+  schema,
+}: UseFormBucketProps<T>) => {
   const [formData, setFormData] = useState<FormBucket<T>>({
     values: initialData,
     errors: null,
@@ -21,7 +28,9 @@ export const useFormBucket = <T extends object>({ initialData, schema }: UseForm
   const onChange = (ev: ChangeEvent<HTMLInputElement>) => {
     const newValues = { ...formData.values, [ev.target.name]: ev.target.value };
     const validationResult = schema.safeParse(newValues);
-    let newErrors = validationResult.success ? null : formatZodError(validationResult.error);
+    let newErrors = validationResult.success
+      ? null
+      : formatZodError(validationResult.error);
     setFormData({ ...formData, values: newValues, errors: newErrors });
   };
 
@@ -29,7 +38,9 @@ export const useFormBucket = <T extends object>({ initialData, schema }: UseForm
     const name = ev.target.name;
     if (formData.touched[name as keyof T]) return;
     const validationResult = schema.safeParse(formData.values);
-    let newErrors = validationResult.success ? null : formatZodError(validationResult.error);
+    let newErrors = validationResult.success
+      ? null
+      : formatZodError(validationResult.error);
 
     setFormData({
       ...formData,
