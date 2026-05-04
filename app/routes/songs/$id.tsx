@@ -1,6 +1,7 @@
+import { ArrowLeftIcon, PencilIcon } from '@proicons/react';
 import { useState } from 'react';
-import { data } from 'react-router';
-import { ButtonLink } from '~/components/ButtonLink';
+import { data, href } from 'react-router';
+import { ButtonLink } from '~/components/button/ButtonLink';
 import { KeySelectButton } from '~/components/KeySelectButton';
 import { SongRenderer } from '~/components/SongRenderer';
 import type { Note } from '~/domain/chordpro-parser/types/Note';
@@ -19,11 +20,20 @@ export default function SongRoute({ loaderData }: Route.ComponentProps) {
 
   return (
     <main className="content my-10">
-      <div className="mb-4 flex gap-2">
-        <ButtonLink to="/songs">← Back</ButtonLink>
-        <ButtonLink to="edit">Edit song</ButtonLink>
+      <div className="mb-8 flex gap-2">
+        <ButtonLink to={href('/songs')} size="sm">
+          <ArrowLeftIcon size={20} /> Back
+        </ButtonLink>
+        <ButtonLink to={href('/songs/:id/edit', { id: song.id })} size="sm">
+          <PencilIcon size={20} />
+          Edit song
+        </ButtonLink>
       </div>
-      <KeySelectButton selectedKey={targetKey} onKeySelect={setTargetKey} />
+      <KeySelectButton
+        selectedKey={targetKey}
+        onKeySelect={setTargetKey}
+        className="mb-2"
+      />
       <SongRenderer targetKey={targetKey} prosong={song.prosong} />
     </main>
   );

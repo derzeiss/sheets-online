@@ -2,18 +2,29 @@
 
 @theme {
   --spacing-content: clamp(16px, 5vw, 64px);
+
+  --radius-3xl: 1.25rem;
+}
+
+html,
+body {
+  @apply text-black/91;
 }
 
 @utility content {
   @apply px-content mx-auto max-w-7xl;
 }
 
-@utility btn {
-  @apply clickable inline-block rounded-sm bg-neutral-100 px-4 py-2 text-sm font-semibold;
+@utility h1 {
+  @apply text-2xl font-semibold tracking-wide uppercase;
+}
+
+@utility h2 {
+  @apply font-semibold tracking-wide uppercase;
 }
 
 @utility clickable {
-  @apply cursor-pointer transition-colors hover:bg-neutral-200 active:bg-neutral-300 active:transition-none;
+  @apply cursor-pointer transition-colors hover:bg-neutral-100 active:bg-neutral-200 active:transition-none;
 }
 
 @utility inline-link {
@@ -22,18 +33,14 @@
 
 .rl--drop-top:after {
   content: '';
-  @apply pointer-events-none absolute -top-px left-0 z-10 block h-[3px] w-full bg-neutral-400;
+  @apply pointer-events-none absolute -top-px left-0 z-10 block h-0.75 w-full bg-neutral-400;
 }
 
 .rl--drop-bottom:after {
   content: '';
-  @apply pointer-events-none absolute -bottom-px left-0 z-10 block h-[3px] w-full bg-neutral-400;
+  @apply pointer-events-none absolute -bottom-px left-0 z-10 block h-0.75 w-full bg-neutral-400;
 }
 
 .rl--is-dragged {
   @apply opacity-50;
-}
-
-a.active {
-  @apply bg-neutral-100;
 }

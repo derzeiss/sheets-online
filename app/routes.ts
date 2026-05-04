@@ -33,6 +33,7 @@ export default [
 
     route('settings', 'routes/settings/layout.tsx', [
       index('routes/settings/index.tsx'),
+      route('general', 'routes/settings/general.tsx'),
       route('user-admin', 'routes/settings/user-admin.tsx'),
       route('download-song-lib', 'routes/settings/download-song-lib.tsx'),
     ]),

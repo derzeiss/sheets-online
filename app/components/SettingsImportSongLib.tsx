@@ -1,15 +1,10 @@
-import {
-  useEffect,
-  useState,
-  type ChangeEvent,
-  type FC,
-  type FormEvent,
-} from 'react';
+import clsx from 'clsx';
+import { useEffect, useState, type FC } from 'react';
 import { Form, useSubmit } from 'react-router';
-import { cx } from '~/domain/utils/cx';
 import { useBasicStateMachine } from '~/domain/utils/useStateMachine';
 import type { StatusMessage } from '~/types/StatusMessage';
-import { Button } from './Button';
+import { Button } from './button/Button';
+import { getButtonCls } from './button/getButtonCls';
 
 export const ACTION_IMPORT_SONG_LIB = 'import-song-lib-backup';
 export const FIELD_SONG_LIB = 'song-lib-json';
@@ -36,7 +31,7 @@ export const SettingsImportSongLib: FC<Props> = ({ statusMsg }) => {
     }
   }, [statusMsg]);
 
-  const handleFileUploadChange = (ev: ChangeEvent<HTMLInputElement>) => {
+  const handleFileUploadChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
     const files = ev.target.files;
     if (!files) return;
     const file = files[0];
@@ -56,7 +51,7 @@ export const SettingsImportSongLib: FC<Props> = ({ statusMsg }) => {
       });
   };
 
-  const handleSubmit = (ev: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (ev: React.SubmitEvent<HTMLFormElement>) => {
     ev.preventDefault();
     if (!songLib.data) return;
     const formData = new FormData();
@@ -68,8 +63,10 @@ export const SettingsImportSongLib: FC<Props> = ({ statusMsg }) => {
   return (
     <>
       <Form onSubmit={handleSubmit}>
-        <label className="mt-4 block">
-          <span className="btn">Import song-library from file</span>
+        <label className="block w-fit">
+          <span className={getButtonCls({})}>
+            Import song-library from file
+          </span>
           <input
             name="tmp_song-file"
             type="file"
@@ -78,7 +75,7 @@ export const SettingsImportSongLib: FC<Props> = ({ statusMsg }) => {
             onChange={handleFileUploadChange}
           />
           {songLib.data && (
-            <div className="mt-3 w-fit border p-4">
+            <div className="mt-4 w-fit border p-4">
               <code className="bg-neutral-100 p-1">{songLib.name}</code>
               <br />
               <code className="bg-neutral-100 p-1">
@@ -93,7 +90,7 @@ export const SettingsImportSongLib: FC<Props> = ({ statusMsg }) => {
       </Form>
       {state !== 'idle' && (
         <div
-          className={cx('mt-3 w-fit p-1', {
+          className={clsx('mt-3 w-fit p-1', {
             'bg-green-100': state === 'success',
             'bg-sky-100': state === 'info',
             'bg-red-100': state === 'error',

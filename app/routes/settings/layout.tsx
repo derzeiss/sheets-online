@@ -1,4 +1,5 @@
-import { href, NavLink, Outlet } from 'react-router';
+import { href, Outlet } from 'react-router';
+import { TabNavBtn } from '~/components/TabNavBtn';
 import { requireRole } from '~/domain/auth/authMiddleware.server';
 import type { Route } from './+types/layout';
 
@@ -6,25 +7,13 @@ export const middleware: Route.MiddlewareFunction[] = [requireRole('admin')];
 
 export const loader = () => null;
 
-export default function () {
+export default function SettingsRoute() {
   return (
     <main className="content my-10 max-w-3xl">
-      <h1 className="mb-4 text-5xl">Settings</h1>
+      <h1 className="h1 mb-4">Settings</h1>
       <nav className="mb-4 flex w-full">
-        <NavLink
-          to={href('/settings')}
-          className="clickable block px-4 py-3 text-center text-sm"
-          end
-        >
-          General
-        </NavLink>
-        <NavLink
-          to={href('/settings/user-admin')}
-          className="clickable block px-4 py-3 text-center text-sm"
-          end
-        >
-          User-Admin
-        </NavLink>
+        <TabNavBtn to={href('/settings/general')}>General</TabNavBtn>
+        <TabNavBtn to={href('/settings/user-admin')}>User-Admin</TabNavBtn>
       </nav>
       <Outlet />
     </main>

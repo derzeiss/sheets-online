@@ -1,8 +1,10 @@
+import { AddIcon } from '@proicons/react';
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router';
-import { ButtonLink } from '~/components/ButtonLink';
-import { SongListItem } from '~/components/SongListItem';
-import { Textbox } from '~/components/Textbox';
+import { href, Link } from 'react-router';
+import { ButtonLink } from '~/components/button/ButtonLink';
+import { FabContainer } from '~/components/button/FabContainer';
+import { Textbox } from '~/components/form/Textbox';
+import { SongListItem } from '~/components/list-item/SongListItem';
 import { prisma } from '~/domain/prisma';
 import type { Route } from './+types';
 
@@ -26,9 +28,7 @@ export default function SongsRoute({ loaderData }: Route.ComponentProps) {
 
   return (
     <main className="content my-10 max-w-3xl">
-      <h1 className="mb-4 text-5xl">Songs</h1>
-
-      <ButtonLink to="/songs/new/edit">+ Add Song</ButtonLink>
+      <h1 className="h1">Songs</h1>
 
       <Textbox
         className="mt-3"
@@ -40,13 +40,23 @@ export default function SongsRoute({ loaderData }: Route.ComponentProps) {
         {songsFiltered.map((song) => (
           <Link
             key={song.id}
-            to={`/songs/${song.id}`}
+            to={href('/songs/:id', { id: song.id })}
             className="clickable block"
           >
             <SongListItem song={song} />
           </Link>
         ))}
       </ul>
+
+      <FabContainer>
+        <ButtonLink
+          to={href('/songs/:id/edit', { id: 'new' })}
+          variant="primary"
+        >
+          <AddIcon size={20} />
+          Add Song
+        </ButtonLink>
+      </FabContainer>
     </main>
   );
 }

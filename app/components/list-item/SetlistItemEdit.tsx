@@ -1,11 +1,15 @@
+import { CancelIcon } from '@proicons/react';
 import { useMemo, type FC } from 'react';
 import { isNote } from '~/domain/chordpro-parser/typeguards';
 import type { Note } from '~/domain/chordpro-parser/types/Note';
 import type { ReorderType } from '~/domain/reorder-list/types/ReorderType';
 import { useReorderList } from '~/domain/reorder-list/useReorderList';
-import type { SetlistItemWithSong } from '~/prismaExtensions';
 import { getSongKey } from '~/domain/utils/getSongKey';
-import { KeySelectButton } from './KeySelectButton';
+import type { SetlistItemWithSong } from '~/prismaExtensions';
+import { Button } from '../button/Button';
+import { KeySelectButton } from '../KeySelectButton';
+import { TextMeta } from '../TextMeta';
+import { ListItem } from './ListItem';
 
 interface Props {
   item: SetlistItemWithSong;
@@ -29,32 +33,30 @@ export const SetlistItemEdit: FC<Props> = ({
   };
 
   return (
-    <li
-      className="relative flex w-full justify-between gap-2 border-t border-t-neutral-200 px-2 py-1 text-left select-none"
-      {...getReorderHandlers(item.id)}
-    >
-      <div className="grow overflow-hidden">
+    <ListItem {...getReorderHandlers(item.id)}>
+      <div>
         <h2>{item.song.title}</h2>
-        <div className="overflow-hidden text-sm text-ellipsis whitespace-nowrap text-neutral-600">
-          {item.song.artist}
-        </div>
+        <TextMeta>{item.song.artist}</TextMeta>
       </div>
 
-      <KeySelectButton
-        selectedKey={songKey || 'C'}
-        onKeySelect={handleKeyChange}
-        closeOnSelect
-      />
-      <input name="key" type="hidden" value={songKey || ''} />
+      <div className="flex gap-2">
+        <KeySelectButton
+          selectedKey={songKey || 'C'}
+          onKeySelect={handleKeyChange}
+          closeOnSelect
+        />
+        <input name="key" type="hidden" value={songKey || ''} />
 
-      <button
-        key={item.id}
-        onClick={() => onItemRemove(item.id)}
-        className="btn bg-red-100"
-        type="button"
-      >
-        X
-      </button>
-    </li>
+        <Button
+          key={item.id}
+          size="sm_icon"
+          variant="danger"
+          onClick={() => onItemRemove(item.id)}
+          type="button"
+        >
+          <CancelIcon size={20} />
+        </Button>
+      </div>
+    </ListItem>
   );
 };

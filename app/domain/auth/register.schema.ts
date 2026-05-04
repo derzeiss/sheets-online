@@ -22,7 +22,7 @@ const passwordSchema = z
 
 export const registerFormSchema = z
   .object({
-    name: z.string('Please provide a name'),
+    name: z.string().min(2, 'Please provide a name'),
     email: z.email('Please enter a valid E-Mail-Address'),
     password: passwordSchema,
     confirmPassword: z.string(),

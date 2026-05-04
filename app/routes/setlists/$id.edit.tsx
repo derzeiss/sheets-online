@@ -1,12 +1,15 @@
 import type { Song } from '@prisma/client';
+import { CancelCircleIcon, DeleteIcon, SaveIcon } from '@proicons/react';
 import { useMemo, useRef, useState, type FormEvent } from 'react';
-import { data, Form, useSubmit } from 'react-router';
-import { Button } from '~/components/Button';
-import { ButtonLink } from '~/components/ButtonLink';
-import { ConfirmButton } from '~/components/ConfirmButton';
-import { SetlistItemEdit } from '~/components/SetlistItemEdit';
-import { SongListItem } from '~/components/SongListItem';
-import { Textbox } from '~/components/Textbox';
+import { data, Form, href, useSubmit } from 'react-router';
+import { Button } from '~/components/button/Button';
+import { ButtonLink } from '~/components/button/ButtonLink';
+import { DoubleConfirmBtn } from '~/components/button/DoubleConfirmBtn';
+import { FabContainer } from '~/components/button/FabContainer';
+import { Textbox } from '~/components/form/Textbox';
+import { Textfield } from '~/components/form/Textfield';
+import { SetlistItemEdit } from '~/components/list-item/SetlistItemEdit';
+import { SongListItem } from '~/components/list-item/SongListItem';
 import { requireUser } from '~/domain/auth/authMiddleware.server';
 import { prisma } from '~/domain/prisma';
 import type { ReorderType } from '~/domain/reorder-list/types/ReorderType';
@@ -159,6 +162,16 @@ export default function SetlistsEditRoute({
     });
   };
 
+  const handleDeleteSetlist = () => {
+    submit(
+      {
+        _action: 'delete',
+        id: setlist.id,
+      },
+      { method: 'post' },
+    );
+  };
+
   const handleItemAdd = (song: Song) => {
     const newSetlistItem: SetlistItemWithSongClientDTO = {
       id: crypto.randomUUID(),
@@ -178,25 +191,28 @@ export default function SetlistsEditRoute({
   return (
     <main className="content my-10 max-w-3xl pb-10">
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-4xl">{isCreation ? 'Create' : 'Edit'} Setlist</h1>
-        <Form method="post">
-          <input type="hidden" name="id" value={setlist.id} />
-          <input type="hidden" name="_action" value="delete" />
-          <ConfirmButton className="bg-red-200" type="submit">
-            Delete Setlist
-          </ConfirmButton>
-        </Form>
+        <h1 className="h1">{isCreation ? 'Create' : 'Edit'} Setlist</h1>
+        <DoubleConfirmBtn
+          variant="danger"
+          size="sm"
+          type="button"
+          onClick={handleDeleteSetlist}
+        >
+          <DeleteIcon size={20} />
+          Delete
+        </DoubleConfirmBtn>
       </div>
       <Form onSubmit={handleSubmit} method="post">
-        <label htmlFor="name" className="mb-1 block text-sm font-semibold">
-          Setlist Name
-        </label>
+        <Textfield
+          label="Setlist Name"
+          name="name"
+          defaultValue={setlist.name}
+          required
+        />
 
-        <Textbox id="name" name="name" defaultValue={setlist.name} required />
+        <h2 className="h2 mt-8">Songs</h2>
 
-        <h2 className="mt-6 text-2xl">Songs</h2>
-
-        <ul className="mt-4">
+        <ul className="mt-2">
           {setlistItems
             .filter((item) => !item._deleted)
             .map((item) => (
@@ -233,14 +249,22 @@ export default function SetlistsEditRoute({
           ))}
         </ul>
 
-        <div className="fixed bottom-0 left-0 w-full border-t border-t-neutral-200 bg-white py-3">
-          <div className="px-content mx-auto flex max-w-3xl gap-4">
-            <Button type="submit">Save</Button>
-            <ButtonLink to={`/setlists/${isCreation ? '' : setlist.id}`}>
-              Cancel
-            </ButtonLink>
-          </div>
-        </div>
+        <FabContainer>
+          <Button type="submit" variant="primary">
+            <SaveIcon size={20} />
+            Save
+          </Button>
+          <ButtonLink
+            to={
+              isCreation
+                ? href('/setlists')
+                : href('/setlists/:slug', { slug: setlist.slug })
+            }
+          >
+            <CancelCircleIcon size={20} />
+            Cancel
+          </ButtonLink>
+        </FabContainer>
 
         <input type="hidden" name="id" value={setlist.id} />
         <input type="hidden" name="_action" value="save" />

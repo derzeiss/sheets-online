@@ -1,8 +1,10 @@
-import { useState, type FormEvent } from 'react';
-import { data, Form, useSubmit } from 'react-router';
-import { Button } from '~/components/Button';
-import { ButtonLink } from '~/components/ButtonLink';
-import { ConfirmButton } from '~/components/ConfirmButton';
+import { CancelCircleIcon, DeleteIcon, SaveIcon } from '@proicons/react';
+import React, { useState } from 'react';
+import { data, Form, href, useSubmit } from 'react-router';
+import { Button } from '~/components/button/Button';
+import { ButtonLink } from '~/components/button/ButtonLink';
+import { DoubleConfirmBtn } from '~/components/button/DoubleConfirmBtn';
+import { Textarea } from '~/components/form/Textarea';
 import { KeySelectButton } from '~/components/KeySelectButton';
 import { SongRenderer } from '~/components/SongRenderer';
 import { parseSong } from '~/domain/chordpro-parser/parser';
@@ -61,7 +63,7 @@ export default function SongsEditRoute({ loaderData }: Route.ComponentProps) {
   const [prosong, setProsong] = useState(song.prosong);
   const isCreation = song.id === 'new';
 
-  const handleSubmit = (ev: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (ev: React.SubmitEvent<HTMLFormElement>) => {
     ev.preventDefault();
     let $form = ev.currentTarget;
     let formData = new FormData($form);
@@ -77,41 +79,51 @@ export default function SongsEditRoute({ loaderData }: Route.ComponentProps) {
     });
   };
 
-  return (
-    <main className="content my-10 grid h-[calc(100vh-7.75rem)] gap-12 overflow-hidden lg:grid-cols-2">
-      <div>
-        <Form onSubmit={handleSubmit} method="post">
-          <input type="hidden" name="id" value={song.id} />
-          <input type="hidden" name="_action" value="save" />
-          <div>
-            <textarea
-              name="prosong"
-              className="h-[calc(100vh-14rem)] w-full rounded-lg border border-neutral-300 p-4"
-              value={prosong}
-              onChange={(ev) => setProsong(ev.target.value)}
-            ></textarea>
-            <div className="flex gap-2">
-              <Button type="submit">Save</Button>
-              <ButtonLink to={`/songs/${isCreation ? '' : song.id}`}>
-                Cancel
-              </ButtonLink>
-            </div>
-          </div>
-        </Form>
+  const handleDeleteSong = () => {
+    submit({ _action: 'delete', id: song.id }, { method: 'post' });
+  };
 
-        <Form method="post" className="mt-4">
-          <input type="hidden" name="id" value={song.id} />
-          <input type="hidden" name="_action" value="delete" />
-          <ConfirmButton
-            className="bg-red-200"
-            type="submit"
-            childrenConfirm="You sure?"
+  return (
+    <main className="content relative my-10 grid h-[calc(100dvh-7.75rem)] items-stretch gap-12 lg:grid-cols-2">
+      <Form
+        onSubmit={handleSubmit}
+        method="post"
+        className="flex flex-col gap-4"
+      >
+        <input type="hidden" name="id" value={song.id} />
+        <input type="hidden" name="_action" value="save" />
+        <Textarea
+          name="prosong"
+          className="w-full grow"
+          value={prosong}
+          onChange={(ev) => setProsong(ev.target.value)}
+        />
+        <div className="flex flex-wrap gap-2">
+          <Button type="submit" variant="primary">
+            <SaveIcon size={20} />
+            Save
+          </Button>
+          <ButtonLink
+            to={
+              isCreation ? href('/songs') : href('/songs/:id', { id: song.id })
+            }
           >
-            Delete song
-          </ConfirmButton>
-        </Form>
-      </div>
-      <div className="overflow-auto">
+            <CancelCircleIcon size={20} />
+            Cancel
+          </ButtonLink>
+          <DoubleConfirmBtn
+            variant="danger"
+            size="sm"
+            type="button"
+            onClick={handleDeleteSong}
+            className="ml-auto"
+          >
+            <DeleteIcon size={20} />
+            Delete
+          </DoubleConfirmBtn>
+        </div>
+      </Form>
+      <div className="hidden overflow-auto lg:block">
         <KeySelectButton selectedKey={targetKey} onKeySelect={setTargetKey} />
         <SongRenderer targetKey={targetKey} prosong={prosong} />
       </div>

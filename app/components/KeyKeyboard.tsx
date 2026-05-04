@@ -1,29 +1,34 @@
+import clsx from 'clsx';
 import type { FC, RefObject } from 'react';
 import type { Note } from '~/domain/chordpro-parser/types/Note';
-import { cx } from '~/domain/utils/cx';
-import { Button, type ButtonProps } from './Button';
+import { Button } from './button/Button';
+import type { BtnProps } from './button/getButtonCls';
 
-interface Props {
+interface KeyKeyboardProps {
   selectedKey: Note;
   onKeySelect: (key: Note) => void;
   className?: string;
   ref: RefObject<HTMLDivElement | null>;
 }
 
-export const KeyKeyboard: FC<Props> = ({ className, ref, ...props }) => {
+export const KeyKeyboard: FC<KeyKeyboardProps> = ({
+  className,
+  ref,
+  ...props
+}) => {
   return (
-    <div className={cx('w-fit space-y-2', className)} ref={ref}>
-      <div className="flex gap-2">
+    <div className={clsx(className, 'w-fit space-y-1')} ref={ref}>
+      <div className="mb-2 flex gap-1">
         <KeyButton {...props} note="Nashville" />
       </div>
-      <div className="flex gap-2">
+      <div className="flex gap-1">
         <KeyButton {...props} note="C#" className="ml-4" />
         <KeyButton {...props} note="D#" />
         <KeyButton {...props} note="F#" className="ml-6" />
         <KeyButton {...props} note="G#" />
         <KeyButton {...props} note="A#" />
       </div>
-      <div className="flex gap-2">
+      <div className="flex gap-1">
         <KeyButton {...props} note="C" />
         <KeyButton {...props} note="D" />
         <KeyButton {...props} note="E" />
@@ -32,7 +37,7 @@ export const KeyKeyboard: FC<Props> = ({ className, ref, ...props }) => {
         <KeyButton {...props} note="A" />
         <KeyButton {...props} note="B" />
       </div>
-      <div className="flex gap-2">
+      <div className="flex gap-1">
         <KeyButton {...props} note="Db" className="ml-4" />
         <KeyButton {...props} note="Eb" />
         <KeyButton {...props} note="Gb" className="ml-6" />
@@ -43,18 +48,15 @@ export const KeyKeyboard: FC<Props> = ({ className, ref, ...props }) => {
   );
 };
 
-const KeyButton: FC<ButtonProps & Omit<Props, 'ref'> & { note: Note }> = ({
-  selectedKey,
-  onKeySelect,
-  note,
-  className,
-  ...props
-}) => (
+const KeyButton: FC<
+  BtnProps & Omit<KeyKeyboardProps, 'ref'> & { note: Note }
+> = ({ selectedKey, onKeySelect, note, className, ...props }) => (
   <Button
-    type="button"
     {...props}
-    className={cx(className, {
-      'outline-4 outline-blue-500': selectedKey === note,
+    size="sm"
+    type="button"
+    className={clsx(className, {
+      'bg-yellow-50 inset-ring-yellow-400': selectedKey === note,
     })}
     onClick={() => onKeySelect(note)}
   >

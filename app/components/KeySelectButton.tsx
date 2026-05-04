@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState, type FC } from 'react';
+import { MusicNoteIcon } from '@proicons/react';
+import clsx from 'clsx';
+import { useRef, useState, type FC } from 'react';
 import type { Note } from '~/domain/chordpro-parser/types/Note';
-import { cx } from '~/domain/utils/cx';
-import { Button } from './Button';
+import { Button } from './button/Button';
 import { KeyKeyboard } from './KeyKeyboard';
 
 interface Props {
@@ -41,9 +42,9 @@ export const KeySelectButton: FC<Props> = ({
   };
 
   return (
-    <div className={cx('relative flex w-fit', className)}>
+    <div className={clsx('relative flex w-fit', className)}>
       <div
-        className={cx('fixed inset-0', {
+        className={clsx('fixed inset-0', {
           hidden: !keyListOpen,
           visible: keyListOpen,
         })}
@@ -53,7 +54,7 @@ export const KeySelectButton: FC<Props> = ({
         ref={$container}
         selectedKey={selectedKey}
         onKeySelect={(note) => handleKeySelect(note)}
-        className={cx(
+        className={clsx(
           'absolute top-[calc(100%+0.5rem)] left-0 z-10 rounded-sm border border-neutral-200 bg-white p-2 shadow-lg transition-all',
           {
             'invisible -translate-y-2 opacity-0': !keyListOpen,
@@ -62,8 +63,8 @@ export const KeySelectButton: FC<Props> = ({
         )}
       />
 
-      <Button type="button" onClick={() => toggleKeyListOpen()}>
-        ♫ {selectedKey}
+      <Button type="button" size="sm" onClick={() => toggleKeyListOpen()}>
+        <MusicNoteIcon size={20} /> {selectedKey}
       </Button>
     </div>
   );

@@ -1,7 +1,8 @@
+import { ArrowRightIcon } from '@proicons/react';
 import { Form, href, Link } from 'react-router';
-import { Button } from '~/components/Button';
-import { ErrorMessage } from '~/components/ErrorMessage';
-import { Textbox } from '~/components/Textbox';
+import { Button } from '~/components/button/Button';
+import { ErrorMsg } from '~/components/form/ErrorMsg';
+import { Textbox } from '~/components/form/Textbox';
 import {
   registerFormSchema,
   type UserRegisterDto,
@@ -22,8 +23,8 @@ export const action = async ({ request }: Route.ActionArgs) => {
   return await register(request, parseResult.data);
 };
 
-export default function RegisterRoute({ actionData }: Route.ComponentProps) {
-  const { formData, register, errorFor } = useFormBucket<UserRegisterDto>({
+export default function RegisterRoute() {
+  const { register, errorFor } = useFormBucket<UserRegisterDto>({
     initialData: {
       name: '',
       email: '',
@@ -33,57 +34,49 @@ export default function RegisterRoute({ actionData }: Route.ComponentProps) {
     schema: registerFormSchema,
   });
 
+  const errMsgFor = (field: keyof UserRegisterDto) =>
+    errorFor(field, (msg) => <ErrorMsg className="-mt-2">{msg}</ErrorMsg>);
+
   return (
     <main className="content my-16 max-w-md rounded-lg border border-neutral-200 bg-white py-10">
-      <h1 className="mb-4 text-5xl">Register</h1>
+      <h1 className="h1">Register</h1>
 
-      <Form method="post">
+      <Form method="post" className="mt-8 space-y-4">
         <Textbox
-          className="mt-3"
           type="text"
           placeholder="Name"
           required
           {...register('name')}
         />
-        {errorFor('name', (msg) => (
-          <ErrorMessage className="mt-1">{msg}</ErrorMessage>
-        ))}
+        {errMsgFor('name')}
 
         <Textbox
-          className="mt-3"
           type="email"
           placeholder="E-Mail"
           required
           {...register('email')}
         />
-        {errorFor('email', (msg) => (
-          <ErrorMessage className="mt-1">{msg}</ErrorMessage>
-        ))}
+        {errMsgFor('email')}
 
         <Textbox
-          className="mt-3"
           type="password"
           placeholder="Password"
           required
           {...register('password')}
         />
-        {errorFor('password', (msg) => (
-          <ErrorMessage className="mt-1">{msg}</ErrorMessage>
-        ))}
+        {errMsgFor('password')}
 
         <Textbox
-          className="mt-3"
           type="password"
           placeholder="Repeat Password"
           required
           {...register('confirmPassword')}
         />
-        {errorFor('confirmPassword', (msg) => (
-          <ErrorMessage className="mt-1">{msg}</ErrorMessage>
-        ))}
+        {errMsgFor('confirmPassword')}
 
-        <Button className="mt-3" type="submit">
+        <Button type="submit" variant="primary">
           Register
+          <ArrowRightIcon size={20} />
         </Button>
         <Link
           to={href('/auth/login')}

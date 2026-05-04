@@ -1,16 +1,21 @@
+import {
+  ArrowLeftIcon,
+  BulletListIcon,
+  TextCaseTitleIcon,
+} from '@proicons/react';
+import clsx from 'clsx';
 import { useState } from 'react';
 import { data, Link } from 'react-router';
-import { Button } from '~/components/Button';
-import { ButtonLink } from '~/components/ButtonLink';
+import { Button } from '~/components/button/Button';
+import { ButtonLink } from '~/components/button/ButtonLink';
 import { KeySelectButton } from '~/components/KeySelectButton';
+import { SongListItem } from '~/components/list-item/SongListItem';
 import { ScrollIndicator } from '~/components/ScrollIndicator';
-import { SongListItem } from '~/components/SongListItem';
 import { SongRenderer } from '~/components/SongRenderer';
 import { TooltipCloseBg } from '~/components/TooltipCloseBg';
 import { isNote } from '~/domain/chordpro-parser/typeguards';
 import type { Note } from '~/domain/chordpro-parser/types/Note';
 import { prisma } from '~/domain/prisma';
-import { cx } from '~/domain/utils/cx';
 import {
   setlistWithItemsWithSongInclude,
   type SetlistWithItemWithSong,
@@ -66,7 +71,7 @@ export default function SongRoute({ loaderData }: Route.ComponentProps) {
             key={item.id}
             className="min-w-full snap-start snap-always overflow-hidden"
           >
-            <div className="mb-2 flex gap-2">
+            <div className="mb-4 flex gap-2">
               {/* key list */}
               <KeySelectButton
                 selectedKey={songKeys[item.id]}
@@ -76,10 +81,14 @@ export default function SongRoute({ loaderData }: Route.ComponentProps) {
               />
               <Button
                 type="button"
+                size="sm"
                 onClick={() => setShowTextOnly(!showTextOnly)}
+                className={clsx({
+                  'bg-yellow-50 inset-ring-yellow-400': showTextOnly,
+                })}
               >
-                <strong>Aa</strong>{' '}
-                {showTextOnly ? 'Show chords' : 'Show lyrics'}
+                <TextCaseTitleIcon size={20} />
+                Lyrics only
               </Button>
             </div>
 
@@ -92,15 +101,21 @@ export default function SongRoute({ loaderData }: Route.ComponentProps) {
         ))}
       </div>
 
-      <ButtonLink to=".." relative="path" className="fixed bottom-8 left-8">
-        ← Back
+      <ButtonLink
+        size="sm"
+        to=".."
+        relative="path"
+        className="fixed bottom-8 left-8 shadow-lg"
+      >
+        <ArrowLeftIcon size={20} />
+        Back
       </ButtonLink>
 
-      <div className="fixed right-8 bottom-8 flex gap-4">
+      <div className="fixed right-8 bottom-8 flex gap-4 *:shadow-lg">
         {/* song list */}
         <ul
-          className={cx(
-            'absolute right-0 bottom-[calc(100%+0.5rem)] max-h-[calc(100vh-6rem)] w-[30rem] max-w-[90vw] overflow-y-scroll rounded-sm border border-neutral-200 bg-white shadow-lg transition-all',
+          className={clsx(
+            'absolute right-0 bottom-[calc(100%+0.5rem)] max-h-[calc(100vh-6rem)] w-120 max-w-[90vw] overflow-y-scroll rounded-3xl border border-neutral-200 bg-white transition-all',
             {
               'invisible -translate-y-2 opacity-0': !songListOpen,
               'visible translate-y-0 opacity-100': songListOpen,
@@ -108,12 +123,19 @@ export default function SongRoute({ loaderData }: Route.ComponentProps) {
           )}
         >
           {setlist.items.map((item) => (
-            <Link key={item.id} to={`#${item.id}`} className="clickable block">
+            <Link
+              key={item.id}
+              to={`#${item.id}`}
+              className="clickable block first:-mt-px"
+            >
               <SongListItem song={{ ...item.song, key: item.key }} />
             </Link>
           ))}
         </ul>
-        <Button onClick={() => setSongListOpen(!songListOpen)}>= Songs</Button>
+        <Button size="sm" onClick={() => setSongListOpen(!songListOpen)}>
+          <BulletListIcon size={20} />
+          Songs
+        </Button>
       </div>
     </main>
   );

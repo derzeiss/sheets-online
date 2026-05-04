@@ -1,13 +1,20 @@
-import { Form, href, Link } from 'react-router';
-import { Button } from '~/components/Button';
-import { ButtonLink } from '~/components/ButtonLink';
-import { ErrorMessage } from '~/components/ErrorMessage';
-import { Textbox } from '~/components/Textbox';
+import { ArrowRightIcon } from '@proicons/react';
+import { Form, href, Link, redirect } from 'react-router';
+import { Button } from '~/components/button/Button';
+import { ButtonLink } from '~/components/button/ButtonLink';
+import { ErrorMsg } from '~/components/form/ErrorMsg';
+import { Textbox } from '~/components/form/Textbox';
+import { userContext } from '~/domain/auth/authMiddleware.server';
 import { loginFormSchema } from '~/domain/auth/login.schema';
 import { login } from '~/domain/auth/user.server';
 import { formatZodError } from '~/domain/utils/formatZodError';
 import { getQueryParam } from '~/domain/utils/getQueryParam';
 import type { Route } from './+types/login';
+
+export const loader = ({ context }: Route.LoaderArgs) => {
+  const me = context.get(userContext);
+  if (me) return redirect(href('/setlists'));
+};
 
 export const action = async ({ request }: Route.ActionArgs) => {
   const formData = await request.formData();
@@ -26,19 +33,12 @@ export const action = async ({ request }: Route.ActionArgs) => {
 
 export default function LoginRoute({ actionData }: Route.ComponentProps) {
   return (
-    <main className="content my-16 max-w-md rounded-lg border border-neutral-200 bg-white py-10">
-      <h1 className="mb-4 text-5xl">Login</h1>
+    <main className="content my-16 max-w-md rounded-3xl border border-neutral-200 bg-white py-10">
+      <h1 className="h1">Login</h1>
 
-      <Form method="post">
+      <Form method="post" className="mt-8 space-y-4">
+        <Textbox name="email" type="email" placeholder="E-Mail" required />
         <Textbox
-          className="mt-3"
-          name="email"
-          type="email"
-          placeholder="E-Mail"
-          required
-        />
-        <Textbox
-          className="mt-3"
           name="password"
           type="password"
           placeholder="Password"
@@ -47,25 +47,25 @@ export default function LoginRoute({ actionData }: Route.ComponentProps) {
 
         {/* Show server errors */}
         {actionData?.errors && (
-          <ErrorMessage className="mt-3">
-            {Object.values(actionData.errors).join('\n')}
-          </ErrorMessage>
+          <ErrorMsg>{Object.values(actionData.errors).join('\n')}</ErrorMsg>
         )}
 
-        <Button className="mt-3" type="submit">
-          Login
-        </Button>
-        <ButtonLink
-          to={href('/auth/register')}
-          tertiary
-          className="mt-3 ml-3"
-          type="submit"
-        >
-          Sign up
-        </ButtonLink>
+        <div className="flex gap-2">
+          <Button type="submit" variant="primary">
+            Login
+            <ArrowRightIcon size={20} />
+          </Button>
+          <ButtonLink
+            to={href('/auth/register')}
+            variant="tertiary"
+            type="submit"
+          >
+            Sign up
+          </ButtonLink>
+        </div>
         <Link
           to={href('/auth/forgot-password')}
-          className="inline-link mt-4 block text-sm text-neutral-600"
+          className="inline-link mt-8 block text-sm text-neutral-600"
         >
           Forgot your password?
         </Link>

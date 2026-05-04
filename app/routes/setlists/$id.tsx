@@ -1,10 +1,19 @@
+import {
+  ArrowLeftIcon,
+  DeleteIcon,
+  PencilIcon,
+  PlayIcon,
+  QrCodeIcon,
+} from '@proicons/react';
 import QRCode from 'qrcode';
 import { useRef } from 'react';
-import { data, Form, Link } from 'react-router';
-import { Button } from '~/components/Button';
-import { ButtonLink } from '~/components/ButtonLink';
-import { ConfirmButton } from '~/components/ConfirmButton';
-import { SongListItem } from '~/components/SongListItem';
+import { data, Form, href, Link } from 'react-router';
+import { Button } from '~/components/button/Button';
+import { ButtonLink } from '~/components/button/ButtonLink';
+import { DoubleConfirmBtn } from '~/components/button/DoubleConfirmBtn';
+import { FabContainer } from '~/components/button/FabContainer';
+import { SongListItem } from '~/components/list-item/SongListItem';
+import { TextMeta } from '~/components/TextMeta';
 import { prisma } from '~/domain/prisma';
 import { deleteSetlist } from '~/domain/setlist/setlistDal';
 import { setlistWithItemsWithSongInclude } from '~/prismaExtensions';
@@ -35,6 +44,14 @@ export async function action({ request }: Route.ActionArgs) {
   return deleteSetlist(id);
 }
 
+const toggleQrCodeClasses = (el: Element | null | undefined) => {
+  if (!el) return;
+  // These classes have to be present on the qr-code-container initially so it's hidden
+  ['invisible', 'opacity-0', 'translate-y-3', 'scale-95'].forEach((cls) =>
+    el.classList.toggle(cls),
+  );
+};
+
 export default function SetlistRoute({ loaderData }: Route.ComponentProps) {
   const { setlist } = loaderData;
   const qrCodeRef = useRef<HTMLCanvasElement>(null);
@@ -45,47 +62,71 @@ export default function SetlistRoute({ loaderData }: Route.ComponentProps) {
       errorCorrectionLevel: 'H',
       width: QR_CODE_SIZE,
     });
-    qrCodeRef.current.classList.toggle('hidden');
+    toggleQrCodeClasses(qrCodeRef.current?.parentElement);
   };
 
   return (
     <main className="content my-10 max-w-3xl">
-      <div className="mb-4 flex gap-2">
-        <ButtonLink to="/setlists">← Back</ButtonLink>
-        <ButtonLink to="edit">Edit Setlist</ButtonLink>
-        <ButtonLink to="play">▶︎ Play</ButtonLink>
-        <Button onClick={toggleQrCode}>↪︎ Share</Button>
+      <div className="flex gap-2">
+        <ButtonLink to={href('/setlists')} size="sm">
+          <ArrowLeftIcon size={20} />
+          Back
+        </ButtonLink>
+        <ButtonLink
+          to={href('/setlists/:slug/edit', { slug: setlist.slug })}
+          size="sm"
+        >
+          <PencilIcon size={20} />
+          Edit
+        </ButtonLink>
 
         <Form method="post" className="ml-auto">
           <input type="hidden" name="id" value={setlist.id} />
           <input type="hidden" name="_action" value="delete" />
-          <ConfirmButton className="bg-red-200" type="submit">
-            Delete Setlist
-          </ConfirmButton>
+          <DoubleConfirmBtn type="submit" variant="danger" size="sm">
+            <DeleteIcon size={20} />
+            Delete
+          </DoubleConfirmBtn>
         </Form>
       </div>
 
-      <canvas
-        className="hidden"
-        ref={qrCodeRef}
-        width={QR_CODE_SIZE}
-        height={QR_CODE_SIZE}
-      />
-
-      <h1 className="text-4xl">{setlist.name}</h1>
-      <div className="text-neutral-600">{setlist.songAmount} Songs</div>
+      <h1 className="h1 mt-8">{setlist.name}</h1>
+      <TextMeta>
+        {setlist.songAmount} Song{setlist.songAmount !== 1 && 's'}
+      </TextMeta>
 
       <ul className="mt-4">
         {setlist.items.map((item) => (
           <Link
             key={item.id}
-            to={`play#${item.id}`}
+            to={
+              href('/setlists/:slug/play', { slug: setlist.slug }) +
+              `#${item.id}`
+            }
             className="clickable block"
           >
             <SongListItem song={{ ...item.song, key: item.key }} />
           </Link>
         ))}
       </ul>
+
+      <FabContainer>
+        <div className="invisible absolute right-0 bottom-14 origin-bottom translate-y-3 scale-95 overflow-hidden rounded-3xl opacity-0 transition-all">
+          <canvas ref={qrCodeRef} width={QR_CODE_SIZE} height={QR_CODE_SIZE} />
+        </div>
+
+        <Button onClick={toggleQrCode}>
+          <QrCodeIcon size={20} />
+          Share
+        </Button>
+        <ButtonLink
+          to={href('/setlists/:slug/play', { slug: setlist.slug })}
+          variant="primary"
+        >
+          <PlayIcon size={20} />
+          Play
+        </ButtonLink>
+      </FabContainer>
     </main>
   );
 }

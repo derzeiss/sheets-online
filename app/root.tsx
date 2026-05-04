@@ -1,9 +1,7 @@
 import {
-  href,
   isRouteErrorResponse,
   Links,
   Meta,
-  NavLink,
   Outlet,
   Scripts,
   ScrollRestoration,
@@ -11,6 +9,7 @@ import {
 } from 'react-router';
 import type { Route } from './+types/root';
 import stylesheet from './app.css?url';
+import { TopNav } from './components/TopNav';
 import {
   userContext,
   useUserSessionMiddleware,
@@ -59,40 +58,9 @@ export const loader = ({ context }: Route.LoaderArgs) => {
 export default function App() {
   const me = useLoaderData<typeof loader>();
 
-  let url: string, label: string;
-  if (!me) {
-    url = href('/auth/login');
-    label = 'Login';
-  } else if (me.role === 'admin') {
-    url = href('/settings');
-    label = 'Settings';
-  } else {
-    url = href('/auth/logout');
-    label = 'Logout';
-  }
-
   return (
     <>
-      <nav className="flex w-full justify-center">
-        <NavLink
-          to="/setlists"
-          className="clickable block px-4 py-3 text-center text-sm"
-        >
-          Sets
-        </NavLink>
-        <NavLink
-          to="/songs"
-          className="clickable block px-4 py-3 text-center text-sm"
-        >
-          Songs
-        </NavLink>
-        <NavLink
-          to={url}
-          className="clickable absolute top-0 right-0 block px-4 py-3 text-center text-sm"
-        >
-          {label}
-        </NavLink>
-      </nav>
+      <TopNav me={me} />
       <Outlet />
       <footer className="fixed right-2 bottom-2 flex w-full justify-end gap-2 text-xs text-neutral-500">
         <a className="inline-link" href="https://alexzeiss.de/impressum">
