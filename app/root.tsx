@@ -60,7 +60,7 @@ export default function App() {
 
   return (
     <>
-      <TopNav me={me} />
+      {me && <TopNav me={me} />}
       <Outlet />
       <footer className="fixed right-2 bottom-2 flex w-full justify-end gap-2 text-xs text-neutral-500">
         <a className="inline-link" href="https://alexzeiss.de/impressum">

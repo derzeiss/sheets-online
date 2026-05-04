@@ -1,6 +1,11 @@
 import clsx from 'clsx';
 
-export type BtnVariant = 'primary' | 'secondary' | 'tertiary' | 'danger';
+export type BtnVariant =
+  | 'primary'
+  | 'secondary'
+  | 'tertiary'
+  | 'danger'
+  | 'selected';
 export type BtnSize = 'sm' | 'sm_icon' | 'md' | 'lg';
 
 export interface BtnProps {
@@ -19,11 +24,12 @@ export const getButtonCls = ({
     'flex w-fit cursor-pointer items-center justify-center rounded-full font-semibold tracking-wide uppercase transition-colors select-none active:transition-none',
     {
       // TODO: btn-primary-states
-      'bg-yellow-300 text-neutral-900': variant === 'primary',
+      'bg-primary-300 text-neutral-900': variant === 'primary',
       'bg-white inset-ring inset-ring-neutral-200 hover:bg-neutral-100 active:bg-neutral-200':
         variant === 'secondary',
       'hover:bg-neutral-100 active:bg-neutral-200': variant === 'tertiary',
       'bg-red-100 text-red-600': variant === 'danger',
+      'bg-primary-50 inset-ring-primary-400 inset-ring': variant === 'selected',
 
       'gap-4 px-7 py-4 text-sm': size === 'lg',
       'gap-3 px-7 py-3 text-sm': size === 'md',

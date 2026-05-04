@@ -250,10 +250,6 @@ export default function SetlistsEditRoute({
         </ul>
 
         <FabContainer>
-          <Button type="submit" variant="primary">
-            <SaveIcon size={20} />
-            Save
-          </Button>
           <ButtonLink
             to={
               isCreation
@@ -264,6 +260,11 @@ export default function SetlistsEditRoute({
             <CancelCircleIcon size={20} />
             Cancel
           </ButtonLink>
+
+          <Button type="submit" variant="primary">
+            <SaveIcon size={20} />
+            Save
+          </Button>
         </FabContainer>
 
         <input type="hidden" name="id" value={setlist.id} />

@@ -123,7 +123,7 @@ export default function SongsEditRoute({ loaderData }: Route.ComponentProps) {
           </DoubleConfirmBtn>
         </div>
       </Form>
-      <div className="hidden overflow-auto lg:block">
+      <div className="hidden space-y-2 overflow-auto lg:block">
         <KeySelectButton selectedKey={targetKey} onKeySelect={setTargetKey} />
         <SongRenderer targetKey={targetKey} prosong={prosong} />
       </div>

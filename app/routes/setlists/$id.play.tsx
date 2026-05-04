@@ -82,10 +82,8 @@ export default function SongRoute({ loaderData }: Route.ComponentProps) {
               <Button
                 type="button"
                 size="sm"
+                variant={showTextOnly ? 'selected' : 'secondary'}
                 onClick={() => setShowTextOnly(!showTextOnly)}
-                className={clsx({
-                  'bg-yellow-50 inset-ring-yellow-400': showTextOnly,
-                })}
               >
                 <TextCaseTitleIcon size={20} />
                 Lyrics only

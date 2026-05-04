@@ -54,10 +54,8 @@ const KeyButton: FC<
   <Button
     {...props}
     size="sm"
+    variant={selectedKey === note ? 'selected' : 'secondary'}
     type="button"
-    className={clsx(className, {
-      'bg-yellow-50 inset-ring-yellow-400': selectedKey === note,
-    })}
     onClick={() => onKeySelect(note)}
   >
     {note}

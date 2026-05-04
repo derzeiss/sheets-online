@@ -6,13 +6,10 @@ export const TabNavBtn: FC<LinkProps> = (props) => (
   <NavLink
     {...props}
     className={({ isActive }) =>
-      clsx(
-        props.className,
-        'flex gap-2 border-b-2 border-b-transparent px-4 py-3 text-sm',
-        {
-          'border-b-yellow-400 bg-yellow-50 font-semibold': isActive,
-        },
-      )
+      clsx(props.className, 'flex gap-2 border-b-2 px-4 py-3 text-sm', {
+        'border-b-transparent': !isActive,
+        'border-b-primary-400 bg-primary-50 font-semibold': isActive,
+      })
     }
   />
 );

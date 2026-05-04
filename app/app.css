@@ -4,6 +4,10 @@
   --spacing-content: clamp(16px, 5vw, 64px);
 
   --radius-3xl: 1.25rem;
+
+  --color-primary-50: var(--color-yellow-50);
+  --color-primary-300: var(--color-yellow-300);
+  --color-primary-400: var(--color-yellow-400);
 }
 
 html,
