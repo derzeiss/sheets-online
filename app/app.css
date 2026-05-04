@@ -5,9 +5,9 @@
 
   --radius-3xl: 1.25rem;
 
-  --color-primary-50: var(--color-yellow-50);
-  --color-primary-300: var(--color-yellow-300);
-  --color-primary-400: var(--color-yellow-400);
+  --color-primary-50: var(--color-orange-50);
+  --color-primary-300: var(--color-orange-300);
+  --color-primary-400: var(--color-orange-400);
 }
 
 html,
