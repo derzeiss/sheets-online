@@ -33,8 +33,9 @@ const performDbImport = async (songs: Song[]) => {
     },
   });
   const existingSongsSet = new Set(
+    // using unusual char (≥) as divider on purpose
     existingSongs.map((song) => `${song.title}≥${song.artist}`),
-  ); // using unusual char as divider on purpose
+  );
   const queries: Prisma.Prisma__SongClient<Song>[] = [];
 
   songs.forEach((song) => {
