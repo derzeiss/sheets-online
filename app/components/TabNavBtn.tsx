@@ -8,7 +8,8 @@ export const TabNavBtn: FC<LinkProps> = (props) => (
     className={({ isActive }) =>
       clsx(props.className, 'flex gap-2 border-b-2 px-4 py-3 text-sm', {
         'border-b-transparent': !isActive,
-        'border-b-primary-400 bg-primary-50 font-semibold': isActive,
+        'border-b-primary-400 bg-primary-50 dark:border-b-primary-400/50 dark:bg-primary-50/10 font-semibold':
+          isActive,
       })
     }
   />

@@ -6,7 +6,7 @@ export const ListItem: FC<ComponentProps<'li'>> = (props) => (
     {...props}
     className={clsx(
       props.className,
-      'relative flex justify-between border-t border-t-neutral-200 p-2 text-left',
+      'relative flex items-start justify-between border-t border-t-neutral-200 p-2 text-left dark:border-t-neutral-700',
     )}
   />
 );

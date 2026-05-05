@@ -113,7 +113,7 @@ export default function SongRoute({ loaderData }: Route.ComponentProps) {
         {/* song list */}
         <ul
           className={clsx(
-            'absolute right-0 bottom-[calc(100%+0.5rem)] max-h-[calc(100vh-6rem)] w-120 max-w-[90vw] overflow-y-scroll rounded-3xl border border-neutral-200 bg-white transition-all',
+            'absolute right-0 bottom-[calc(100%+0.5rem)] max-h-[calc(100vh-6rem)] w-120 max-w-[90vw] overflow-y-scroll rounded-3xl border border-neutral-200 bg-white transition-all dark:border-neutral-700 dark:bg-neutral-900',
             {
               'invisible -translate-y-2 opacity-0': !songListOpen,
               'visible translate-y-0 opacity-100': songListOpen,

@@ -5,8 +5,9 @@ import {
   PlayIcon,
   QrCodeIcon,
 } from '@proicons/react';
+import clsx from 'clsx';
 import QRCode from 'qrcode';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { data, Form, href, Link } from 'react-router';
 import { Button } from '~/components/button/Button';
 import { ButtonLink } from '~/components/button/ButtonLink';
@@ -44,17 +45,10 @@ export async function action({ request }: Route.ActionArgs) {
   return deleteSetlist(id);
 }
 
-const toggleQrCodeClasses = (el: Element | null | undefined) => {
-  if (!el) return;
-  // These classes have to be present on the qr-code-container initially so it's hidden
-  ['invisible', 'opacity-0', 'translate-y-3', 'scale-95'].forEach((cls) =>
-    el.classList.toggle(cls),
-  );
-};
-
 export default function SetlistRoute({ loaderData }: Route.ComponentProps) {
   const { setlist } = loaderData;
   const qrCodeRef = useRef<HTMLCanvasElement>(null);
+  const [qrCodeVisible, setQrCodeVisible] = useState(false);
 
   const toggleQrCode = () => {
     if (!qrCodeRef.current) return;
@@ -62,7 +56,7 @@ export default function SetlistRoute({ loaderData }: Route.ComponentProps) {
       errorCorrectionLevel: 'H',
       width: QR_CODE_SIZE,
     });
-    toggleQrCodeClasses(qrCodeRef.current?.parentElement);
+    setQrCodeVisible(!qrCodeVisible);
   };
 
   return (
@@ -111,7 +105,14 @@ export default function SetlistRoute({ loaderData }: Route.ComponentProps) {
       </ul>
 
       <FabContainer>
-        <div className="invisible absolute right-0 bottom-14 origin-bottom translate-y-3 scale-95 overflow-hidden rounded-3xl opacity-0 transition-all">
+        <div
+          className={clsx(
+            'absolute right-0 bottom-14 origin-bottom overflow-hidden rounded-3xl transition-all',
+            {
+              'invisible translate-y-3 scale-95 opacity-0': !qrCodeVisible,
+            },
+          )}
+        >
           <canvas ref={qrCodeRef} width={QR_CODE_SIZE} height={QR_CODE_SIZE} />
         </div>
 

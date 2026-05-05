@@ -4,10 +4,11 @@ import {
   PowerIcon,
   SettingsIcon,
 } from '@proicons/react';
-import type { FC } from 'react';
+import { type FC } from 'react';
 import { href } from 'react-router';
 import type { SessionUser } from '~/domain/auth/types/SessionUser';
 import { TabNavBtn } from './TabNavBtn';
+import { ThemeToggleBtn } from './ThemeToggleBtn';
 
 interface TopNavProps {
   me: SessionUser | null;
@@ -24,7 +25,6 @@ export const TopNav: FC<TopNavProps> = ({ me }) => {
     label = (
       <>
         <SettingsIcon size={20} />
-        Settings
       </>
     );
   } else {
@@ -32,7 +32,6 @@ export const TopNav: FC<TopNavProps> = ({ me }) => {
     label = (
       <>
         <PowerIcon size={20} />
-        Logout
       </>
     );
   }
@@ -47,7 +46,11 @@ export const TopNav: FC<TopNavProps> = ({ me }) => {
         <MusicNote2Icon size={20} />
         Songs
       </TabNavBtn>
-      <TabNavBtn to={url}>{label}</TabNavBtn>
+
+      <div className="absolute top-0 right-0 flex h-0 w-full items-start justify-end gap-1">
+        <ThemeToggleBtn className="absolute top-0 left-1 sm:static" />
+        <TabNavBtn to={url}>{label}</TabNavBtn>
+      </div>
     </nav>
   );
 };

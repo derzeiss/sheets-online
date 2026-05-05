@@ -1,8 +1,9 @@
+import type { UserRole } from '@prisma/client';
+import { data, Form, useLoaderData, useSubmit } from 'react-router';
+import { Button } from '~/components/button/Button';
+import { userContext } from '~/domain/auth/authMiddleware.server';
 import { prisma } from '~/domain/prisma';
 import type { Route } from './+types/user-admin';
-import { userContext } from '~/domain/auth/authMiddleware.server';
-import { useLoaderData, Form, useSubmit, data } from 'react-router';
-import type { UserRole } from '@prisma/client';
 
 const ACTION_TOGGLE_USER_ACTIVE = 'toggleUserActive';
 const ACTION_SET_USER_ROLE = 'setUserRole';
@@ -55,7 +56,7 @@ export default function () {
       <h2 className="text-2xl">Inactive Users</h2>
       <table className="mt-4 w-full">
         <thead>
-          <tr className="bg-neutral-100">
+          <tr className="bg-neutral-100 dark:bg-neutral-700">
             <th className="px-4 py-2 text-left">Name</th>
             <th className="px-4 py-2 text-left">E-Mail</th>
             <th className="px-4 py-2 text-left">Role</th>
@@ -64,7 +65,10 @@ export default function () {
         </thead>
         <tbody>
           {users.map((u) => (
-            <tr key={u.id} className="even:bg-neutral-50">
+            <tr
+              key={u.id}
+              className="even:bg-neutral-50 dark:even:bg-neutral-800"
+            >
               <td className="px-4 py-2">{u.name}</td>
               <td className="px-4 py-2">{u.email}</td>
               <td className="px-4 py-2">
@@ -101,9 +105,9 @@ export default function () {
                     value={!u.isActive + ''}
                     type="hidden"
                   />
-                  <button className="btn" type="submit">
+                  <Button size="sm" variant="tertiary" type="submit">
                     {u.isActive ? 'Deactivate' : 'Activate'}
-                  </button>
+                  </Button>
                 </Form>
               </td>
             </tr>

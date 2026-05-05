@@ -50,7 +50,7 @@ export const KeyKeyboard: FC<KeyKeyboardProps> = ({
 
 const KeyButton: FC<
   BtnProps & Omit<KeyKeyboardProps, 'ref'> & { note: Note }
-> = ({ selectedKey, onKeySelect, note, className, ...props }) => (
+> = ({ selectedKey, onKeySelect, note, ...props }) => (
   <Button
     {...props}
     size="sm"

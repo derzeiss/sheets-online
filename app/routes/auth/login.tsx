@@ -33,7 +33,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
 
 export default function LoginRoute({ actionData }: Route.ComponentProps) {
   return (
-    <main className="content my-16 max-w-md rounded-3xl border border-neutral-200 bg-white py-10">
+    <main className="content my-16 max-w-md rounded-3xl border border-neutral-200 py-10">
       <h1 className="h1">Login</h1>
 
       <Form method="post" className="mt-8 space-y-4">

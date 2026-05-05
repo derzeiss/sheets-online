@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --spacing-content: clamp(16px, 5vw, 64px);
 
@@ -8,11 +10,13 @@
   --color-primary-50: var(--color-orange-50);
   --color-primary-300: var(--color-orange-300);
   --color-primary-400: var(--color-orange-400);
+
+  --breakpoint-sm: 480px;
 }
 
 html,
 body {
-  @apply text-black/91;
+  @apply text-black/91 dark:bg-neutral-900 dark:text-white/88;
 }
 
 @utility content {
@@ -28,7 +32,7 @@ body {
 }
 
 @utility clickable {
-  @apply cursor-pointer transition-colors hover:bg-neutral-100 active:bg-neutral-200 active:transition-none;
+  @apply cursor-pointer transition-colors hover:bg-neutral-100 active:bg-neutral-200 active:transition-none dark:hover:bg-neutral-800 dark:active:bg-neutral-700;
 }
 
 @utility inline-link {
