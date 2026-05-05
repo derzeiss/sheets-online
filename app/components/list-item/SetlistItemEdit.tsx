@@ -34,7 +34,7 @@ export const SetlistItemEdit: FC<Props> = ({
 
   return (
     <ListItem {...getReorderHandlers(item.id)}>
-      <div>
+      <div className="select-none">
         <h2>{item.song.title}</h2>
         <TextMeta>{item.song.artist}</TextMeta>
       </div>
