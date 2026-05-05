@@ -34,8 +34,8 @@ export const getButtonCls = ({
       'bg-primary-50 dark:bg-primary-50/10 dark:inset-ring-primary-400/50 inset-ring-primary-400 inset-ring':
         variant === 'selected',
 
-      'gap-4 px-7 py-4 text-sm': size === 'lg',
-      'gap-3 px-7 py-3 text-sm': size === 'md',
+      // 'gap-4 px-6 py-4 text-sm': size === 'lg',
+      'gap-3 px-6 py-3 text-sm': size === 'md',
       'gap-2 px-4 py-3 text-xs': size === 'sm',
       'gap-2 px-3 py-3 text-xs': size === 'sm_icon',
     },
