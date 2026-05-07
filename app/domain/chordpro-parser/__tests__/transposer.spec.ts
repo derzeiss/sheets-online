@@ -4,11 +4,24 @@ import {
   _extractNotesFromChord,
   _getKeyDelta,
   _toArrayIndex,
+  _transposeChord,
   _transposeNote,
 } from '../transposer';
 import type { Note } from '../types/Note';
 
 describe('transposer', () => {
+  describe('transposeChord', () => {
+    it('should transpose an optional chord correctly', () => {
+      const transposed = _transposeChord('(A/B)', 'A', 'C', 3);
+      expect(transposed).toBe('(C/D)');
+    });
+
+    it('should transpose a non-optional chord correctly', () => {
+      const transposed = _transposeChord('C#msus2', 'E', 'Db', -3);
+      expect(transposed).toBe('Bbmsus2');
+    });
+  });
+
   describe('extractNoteFromChord', () => {
     it.each([
       ['C', ['C', '']],

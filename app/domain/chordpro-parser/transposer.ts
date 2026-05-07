@@ -33,7 +33,7 @@ export const transposeSong = (prosong: string, keyFrom: Note, keyTo: Note) => {
     const chord = prosong.substring(iChordStart + 1, iChordEnd);
     transposedSong += prosong.substring(i, iChordStart);
     if (chord) {
-      const transposedChord = transposeChord(chord, keyFrom, keyTo, keyDelta);
+      const transposedChord = _transposeChord(chord, keyFrom, keyTo, keyDelta);
       transposedSong += `[${transposedChord}]`;
     }
     i = iChordEnd + 1;
@@ -43,12 +43,14 @@ export const transposeSong = (prosong: string, keyFrom: Note, keyTo: Note) => {
   return transposedSong;
 };
 
-const transposeChord = (
+export const _transposeChord = (
   chord: string,
   keyFrom: Note,
   keyTo: Note,
   keyDelta: number,
 ) => {
+  const isOptionalChord = /^\(.*\)$/.test(chord);
+  chord = chord.replace(/[()]/g, '');
   const parts = _extractNotesFromChord(chord);
   const partsTransposed = parts.map(([note, appendix]) => {
     let transposedNote;
@@ -68,7 +70,8 @@ const transposeChord = (
 
     return transposedNote + appendix;
   });
-  return partsTransposed.join('/');
+  let transposedChord = partsTransposed.join('/');
+  return isOptionalChord ? `(${transposedChord})` : transposedChord;
 };
 
 export const _extractNotesFromChord = (chord: string): ChordPart[] =>
