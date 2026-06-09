@@ -76,9 +76,11 @@ export const SettingsImportSongLib: FC<Props> = ({ statusMsg }) => {
           />
           {songLib.data && (
             <div className="mt-4 w-fit border p-4">
-              <code className="bg-neutral-100 p-1">{songLib.name}</code>
+              <code className="bg-neutral-100 p-1 dark:bg-neutral-700">
+                {songLib.name}
+              </code>
               <br />
-              <code className="bg-neutral-100 p-1">
+              <code className="bg-neutral-100 p-1 dark:bg-neutral-700">
                 {songLib.data.length}
               </code>{' '}
               songs
@@ -91,9 +93,9 @@ export const SettingsImportSongLib: FC<Props> = ({ statusMsg }) => {
       {state !== 'idle' && (
         <div
           className={clsx('mt-3 w-fit p-1', {
-            'bg-green-100': state === 'success',
-            'bg-sky-100': state === 'info',
-            'bg-red-100': state === 'error',
+            'bg-green-100 dark:bg-green-900': state === 'success',
+            'bg-sky-100 dark:bg-sky-900': state === 'info',
+            'bg-red-100 dark:bg-red-900': state === 'error',
           })}
         >
           {msg}
