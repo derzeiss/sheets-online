@@ -1,12 +1,15 @@
 import type { UserRole } from '@prisma/client';
+import { DeleteIcon } from '@proicons/react';
 import { data, Form, useLoaderData, useSubmit } from 'react-router';
 import { Button } from '~/components/button/Button';
+import { DoubleConfirmBtn } from '~/components/button/DoubleConfirmBtn';
 import { userContext } from '~/domain/auth/authMiddleware.server';
 import { prisma } from '~/domain/prisma';
 import type { Route } from './+types/user-admin';
 
 const ACTION_TOGGLE_USER_ACTIVE = 'toggleUserActive';
 const ACTION_SET_USER_ROLE = 'setUserRole';
+const ACTION_DELETE_USER = 'deleteUser';
 
 export async function loader({ context }: Route.LoaderArgs) {
   const users = await prisma.user.findMany({
@@ -44,6 +47,8 @@ export async function action({ request }: Route.ActionArgs) {
         where: { id: values.id },
         data: { isActive: values.isActive === 'true' },
       });
+    case ACTION_DELETE_USER:
+      return await prisma.user.delete({ where: { id: values.id } });
   }
 }
 
@@ -61,6 +66,7 @@ export default function () {
             <th className="px-4 py-2 text-left">E-Mail</th>
             <th className="px-4 py-2 text-left">Role</th>
             <th className="px-4 py-2 text-left">IsActive</th>
+            <th className="px-4 py-2 text-left">del</th>
           </tr>
         </thead>
         <tbody>
@@ -108,6 +114,23 @@ export default function () {
                   <Button size="sm" variant="tertiary" type="submit">
                     {u.isActive ? 'Deactivate' : 'Activate'}
                   </Button>
+                </Form>
+              </td>
+              <td>
+                <Form method="post">
+                  <input
+                    name="_action"
+                    value={ACTION_DELETE_USER}
+                    type="hidden"
+                  />
+                  <input name="id" value={u.id} type="hidden" />
+                  <DoubleConfirmBtn
+                    size="sm_icon"
+                    variant="tertiary"
+                    type="submit"
+                  >
+                    <DeleteIcon size={16} />
+                  </DoubleConfirmBtn>
                 </Form>
               </td>
             </tr>
