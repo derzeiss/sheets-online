@@ -1,6 +1,6 @@
 import type { Song } from '@prisma/client';
 import { CancelCircleIcon, DeleteIcon, SaveIcon } from '@proicons/react';
-import { useMemo, useRef, useState, type FormEvent } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { data, Form, href, useSubmit } from 'react-router';
 import { Button } from '~/components/button/Button';
 import { ButtonLink } from '~/components/button/ButtonLink';
@@ -13,6 +13,7 @@ import { SongListItem } from '~/components/list-item/SongListItem';
 import { requireUser } from '~/domain/auth/authMiddleware.server';
 import { prisma } from '~/domain/prisma';
 import type { ReorderType } from '~/domain/reorder-list/types/ReorderType';
+import { filterArray } from '~/domain/search/wordSearch';
 import { deleteSetlist, upsertSetlist } from '~/domain/setlist/setlistDal';
 import {
   useClientList,
@@ -112,16 +113,14 @@ export default function SetlistsEditRoute({
     updateItem,
   } = useClientList<SetlistItemWithSong>(setlist.items);
 
-  // add songs query
-  const [songQuery, setSongQuery] = useState('');
+  // songs query
+
   const $songQuery = useRef<HTMLInputElement>(null);
-  const songListFiltered = useMemo(() => {
-    if (songQuery.length < 2) return songs;
-    const queryLower = songQuery.toLowerCase();
-    return songs.filter(
-      (song) => song.title.toLowerCase().indexOf(queryLower) > -1,
-    );
-  }, [songQuery]);
+  const [songQuery, setSongQuery] = useState('');
+  const songListFiltered = useMemo(
+    () => filterArray<Song>(songQuery, 'title', songs),
+    [songQuery],
+  );
 
   const isCreation = setlist.id === 'new';
 
@@ -139,7 +138,7 @@ export default function SetlistsEditRoute({
     if (reordered) setItems(reordered);
   }
 
-  const handleSubmit = (ev: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (ev: React.SubmitEvent<HTMLFormElement>) => {
     ev.preventDefault();
     let $form = ev.currentTarget;
     let formData = new FormData($form);

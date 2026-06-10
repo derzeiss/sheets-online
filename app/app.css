@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-
+/* apply dark: modifier classes when body has .dark class */
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
@@ -8,6 +8,7 @@
   --radius-3xl: 1.25rem;
 
   --color-primary-50: var(--color-orange-50);
+  --color-primary-100: var(--color-orange-100);
   --color-primary-300: var(--color-orange-300);
   --color-primary-400: var(--color-orange-400);
 
