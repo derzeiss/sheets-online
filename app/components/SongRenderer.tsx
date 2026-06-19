@@ -81,7 +81,9 @@ export const SongRenderer: FC<Props> = ({ prosong, targetKey, textOnly }) => {
                     {!textOnly && (
                       <div>
                         <strong>
-                          {transposedChords[block.chord].name}&nbsp;
+                          {block.chord !== null &&
+                            transposedChords[block.chord]?.name}
+                          &nbsp;
                         </strong>
                       </div>
                     )}
