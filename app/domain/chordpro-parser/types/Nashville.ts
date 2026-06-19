@@ -1,4 +1,8 @@
+/**
+ * Nashville note. Includes all notes, not only for melodic scales (3#, 4b, ...)
+ */
 export type Nashville =
+  | '1b'
   | '1'
   | '1#'
   | '2b'
@@ -17,4 +21,5 @@ export type Nashville =
   | '6'
   | '6#'
   | '7b'
-  | '7';
+  | '7'
+  | '7#';

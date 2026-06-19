@@ -1,3 +1,6 @@
+/**
+ * All diatonic notes. Does not include theoretical notes (E#, Fb, Cb, B#).
+ */
 export type Note =
   | 'C'
   | 'C#'
@@ -15,5 +18,4 @@ export type Note =
   | 'A'
   | 'A#'
   | 'Bb'
-  | 'B'
-  | 'Nashville';
+  | 'B';

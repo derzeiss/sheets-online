@@ -1,5 +1,5 @@
 import { CancelCircleIcon, DeleteIcon, SaveIcon } from '@proicons/react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { data, Form, href, useSubmit } from 'react-router';
 import { Button } from '~/components/button/Button';
 import { ButtonLink } from '~/components/button/ButtonLink';
@@ -8,8 +8,8 @@ import { Textarea } from '~/components/form/Textarea';
 import { KeySelectButton } from '~/components/KeySelectButton';
 import { SongRenderer } from '~/components/SongRenderer';
 import { parseSong } from '~/domain/chordpro-parser/parser';
-import { isNote } from '~/domain/chordpro-parser/typeguards';
-import type { Note } from '~/domain/chordpro-parser/types/Note';
+import type { Key } from '~/domain/chordpro-parser/types/Key';
+import { isNote } from '~/domain/chordpro-parser/utils/typeguards';
 import { prisma } from '~/domain/prisma';
 import { deleteSong, upsertSong } from '~/domain/song/songDal';
 import type { Route } from './+types/$id.edit';
@@ -57,7 +57,7 @@ export async function action({ request }: Route.ActionArgs) {
 export default function SongsEditRoute({ loaderData }: Route.ComponentProps) {
   const { song } = loaderData;
   const submit = useSubmit();
-  const [targetKey, setTargetKey] = useState<Note>(
+  const [targetKey, setTargetKey] = useState<Key>(
     isNote(song.key) ? song.key : 'C',
   );
   const [prosong, setProsong] = useState(song.prosong);

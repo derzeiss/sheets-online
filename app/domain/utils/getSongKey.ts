@@ -1,4 +1,4 @@
-import { isNote } from '~/domain/chordpro-parser/typeguards';
+import { isNote } from '~/domain/chordpro-parser/utils/typeguards';
 import type { SetlistItemWithSong } from '~/prismaExtensions';
 
 // Kinda duplicate in ./getSetlistSongKeys.ts
