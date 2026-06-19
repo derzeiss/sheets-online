@@ -1,3 +1,4 @@
+import type { Song } from '@prisma/client';
 import { AddIcon } from '@proicons/react';
 import { useMemo, useState } from 'react';
 import { href, Link } from 'react-router';
@@ -6,6 +7,7 @@ import { FabContainer } from '~/components/button/FabContainer';
 import { Textbox } from '~/components/form/Textbox';
 import { SongListItem } from '~/components/list-item/SongListItem';
 import { prisma } from '~/domain/prisma';
+import { filterArray } from '~/domain/search/wordSearch';
 import type { Route } from './+types';
 
 export const loader = async () => {
@@ -16,15 +18,12 @@ export const loader = async () => {
 export default function SongsRoute({ loaderData }: Route.ComponentProps) {
   const { songs } = loaderData;
 
-  // add songs query
+  // songs query
   const [songQuery, setSongQuery] = useState('');
-  const songsFiltered = useMemo(() => {
-    if (songQuery.length < 2) return songs;
-    const queryLower = songQuery.toLowerCase();
-    return songs.filter(
-      (song) => song.title.toLowerCase().indexOf(queryLower) > -1,
-    );
-  }, [songQuery]);
+  const songsFiltered = useMemo(
+    () => filterArray<Song>(songQuery, 'title', songs),
+    [songQuery],
+  );
 
   return (
     <main className="content my-10 max-w-3xl">

@@ -10,6 +10,7 @@ import {
 } from 'react-router';
 import type { Route } from './+types/root';
 import stylesheet from './app.css?url';
+import { ThemeToggleBtn } from './components/ThemeToggleBtn';
 import { TopNav } from './components/TopNav';
 import {
   userContext,
@@ -71,7 +72,11 @@ export default function App() {
 
   return (
     <>
-      {me && <TopNav me={me} />}
+      {me ? (
+        <TopNav me={me} />
+      ) : (
+        <ThemeToggleBtn className="absolute top-1 right-1" />
+      )}
       <Outlet />
       <footer className="fixed right-2 bottom-2 flex w-full justify-end gap-2 text-xs text-neutral-500">
         <a className="inline-link" href="https://alexzeiss.de/impressum">
