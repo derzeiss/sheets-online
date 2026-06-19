@@ -1,7 +1,9 @@
 import { NOTES_BY_KEY } from './constants';
+import type { Chord } from './types/Chord';
 import type { Jsong } from './types/Jsong';
 import type { Key } from './types/Key';
 import { toRelativeMajor } from './utils/toRelativeMajor';
+import { updateChordName } from './utils/updateChordName';
 
 export const transposeJsongChords = (chords: Jsong['chords'], keyTo: Key) => {
   const targetMajorKey = toRelativeMajor(keyTo);
@@ -11,16 +13,11 @@ export const transposeJsongChords = (chords: Jsong['chords'], keyTo: Key) => {
   if (!targetScale) return chords;
 
   return chords.map((c) => {
-    const root = targetScale[c.root];
-    const bass = c.bass ? targetScale[c.bass] : undefined;
-    let name = root + (c.qual || '') + (c.ext || '');
-    if (bass) name += '/' + bass;
-    if (c.optional) name = `(${name})`;
-    return {
+    const chord: Chord = {
       ...c,
-      name,
-      root,
-      bass,
+      root: targetScale[c.root],
+      bass: c.bass ? targetScale[c.bass] : undefined,
     };
+    return updateChordName(chord);
   });
 };

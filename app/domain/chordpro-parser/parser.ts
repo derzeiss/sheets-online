@@ -20,8 +20,7 @@ import { clampToArrLength } from './utils/clampToArrLength';
 import { isFlatNote } from './utils/isFlatNote';
 import { toRelativeMajor } from './utils/toRelativeMajor';
 import { isNashville, isNote } from './utils/typeguards';
-
-// TODO: move all utils out to own files or include them all here. What's better? -> abstraction vs. indirection
+import { updateChordName } from './utils/updateChordName';
 
 let __nextId = 1;
 const getNextId = () => __nextId++;
@@ -30,6 +29,7 @@ const getNextId = () => __nextId++;
 type ChordsUsed = {
   asArr: Jsong['chords'];
   asSet: Set<string>;
+  indexByChord: Record<string, number>;
 };
 
 export const parseSong = (prosong: string): Jsong => {
@@ -37,6 +37,7 @@ export const parseSong = (prosong: string): Jsong => {
   const chords: ChordsUsed = {
     asArr: [],
     asSet: new Set(),
+    indexByChord: {},
   };
   const lines: Jsong['lines'] = [];
 
@@ -89,9 +90,7 @@ const parseLine = (line: string, chords: ChordsUsed, key: Key): SongLine => {
     if (!lineHasText && text.trim().length > 0) lineHasText = true;
 
     const chordIndex = compressChord(chord, chords, key);
-    if (chordIndex !== null) {
-      blocks.push({ id: getNextId(), chord: chordIndex, text });
-    }
+    blocks.push({ id: getNextId(), chord: chordIndex, text });
     return blocks;
   }, []);
 
@@ -113,21 +112,22 @@ const parseLine = (line: string, chords: ChordsUsed, key: Key): SongLine => {
  * @param key song key
  * @example compressChord('C/E', {asSet: {}, asArr: []}, 'G') -> 0
  * (chords altered to: {
- *   asSet: {
- *     'C/E': {
- *       name: 'C/E',
- *       root: 'C',
- *       bass: 'E',
+ *   asArr: [
+ *     {
+ *       name: '4/6',
+ *       root: '4',
+ *       bass: '6',
  *       optional: false
  *     }
- *   },
- *   asArr: ['C/E']
+ *   ],
+ *   asSet: ['C/E'],
+ *   indexByChord: {'C/E': 0}
  * })
  * @returns array index
  */
 const compressChord = (chord: string, chords: ChordsUsed, key: Key) => {
   if (chords.asSet.has(chord)) {
-    return chords.asArr.findIndex((c) => c.name === chord);
+    return chords.indexByChord[chord];
   }
   const parsedChord = _parseChord(chord);
   if (!parsedChord) return null;
@@ -138,9 +138,12 @@ const compressChord = (chord: string, chords: ChordsUsed, key: Key) => {
     root: nashvilleRoot,
     bass: noteToNashville(parsedChord.bass, key) || undefined,
   };
+
+  const index = chords.asArr.length;
+  chords.indexByChord[chord] = index;
   chords.asSet.add(chord);
-  chords.asArr.push(nashvilleChord);
-  return chords.asArr.length - 1;
+  chords.asArr.push(updateChordName(nashvilleChord));
+  return index;
 };
 
 /**

@@ -3,6 +3,6 @@
  */
 export type Block = {
   id: number;
-  chord: number;
+  chord: number | null;
   text: string;
 };
