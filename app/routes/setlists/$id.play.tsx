@@ -13,13 +13,10 @@ import { SongListItem } from '~/components/list-item/SongListItem';
 import { ScrollIndicator } from '~/components/ScrollIndicator';
 import { SongRenderer } from '~/components/SongRenderer';
 import { TooltipCloseBg } from '~/components/TooltipCloseBg';
-import { isNote } from '~/domain/chordpro-parser/typeguards';
-import type { Note } from '~/domain/chordpro-parser/types/Note';
+import type { Key } from '~/domain/chordpro-parser/types/Key';
 import { prisma } from '~/domain/prisma';
-import {
-  setlistWithItemsWithSongInclude,
-  type SetlistWithItemWithSong,
-} from '~/prismaExtensions';
+import { getSetlistSongKeys } from '~/domain/utils/getSetlistSongKeys';
+import { setlistWithItemsWithSongInclude } from '~/prismaExtensions';
 import type { Route } from './+types/$id.play';
 
 export async function loader({ params }: Route.LoaderArgs) {
@@ -34,20 +31,10 @@ export async function loader({ params }: Route.LoaderArgs) {
   return { setlist };
 }
 
-const getSetlistSongKeys = (setlist: SetlistWithItemWithSong) => {
-  return setlist.items.reduce<Record<string, Note>>((songKeys, item) => {
-    let key: Note = 'Nashville';
-    if (isNote(item.key)) key = item.key;
-    else if (isNote(item.song.key)) key = item.song.key;
-    songKeys[item.id] = key;
-    return songKeys;
-  }, {});
-};
-
 export default function SongRoute({ loaderData }: Route.ComponentProps) {
   const { setlist } = loaderData;
-  const [songKeys, setSongKeys] = useState<Record<string, Note>>(() =>
-    getSetlistSongKeys(setlist),
+  const [songKeys, setSongKeys] = useState<Record<string, Key>>(() =>
+    getSetlistSongKeys(setlist.items),
   );
   const [songListOpen, setSongListOpen] = useState(false);
   const [showTextOnly, setShowTextOnly] = useState(false);

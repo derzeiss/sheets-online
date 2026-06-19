@@ -1,158 +1,26 @@
-import {
-  KEYS_FLAT,
-  NASHVILLE_FLAT,
-  NASHVILLE_SHARP,
-  NOTES_FLAT,
-  NOTES_SHARP,
-} from './constants';
-import { isNashville, isNote } from './typeguards';
-import type { Nashville } from './types/Nashville';
-import type { Note } from './types/Note';
+import { NOTES_BY_KEY } from './constants';
+import type { Jsong } from './types/Jsong';
+import type { Key } from './types/Key';
+import { toRelativeMajor } from './utils/toRelativeMajor';
 
-/**
- * consists of the chord note + appendix.
- * @example A#maj7 -> [A#, maj7]
- *
- * Chords with bass notes are split into two ChordParts.
- * @example A#maj7/F# -> [[A#, maj7], [F#]]
- */
-type ChordPart = [string, string];
+export const transposeJsongChords = (chords: Jsong['chords'], keyTo: Key) => {
+  const targetMajorKey = toRelativeMajor(keyTo);
+  if (targetMajorKey === 'Nashville') return chords;
 
-export const transposeSong = (prosong: string, keyFrom: Note, keyTo: Note) => {
-  const keyDelta = _getKeyDelta(keyFrom, keyTo);
-  if (keyDelta === null) return prosong; // return original song if invalid original oder target key given
-  let transposedSong = '';
+  const targetScale = NOTES_BY_KEY[targetMajorKey];
+  if (!targetScale) return chords;
 
-  let i = 0;
-  while (i !== -1) {
-    const iChordStart = prosong.indexOf('[', i);
-    if (iChordStart === -1) break;
-    const iChordEnd = prosong.indexOf(']', iChordStart);
-    if (iChordEnd === -1) break;
-
-    const chord = prosong.substring(iChordStart + 1, iChordEnd);
-    transposedSong += prosong.substring(i, iChordStart);
-    if (chord) {
-      const transposedChord = _transposeChord(chord, keyFrom, keyTo, keyDelta);
-      transposedSong += `[${transposedChord}]`;
-    }
-    i = iChordEnd + 1;
-  }
-  transposedSong += prosong.substring(i);
-
-  return transposedSong;
-};
-
-export const _transposeChord = (
-  chord: string,
-  keyFrom: Note,
-  keyTo: Note,
-  keyDelta: number,
-) => {
-  const isOptionalChord = /^\(.*\)$/.test(chord);
-  chord = chord.replace(/[()]/g, '');
-  const parts = _extractNotesFromChord(chord);
-  const partsTransposed = parts.map(([note, appendix]) => {
-    let transposedNote;
-
-    if (isNashville(note)) {
-      transposedNote = transposeFromNashville(note, keyTo);
-    } else if (isNote(note)) {
-      if (keyTo === 'Nashville') {
-        transposedNote = transposeToNashville(note, keyFrom);
-      } else {
-        transposedNote = _transposeNote(note, keyTo, keyDelta);
-      }
-    } else {
-      // non-note character -> don't transpose
-      return note + appendix;
-    }
-
-    return transposedNote + appendix;
+  return chords.map((c) => {
+    const root = targetScale[c.root];
+    const bass = c.bass ? targetScale[c.bass] : undefined;
+    let name = root + (c.qual || '') + (c.ext || '');
+    if (bass) name += '/' + bass;
+    if (c.optional) name = `(${name})`;
+    return {
+      ...c,
+      name,
+      root,
+      bass,
+    };
   });
-  let transposedChord = partsTransposed.join('/');
-  return isOptionalChord ? `(${transposedChord})` : transposedChord;
-};
-
-export const _extractNotesFromChord = (chord: string): ChordPart[] =>
-  chord.split('/').map(_extractNoteFromChord);
-
-export const _extractNoteFromChord = (chord: string): ChordPart => {
-  if (chord[1] === '#' || chord[1] === 'b') {
-    return [chord.substring(0, 2) as Note, chord.substring(2)];
-  }
-  return [chord[0] as Note, chord.substring(1)]; // TODO: check if extracted string really is a note?
-};
-
-export const _transposeNote = (note: Note, keyTo: Note, keyDelta: number) => {
-  const notes = isFlatKey(keyTo) ? NOTES_FLAT : NOTES_SHARP;
-  const i = getNoteIndex(note);
-  if (i === null) return note;
-  const iNew = _toArrayIndex(notes.length, i + keyDelta);
-  return notes[iNew];
-};
-
-const transposeToNashville = (note: Note, keyFrom: Note) => {
-  const iNote = getNoteIndex(note);
-  const iKey = getNoteIndex(keyFrom);
-  if (iNote === null || iKey === null) return note;
-
-  const steps = isFlatNote(note) ? NASHVILLE_FLAT : NASHVILLE_SHARP;
-  const iDelta = _toArrayIndex(steps.length, iNote - iKey);
-  return steps[iDelta];
-};
-
-const transposeFromNashville = (step: Nashville, keyTo: Note) => {
-  if (keyTo === 'Nashville') return step;
-  if (step === '1') return keyTo;
-
-  const iKey = getNoteIndex(keyTo);
-  if (iKey === null) return step;
-
-  const steps = isFlatNote(step) ? NASHVILLE_FLAT : NASHVILLE_SHARP;
-  const notes = isFlatKey(keyTo) ? NOTES_FLAT : NOTES_SHARP;
-  const halfNotesUpFromKey = steps.indexOf(step);
-
-  return notes[_toArrayIndex(notes.length, iKey + halfNotesUpFromKey)];
-};
-
-/**
- * Get key index delta. Returns null if one key is not a valid {@link Note}.
- */
-export const _getKeyDelta = (keyFrom: Note, keyTo: Note) => {
-  if (keyFrom === 'Nashville' || keyTo === 'Nashville') return 0;
-  const iKeyFrom = getNoteIndex(keyFrom);
-  const iKeyTo = getNoteIndex(keyTo);
-  if (iKeyFrom === null || iKeyTo === null) return null;
-  return iKeyTo - iKeyFrom;
-};
-
-/**
- * Get index of note in {@link NOTES_SHARP} or {@link NOTES_FLAT}.
- * Returns null if {@link note} is not a valid {@link Note}.
- */
-const getNoteIndex = (note: Note) => {
-  let i = NOTES_SHARP.indexOf(note);
-  if (i === -1) i = NOTES_FLAT.indexOf(note);
-  if (i === -1) return null;
-  return i;
-};
-
-// const isSharpNote = (note: Note) => note.indexOf('#') !== -1;
-const isFlatNote = (note: Note | Nashville) => note.indexOf('b') !== -1;
-
-const isFlatKey = (key: Note) => KEYS_FLAT.indexOf(key) !== -1;
-
-/**
- * clamp {@link index} to {@link arrLength.length} so that it can be used as an index
- * @example toArrayIndex([1,2,3], 1) -> 1
- * @example toArrayIndex([1,2,3], 4) -> 1
- * @example toArrayIndex([1,2,3], 7) -> 1
- * @example toArrayIndex([1,2,3], 8) -> 2
- * @example toArrayIndex([1,2,3], -8) -> 2
- */
-export const _toArrayIndex = (arrLength: number, index: number) => {
-  // This rather complicated calculation is needed to account for negative values
-  if (index >= 0) return index % arrLength;
-  return ((index % arrLength) + arrLength) % arrLength;
 };

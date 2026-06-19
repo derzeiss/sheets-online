@@ -1,18 +1,18 @@
 import { useMemo, type FC } from 'react';
 import { parseSong } from '~/domain/chordpro-parser/parser';
-import { transposeSong } from '~/domain/chordpro-parser/transposer';
+import { transposeJsongChords } from '~/domain/chordpro-parser/transposer';
+import type { Block } from '~/domain/chordpro-parser/types/Block';
+import type { Key } from '~/domain/chordpro-parser/types/Key';
+import type { SongLine } from '~/domain/chordpro-parser/types/SongLine';
 import {
   lineIsComment,
   lineIsWithChords,
-} from '~/domain/chordpro-parser/typeguards';
-import type { Block } from '~/domain/chordpro-parser/types/Block';
-import type { Note } from '~/domain/chordpro-parser/types/Note';
-import type { SongLine } from '~/domain/chordpro-parser/types/SongLine';
+} from '~/domain/chordpro-parser/utils/typeguards';
 import { useDebounce } from '~/domain/utils/useDebounce';
 
 interface Props {
   prosong: string;
-  targetKey: Note;
+  targetKey: Key;
   textOnly?: boolean;
 }
 
@@ -20,14 +20,9 @@ export const SongRenderer: FC<Props> = ({ prosong, targetKey, textOnly }) => {
   const prosongDebounced = useDebounce(prosong);
   const jsong = useMemo(() => parseSong(prosongDebounced), [prosongDebounced]);
 
-  const prosongTransposed = useMemo(
-    // transpose even if (songKey === songKeyTransposed) to transform Nashville numbers!
-    () => transposeSong(prosongDebounced, jsong.meta.key, targetKey),
+  const transposedChords = useMemo(
+    () => transposeJsongChords(jsong.chords, targetKey),
     [prosongDebounced, targetKey],
-  );
-  const jsongTransposed = useMemo(
-    () => parseSong(prosongTransposed),
-    [prosongTransposed],
   );
 
   const metaSubhead = useMemo(() => {
@@ -49,8 +44,9 @@ export const SongRenderer: FC<Props> = ({ prosong, targetKey, textOnly }) => {
       .join(' | ');
   }, [jsong.meta.key, jsong.meta.tempo, jsong.meta.time, targetKey]);
 
-  if (!prosong || !jsong || !jsongTransposed)
+  if (!prosong || !jsong || !transposedChords) {
     return <div className="text-neutral-600 italic">Enter a song to start</div>;
+  }
 
   return (
     <>
@@ -66,7 +62,7 @@ export const SongRenderer: FC<Props> = ({ prosong, targetKey, textOnly }) => {
         )}
       </div>
       <div className="text-lg leading-[1.3] tracking-[.015em] whitespace-pre">
-        {jsongTransposed.lines.map((line: SongLine) => {
+        {jsong.lines.map((line: SongLine) => {
           if (lineIsComment(line)) {
             return (
               <strong key={line.id} className="block tracking-wide uppercase">
@@ -84,7 +80,9 @@ export const SongRenderer: FC<Props> = ({ prosong, targetKey, textOnly }) => {
                   <div key={block.id}>
                     {!textOnly && (
                       <div>
-                        <strong>{block.chord}&nbsp;</strong>
+                        <strong>
+                          {transposedChords[block.chord].name}&nbsp;
+                        </strong>
                       </div>
                     )}
                     <div

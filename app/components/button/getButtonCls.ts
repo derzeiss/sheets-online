@@ -12,17 +12,20 @@ export interface BtnProps {
   className?: string;
   variant?: BtnVariant;
   size?: BtnSize;
+  normalCasing?: boolean;
 }
 
 export const getButtonCls = ({
   className,
   variant = 'secondary',
   size = 'md',
+  normalCasing,
 }: BtnProps) =>
   clsx(
     className,
-    'flex w-fit cursor-pointer items-center justify-center rounded-full font-semibold tracking-wide uppercase transition-colors select-none active:transition-none',
+    'flex w-fit cursor-pointer items-center justify-center rounded-full font-semibold tracking-wide transition-colors select-none active:transition-none',
     {
+      uppercase: !normalCasing,
       // TODO: btn-primary-states
       'bg-primary-300 dark:bg-primary-300/40': variant === 'primary',
       'bg-white inset-ring inset-ring-neutral-200 dark:bg-neutral-900 dark:inset-ring-neutral-700':

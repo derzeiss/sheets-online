@@ -1,14 +1,14 @@
 import { MusicNoteIcon } from '@proicons/react';
 import clsx from 'clsx';
 import { useRef, useState, type FC } from 'react';
-import type { Note } from '~/domain/chordpro-parser/types/Note';
+import type { Key } from '~/domain/chordpro-parser/types/Key';
 import { Button } from './button/Button';
 import { KeyKeyboard } from './KeyKeyboard';
 
 interface Props {
   className?: string;
-  selectedKey: Note;
-  onKeySelect: (key: Note) => void;
+  selectedKey: Key;
+  onKeySelect: (key: Key) => void;
   closeOnSelect?: boolean;
 }
 
@@ -21,7 +21,7 @@ export const KeySelectButton: FC<Props> = ({
   const [keyListOpen, setKeyListOpen] = useState(false);
   const $container = useRef<HTMLDivElement>(null);
 
-  const handleKeySelect = (note: Note) => {
+  const handleKeySelect = (note: Key) => {
     if (closeOnSelect) setKeyListOpen(false);
     onKeySelect(note);
   };
@@ -63,7 +63,12 @@ export const KeySelectButton: FC<Props> = ({
         )}
       />
 
-      <Button type="button" size="sm" onClick={() => toggleKeyListOpen()}>
+      <Button
+        type="button"
+        size="sm"
+        onClick={() => toggleKeyListOpen()}
+        normalCasing
+      >
         <MusicNoteIcon size={20} /> {selectedKey}
       </Button>
     </div>

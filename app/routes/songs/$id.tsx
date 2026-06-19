@@ -4,7 +4,8 @@ import { data, href } from 'react-router';
 import { ButtonLink } from '~/components/button/ButtonLink';
 import { KeySelectButton } from '~/components/KeySelectButton';
 import { SongRenderer } from '~/components/SongRenderer';
-import type { Note } from '~/domain/chordpro-parser/types/Note';
+import type { Key } from '~/domain/chordpro-parser/types/Key';
+import { isKey } from '~/domain/chordpro-parser/utils/typeguards';
 import { prisma } from '~/domain/prisma';
 import type { Route } from './+types/$id';
 
@@ -16,7 +17,9 @@ export async function loader({ params }: Route.LoaderArgs) {
 
 export default function SongRoute({ loaderData }: Route.ComponentProps) {
   const { song } = loaderData;
-  const [targetKey, setTargetKey] = useState<Note>((song.key as Note) || 'C');
+  const [targetKey, setTargetKey] = useState<Key>(
+    isKey(song.key) ? song.key : 'C',
+  );
 
   return (
     <main className="content my-10">

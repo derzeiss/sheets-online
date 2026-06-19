@@ -1,7 +1,7 @@
 import { CancelIcon } from '@proicons/react';
 import { useMemo, type FC } from 'react';
-import { isNote } from '~/domain/chordpro-parser/typeguards';
-import type { Note } from '~/domain/chordpro-parser/types/Note';
+import type { Key } from '~/domain/chordpro-parser/types/Key';
+import { isNote } from '~/domain/chordpro-parser/utils/typeguards';
 import type { ReorderType } from '~/domain/reorder-list/types/ReorderType';
 import { useReorderList } from '~/domain/reorder-list/useReorderList';
 import { getSongKey } from '~/domain/utils/getSongKey';
@@ -27,7 +27,7 @@ export const SetlistItemEdit: FC<Props> = ({
   const { getHandlers: getReorderHandlers } = useReorderList(onItemsReorder);
   const songKey = useMemo(() => getSongKey(item), [item.key]);
 
-  const handleKeyChange = (key: Note) => {
+  const handleKeyChange = (key: Key) => {
     if (!isNote(key)) return;
     onItemUpdate({ ...item, key });
   };

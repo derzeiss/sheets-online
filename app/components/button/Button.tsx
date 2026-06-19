@@ -7,9 +7,13 @@ export const Button: FC<ButtonProps> = ({
   variant = 'secondary',
   size = 'md',
   className,
+  normalCasing,
   ...props
 }) => {
   return (
-    <button {...props} className={getButtonCls({ variant, size, className })} />
+    <button
+      {...props}
+      className={getButtonCls({ variant, size, className, normalCasing })}
+    />
   );
 };
