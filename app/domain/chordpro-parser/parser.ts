@@ -95,7 +95,7 @@ const parseLine = (line: string, chords: ChordsUsed, key: Key): SongLine => {
   }, []);
 
   // with-chords / chords-only
-  if (blocks.length > 1 || blocks[0]?.chord) {
+  if (blocks.length > 1 || blocks[0]?.chord !== null) {
     const type = lineHasText ? 'with-chords' : 'chords-only';
     return { id: getNextId(), type, content: blocks };
   }
