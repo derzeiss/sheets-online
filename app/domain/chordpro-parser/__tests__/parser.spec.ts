@@ -1,10 +1,82 @@
 import { describe, expect, it } from 'vitest';
-import { _parseChord, _parseDirective, _setMetaField } from '../parser';
+import {
+  _parseChord,
+  _parseDirective,
+  _setMetaField,
+  parseSong,
+} from '../parser';
 import type { Chord } from '../types/Chord';
 import type { Jsong } from '../types/Jsong';
 import type { Note } from '../types/Note';
 
 describe('parser', () => {
+  describe('parseSong', () => {
+    it('should parse a pure lyrics line', () => {
+      const jsong = parseSong(`{key: C}
+Einfach nur Text`);
+
+      const expected = {
+        meta: { key: 'C' },
+        chords: [],
+        lines: [{ id: 2, type: 'lyrics-only', content: 'Einfach nur Text' }],
+      };
+
+      expect(jsong).toEqual(expected);
+    });
+
+    it('should parse a line that starts with lyrics', () => {
+      const jsong = parseSong(`{key: D}
+There's [D]just one chief end to man's purpose    [Dmaj7]`);
+
+      const expected = {
+        meta: { key: 'D' },
+        chords: [
+          { name: '1', root: '1', optional: false },
+          { name: '1maj7', root: '1', optional: false, ext: 'maj7' },
+        ],
+        lines: [
+          {
+            id: 4,
+            type: 'with-chords',
+            content: [
+              { id: 1, chord: null, text: "There's " },
+              {
+                id: 2,
+                chord: 0,
+                text: "just one chief end to man's purpose    ",
+              },
+              { id: 3, chord: 1, text: '' },
+            ],
+          },
+        ],
+      };
+
+      expect(jsong).toEqual(expected);
+    });
+
+    it('should parse a line that starts with a chord', () => {
+      const jsong = parseSong(`{key:G}
+{comment: Verse 1}
+[Am]All of creation all of the earth`);
+      const expected = {
+        meta: { key: 'G' },
+        chords: [{ name: '2m', root: '2', optional: false, qual: 'm' }],
+        lines: [
+          { id: 1, type: 'comment', content: 'Verse 1' },
+          {
+            id: 3,
+            type: 'with-chords',
+            content: [
+              { id: 2, chord: 0, text: 'All of creation all of the earth' },
+            ],
+          },
+        ],
+      };
+
+      expect(jsong).toEqual(expected);
+    });
+  });
+
   describe('setMetaField', () => {
     it('should create a non-existing field', () => {
       const meta: Jsong['meta'] = { key: 'C' };
@@ -48,7 +120,7 @@ describe('parser', () => {
     });
   });
 
-  describe('_parseChord', () => {
+  describe('parseChord', () => {
     it.each([
       'C',
       'C#',

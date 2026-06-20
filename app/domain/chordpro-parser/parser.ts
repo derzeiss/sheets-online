@@ -33,6 +33,7 @@ type ChordsUsed = {
 };
 
 export const parseSong = (prosong: string): Jsong => {
+  __nextId = 1;
   const meta: Jsong['meta'] = { key: 'C' };
   const chords: ChordsUsed = {
     asArr: [],
